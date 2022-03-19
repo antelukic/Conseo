@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Conseo</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_to_conseo">Welcome to Conseo</string>
+    <string name="login_or_register">Would you like to create a new account or you already have one?</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_to_your_conseo_account">Login to Your Conseo Account</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="create_your_conseo_account">Create Your Conseo Account</string>
+    <string name="create_your_password">Create your password</string>
+    <string name="repeat_your_password">Repeat your password</string>
+    <string name="choose_your_age">Choose your age</string>
+    <string name="proceed">Proceed</string>
+    <string name="choose_your_gender">Choose your gender:</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="select_your_profile_picture">Select Your profile picture</string>
+    <string name="set_profile_picture_subtitle">Your profile picture will help people recognize you and it will improve trust in your reviews</string>
+    <string name="choose_from_gallery">Choose from gallery</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="i_m_good_thanks">I\'m good, thanks.</string>
+    <string name="i_look_beautiful_proceed">I look beautiful! Proceed</string>
+    <string name="error_saving_account">Something went wrong with saving your account. Please try again later!</string>
+    <string name="account_saved">Your account is successfully saved!</string>
+</resources>

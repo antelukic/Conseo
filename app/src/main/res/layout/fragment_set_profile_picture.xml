@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.viewmodel.RegisterViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.SetProfilePicture">
+
+
+        <TextView
+            android:id="@+id/Fragment_SetProfilePicture_Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/adamina"
+            android:text="@string/select_your_profile_picture"
+            android:textAlignment="center"
+            android:textColor="@color/dark_pink"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Fragment_SetProfilePicture_Subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:fontFamily="@font/adamina"
+            android:text="@string/set_profile_picture_subtitle"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_SetProfilePicture_Title" />
+
+        <Button
+            android:id="@+id/Fragment_SetProfilePicture_Gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/light_yellow"
+            android:text="@string/choose_from_gallery"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_pink"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_SetProfilePicture_Subtitle"
+            app:layout_constraintStart_toStartOf="@id/Fragment_SetProfilePicture_Subtitle"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_SetProfilePicture_Subtitle" />
+
+        <Button
+            android:id="@+id/Fragment_SetProfilePicture_Camera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/light_yellow"
+            android:text="@string/take_a_photo"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_pink"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/Fragment_SetProfilePicture_Gallery"
+            app:layout_constraintStart_toStartOf="@+id/Fragment_SetProfilePicture_Gallery"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_SetProfilePicture_Gallery" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Fragment_SetProfilePicture_Picture"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/baseline_perm_identity_24"
+            app:layout_constraintEnd_toEndOf="@+id/Fragment_SetProfilePicture_Camera"
+            app:layout_constraintStart_toStartOf="@+id/Fragment_SetProfilePicture_Camera"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_SetProfilePicture_Camera" />
+
+        <TextView
+            android:id="@+id/Fragment_SetProfilePicture_Proceed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/adamina"
+            android:text="@string/i_look_beautiful_proceed"
+            android:textColor="@color/dark_pink"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/Fragment_SetProfilePicture_Skip"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_SetProfilePicture_Skip"
+            app:layout_constraintStart_toStartOf="@id/Fragment_SetProfilePicture_Skip" />
+
+        <TextView
+            android:id="@+id/Fragment_SetProfilePicture_Skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:fontFamily="@font/adamina"
+            android:text="@string/i_m_good_thanks"
+            android:textColor="@color/dark_pink"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
