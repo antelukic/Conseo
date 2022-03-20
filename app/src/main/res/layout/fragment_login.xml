@@ -4,6 +4,7 @@
     <data>
 
         <import type="android.text.TextUtils"/>
+        <import type="android.view.View"/>
 
         <variable
             name="viewModel"
@@ -59,13 +60,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0"
                 android:inputType="textEmailAddress"
                 android:paddingTop="60dp"
                 android:singleLine="true"
-                android:onTextChanged="@{() -> viewModel.clearError()}"
                 android:textColor="@color/black"
-                android:text="@={viewModel.email}"/>
+                android:afterTextChanged="@{() -> viewModel.clearError()}"
+                android:text="@={viewModel.email}"
+                android:background="@color/white"
+                android:fontFamily="@font/adamina"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -85,8 +87,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0"
                 android:inputType="textPassword"
+                android:background="@color/white"
                 android:paddingTop="60dp"
                 android:singleLine="true"
                 android:textColor="@color/black"
@@ -105,15 +107,19 @@
             android:fontFamily="@font/andika_new_basic"
             android:text="@string/login"
             android:textColor="@color/white"
+            android:enabled="@{!TextUtils.isEmpty(viewModel.email) &amp;&amp; !TextUtils.isEmpty(viewModel.password)}"
+            android:onClick="@{() -> viewModel.loginUser()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
+            android:id="@+id/Fragment_Login_Biometrics"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_fingerprint"
             android:layout_marginBottom="60dp"
+            android:visibility="@{viewModel.biometricsEnabled==true? View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/Fragment_Login_LoginButton"
             app:layout_constraintEnd_toEndOf="@id/Fragment_Login_LoginButton"
             app:layout_constraintStart_toStartOf="@id/Fragment_Login_LoginButton"/>

@@ -28,4 +28,8 @@ class UsersDao(
     fun storeAccount(userEntity: UserEntity): Task<DocumentReference> {
         return database.collection("users").add(userEntity)
     }
+
+    fun loginUser(email: String, password: String): Task<AuthResult> {
+        return firebase.auth.signInWithEmailAndPassword(email, password)
+    }
 }

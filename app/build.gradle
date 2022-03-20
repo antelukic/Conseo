@@ -10,7 +10,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        minSdk 21
+        minSdk 28
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -66,5 +66,9 @@ dependencies {
 
     // Koin
     implementation "io.insert-koin:koin-android:3.1.0"
+
+    //Biometrics
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha04"
 
 }

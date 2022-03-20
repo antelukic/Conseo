@@ -26,4 +26,13 @@
     <string name="i_look_beautiful_proceed">I look beautiful! Proceed</string>
     <string name="error_saving_account">Something went wrong with saving your account. Please try again later!</string>
     <string name="account_saved">Your account is successfully saved!</string>
+    <string name="biometrics">Biometrics</string>
+    <string name="biometrics_permission">Biometrics permission</string>
+    <string name="biometric_authentication_message">Use biometric authentication to login faster and skip writing your email and password every time</string>
+    <string name="biometric_authentication_question">Allow biometric authentication?</string>
+    <string name="allow">Allow</string>
+    <string name="dont_allow">Don\'t allow</string>
+    <string name="cancel">Cancel</string>
+    <string name="email_and_password">Email and password</string>
+    <string name="email_and_password_key">Email and Password key</string>
 </resources>

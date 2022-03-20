@@ -21,11 +21,14 @@ class AppRepository(
 
     fun registerAccount(email: String, password: String): Task<AuthResult> {
         val nes =  usersDao.registerAccount(email, password)
-        Log.d(TAG, nes.toString())
         return nes
     }
 
     fun saveUserToDB(userEntity: UserEntity): Task<DocumentReference> {
         return usersDao.storeAccount(userEntity)
+    }
+
+    fun loginUser(email: String, password: String): Task<AuthResult> {
+        return usersDao.loginUser(email, password)
     }
 }

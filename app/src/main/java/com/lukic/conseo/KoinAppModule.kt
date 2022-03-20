@@ -12,5 +12,5 @@ val repositoryModule = module {
 
 val viewModelModules = module {
     viewModel { RegisterViewModel(get()) }
-    viewModel { LoginViewModel() }
+    viewModel { LoginViewModel(get()) }
 }
