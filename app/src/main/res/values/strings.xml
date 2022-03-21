@@ -35,4 +35,8 @@
     <string name="cancel">Cancel</string>
     <string name="email_and_password">Email and password</string>
     <string name="email_and_password_key">Email and Password key</string>
+    <string name="places">places</string>
+    <string name="settings">Settings</string>
+    <string name="map">Map</string>
+    <string name="camera">Camera</string>
 </resources>

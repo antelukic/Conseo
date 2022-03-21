@@ -4,14 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/baseline_perm_identity_24.xml" value="0.124" />
+        <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/ic_add_a_photo_black_24dp.xml" value="0.154" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/ic_fingerprint.xml" value="0.1705" />
+        <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/ic_map_black_24dp.xml" value="0.154" />
+        <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/ic_menu_black_24dp.xml" value="0.154" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_login.xml" value="0.264" />
+        <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_maps.xml" value="0.21739130434782608" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_register.xml" value="0.2047244094488189" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_set_profile_picture.xml" value="0.42397914856646396" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_verify_registration.xml" value="0.24818840579710144" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/layout/fragment_welcome.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/database/src/main/res/layout/activity_main.xml" value="0.21739130434782608" />
+        <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/database/src/main/res/menu/bottom_nav_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

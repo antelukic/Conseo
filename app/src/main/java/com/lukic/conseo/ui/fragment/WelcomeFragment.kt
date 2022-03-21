@@ -53,14 +53,14 @@ class WelcomeFragment : Fragment() {
             for (letter in getString(R.string.welcome_to_conseo)) {
                 text += letter
                 binding.FragmentWelcomeTitle.text = text
-                delay(70)
+                delay(40)
             }
             positionWelcomeText()
             text = ""
             for (letter in getString(R.string.login_or_register)) {
                 text += letter
                 binding.FragmentWelcomeSubtitle.text = text
-                delay(70)
+                delay(40)
             }
             showButtons()
         }

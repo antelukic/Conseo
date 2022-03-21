@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/places"
+        android:icon="@drawable/ic_menu_black_24dp"
+        android:title="@string/places"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/ic_map_black_24dp"
+        android:title="@string/map"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/camera"
+        android:icon="@drawable/ic_add_a_photo_black_24dp"
+        android:title="@string/camera"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_manage_accounts_black_24dp"
+        android:title="@string/settings"
+        app:showAsAction="always" />
+
+</menu>
