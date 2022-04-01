@@ -5,25 +5,21 @@
     <item
         android:id="@+id/places"
         android:icon="@drawable/ic_menu_black_24dp"
-        android:title="@string/places"
-        app:showAsAction="always" />
+        android:title="@string/places"/>
 
     <item
         android:id="@+id/map"
         android:icon="@drawable/ic_map_black_24dp"
-        android:title="@string/map"
-        app:showAsAction="always" />
+        android:title="@string/map"/>
 
     <item
         android:id="@+id/camera"
         android:icon="@drawable/ic_add_a_photo_black_24dp"
-        android:title="@string/camera"
-        app:showAsAction="always" />
+        android:title="@string/camera" />
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_manage_accounts_black_24dp"
-        android:title="@string/settings"
-        app:showAsAction="always" />
+        android:title="@string/settings"/>
 
 </menu>
