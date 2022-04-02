@@ -40,4 +40,6 @@
     <string name="map">Map</string>
     <string name="camera">Camera</string>
     <string name="search_for_a_location">Search for a location</string>
+    <string name="services">services</string>
+    <string name="chats">chats</string>
 </resources>

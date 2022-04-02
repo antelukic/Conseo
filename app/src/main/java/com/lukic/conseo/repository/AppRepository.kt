@@ -1,18 +1,21 @@
 package com.lukic.conseo.repository
 
 import android.util.Log
+import com.conseo.database.dao.ServiceDao
 import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.UploadTask
 
 private const val TAG = "AppRepository"
 class AppRepository(
-    private val usersDao: UsersDao
+    private val usersDao: UsersDao,
+    private val serviceDao: ServiceDao
 ) {
 
     fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): UploadTask {
@@ -20,8 +23,7 @@ class AppRepository(
     }
 
     fun registerAccount(email: String, password: String): Task<AuthResult> {
-        val nes =  usersDao.registerAccount(email, password)
-        return nes
+        return usersDao.registerAccount(email, password)
     }
 
     fun saveUserToDB(userEntity: UserEntity): Task<DocumentReference> {
@@ -30,5 +32,9 @@ class AppRepository(
 
     fun loginUser(email: String, password: String): Task<AuthResult> {
         return usersDao.loginUser(email, password)
+    }
+
+    fun getAllItemsByService(service: String): Task<QuerySnapshot> {
+        return serviceDao.getAllItemsByService(service)
     }
 }

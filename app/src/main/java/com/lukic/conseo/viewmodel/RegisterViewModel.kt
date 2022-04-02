@@ -50,10 +50,6 @@ class RegisterViewModel(
     fun onProceedClicked() {
         viewModelScope.launch(Dispatchers.Default) {
             val valid = checkInputs()
-            Log.d(TAG, password.value.toString())
-            Log.d(TAG, repeatPassword.value.toString())
-            Log.d(TAG, valid.toString())
-            Log.d(TAG, gender.value.toString())
             if (valid)
                 proceed.postValue(true)
         }
