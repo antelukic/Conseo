@@ -42,4 +42,17 @@
     <string name="search_for_a_location">Search for a location</string>
     <string name="services">services</string>
     <string name="chats">chats</string>
+    <string name="add_additional_info">Add additional info</string>
+    <string name="add">Add</string>
+    <string name="enter_name">Enter name</string>
+    <string name="add_location">Add Location</string>
+    <string name="look_on_map">Look on map</string>
+    <string name="click_on_image_gallery">Click on image to choose from gallery</string>
+    <string name="add_from_gallery">Add from gallery</string>
+    <string name="confirm_your_location_on_map_if_the_wrong_location_is_shown_search_for_the_right_one">Confirm your location on map. If the wrong location is shown search for the right one</string>
+    <string-array name="spinner_dropdown">
+        <item>Bars</item>
+        <item>Restaurants</item>
+        <item>Events</item>
+    </string-array>
 </resources>

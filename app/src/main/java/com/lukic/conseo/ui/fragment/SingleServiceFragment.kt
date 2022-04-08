@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentSingleServiceBinding
+import com.lukic.conseo.ui.adapters.SingleServicesRecyclerAdapter
 import com.lukic.conseo.viewmodel.SingleServiceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -25,7 +27,10 @@ class SingleServiceFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-//        binding.FragmentSingleServiceRecyclerView.adapter = MyServicesRecyclerAdapter()
+        viewModel.adapterData.observe(viewLifecycleOwner){ adapterData ->
+            binding.FragmentSingleServiceRecyclerView.adapter = SingleServicesRecyclerAdapter(adapterData)
+        }
+
 
         return binding.root
     }

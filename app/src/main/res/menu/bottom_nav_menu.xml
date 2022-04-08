@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/services"
-        android:icon="@drawable/ic_menu_black_24dp"
+        android:icon="@drawable/ic_baseline_check_box_outline_blank_24"
         android:title="@string/services"/>
 
     <item

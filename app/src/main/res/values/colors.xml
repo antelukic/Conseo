@@ -10,4 +10,5 @@
     <color name="purple_primary">#b39ddb</color>
     <color name="dark_pink">#a00037</color>
     <color name="light_yellow">#ffe082</color>
+    <color name="light_grey">#f5f5f5</color>
 </resources>

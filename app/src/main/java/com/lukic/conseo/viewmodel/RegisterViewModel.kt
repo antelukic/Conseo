@@ -25,15 +25,17 @@ import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 
-sealed class RegisterError(val message: String){
-    object PasswordsDontMatch: RegisterError("Passwords don't match")
-    object InvalidEmail: RegisterError("Invalid email")
-    object EmptyInput: RegisterError("This field is required to proceed")
+sealed class RegisterError(val message: String) {
+    object PasswordsDontMatch : RegisterError("Passwords don't match")
+    object InvalidEmail : RegisterError("Invalid email")
+    object EmptyInput : RegisterError("This field is required to proceed")
 }
+
 private const val TAG = "RegisterViewModel"
+
 class RegisterViewModel(
     private val appRepository: AppRepository
-): ViewModel() {
+) : ViewModel() {
 
     val isAccountSaved = MutableLiveData<Boolean>()
 
@@ -119,7 +121,7 @@ class RegisterViewModel(
             .addOnCanceledListener {
                 isAccountSaved.postValue(false)
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Log.e(TAG, it.message.toString())
                 isAccountSaved.postValue(false)
             }
@@ -129,56 +131,53 @@ class RegisterViewModel(
     private fun saveUserToDB(imageBitmap: Bitmap?) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            val imageUrl = if(imageBitmap == null) {
+            val imageUrl = if (imageBitmap == null) {
                 val image = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
                 storeImageToStorage(image)
             } else
                 storeImageToStorage(imageBitmap)
-            imageUrl.await()
-                .addOnSuccessListener { taskSnapshot ->
-                    Log.d(TAG, imageUrl.toString())
-                    try {
-                        val response = appRepository.saveUserToDB(
-                            UserEntity(
-                                name = name.value!!,
-                                email = email.value!!,
-                                password = password.value!!,
-                                image = taskSnapshot.storage.downloadUrl.toString(),
-                                age = age.value!!,
-                                gender = gender.value!!
+            imageUrl.addOnSuccessListener { taskSnapshot ->
+                        try {
+                            val response = appRepository.saveUserToDB(
+                                UserEntity(
+                                    name = name.value!!,
+                                    email = email.value!!,
+                                    password = password.value!!,
+                                    image = taskSnapshot.storage.downloadUrl.toString(),
+                                    age = age.value!!,
+                                    gender = gender.value!!
+                                )
                             )
-                        )
-                        response.addOnSuccessListener {
-                            isAccountSaved.postValue(true)
-                        }
-                        response.addOnFailureListener {
-                            Log.e(TAG, it.message.toString())
+                            response.addOnSuccessListener {
+                                isAccountSaved.postValue(true)
+                            }
+                            response.addOnFailureListener {
+                                Log.e(TAG, it.message.toString())
+                                isAccountSaved.postValue(false)
+                            }
+                            response.addOnCanceledListener {
+                                isAccountSaved.postValue(false)
+                            }
+                        } catch (e: Exception) {
                             isAccountSaved.postValue(false)
+                            Log.e(TAG, e.message.toString())
                         }
-                        response.addOnCanceledListener {
-                            isAccountSaved.postValue(false)
-                        }
-                    } catch (e: Exception) {
-                        isAccountSaved.postValue(false)
-                        Log.e(TAG, e.message.toString())
                     }
-                }
-                .addOnCanceledListener {
-                    isAccountSaved.postValue(false)
-                }
-                .addOnFailureListener{
-                    Log.e(TAG, it.message.toString())
-                    isAccountSaved.postValue(false)
-                }
+                    .addOnCanceledListener {
+                        isAccountSaved.postValue(false)
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, it.message.toString())
+                        isAccountSaved.postValue(false)
+                    }
         }
     }
 
-        private fun storeImageToStorage(imageBitmap: Bitmap): Deferred<StorageTask<UploadTask.TaskSnapshot>> =
-            viewModelScope.async {
-                val baos = ByteArrayOutputStream()
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                val data = baos.toByteArray()
-                return@async appRepository.storeImageToStorage(data, email.value!!)
-            }
+    private fun storeImageToStorage(imageBitmap: Bitmap): StorageTask<UploadTask.TaskSnapshot> {
+        val baos = ByteArrayOutputStream()
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        return appRepository.storeImageToStorage(data, email.value!!)
+    }
 
 }

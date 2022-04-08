@@ -95,8 +95,7 @@ class SetProfilePicture : Fragment() {
                 val pickedImage: Uri = result.data?.data!!
                 imageBitmap = viewModel.getBitmap(pickedImage, requireContext().contentResolver)
                 if(imageBitmap != null)
-
-                Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentSetProfilePicturePicture)
+                    Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentSetProfilePicturePicture)
             }
         }
     }

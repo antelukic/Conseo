@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.conseo.database.entity.SingleServiceEntity
+import com.conseo.database.entity.ServiceEntity
 import com.lukic.conseo.repository.AppRepository
 import kotlinx.coroutines.launch
 
@@ -13,18 +13,20 @@ class SingleServiceViewModel (
     private val appRepository: AppRepository
     ): ViewModel() {
 
-    val _adapterData = MutableLiveData<List<SingleServiceEntity>>()
+    val adapterData = MutableLiveData<List<ServiceEntity>>()
 
 
-    fun getAllItemsByService(service: String) {
+    fun getAllItemsByService(serviceName: String) {
         viewModelScope.launch {
             try {
-                val result = appRepository.getAllItemsByService(service)
+                val result = appRepository.getAllItemsByService(serviceName)
                 result.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val services = task.result.toObjects(SingleServiceEntity::class.java)
-                        _adapterData.postValue(services as List<SingleServiceEntity>)
+                        val services = task.result.toObjects(ServiceEntity::class.java)
+                        adapterData.postValue(services as List<ServiceEntity>)
+                        Log.d(TAG, adapterData.toString())
                     }
+                    Log.d(TAG, result.toString())
                 }
             } catch(e: Exception){
                 Log.e(TAG, e.message.toString())

@@ -13,4 +13,6 @@ val viewModelModules = module {
     viewModel { RegisterViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { SingleServiceViewModel(get()) }
+    viewModel { MapsViewModel(get()) }
+    viewModel { AddServiceViewModel(get()) }
 }

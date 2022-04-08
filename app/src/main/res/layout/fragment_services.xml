@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragment.ServicesFragment">
 
-        <androidx.constraintlayout.utils.widget.ImageFilterView
+        <ImageView
             android:id="@+id/Fragment_Services_AddService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

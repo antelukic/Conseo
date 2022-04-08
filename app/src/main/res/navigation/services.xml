@@ -9,5 +9,40 @@
         android:id="@+id/servicesFragment"
         android:name="com.lukic.conseo.ui.fragment.ServicesFragment"
         tools:layout="@layout/fragment_services"
-        android:label="ServicesFragment" />
+        android:label="ServicesFragment" >
+
+        <action
+            android:id="@+id/action_servicesFragment_to_addServiceFragment"
+            app:destination="@id/addServiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addServiceFragment"
+        android:name="com.lukic.conseo.ui.fragment.AddServiceFragment"
+        android:label="AddServiceFragment"
+        tools:layout="@layout/fragment_add_service">
+        <action
+            android:id="@+id/action_addServiceFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_addServiceFragment_to_servicesFragment"
+            app:destination="@id/servicesFragment" />
+        <argument
+            android:name="location"
+            app:argType="string"
+            android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.lukic.conseo.ui.fragment.MapsFragment"
+        android:label="MapsFragment"
+        tools:layout="@layout/fragment_maps">
+        <argument
+            android:name="location"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_mapsFragment_to_addServiceFragment"
+            app:destination="@id/addServiceFragment" />
+    </fragment>
+
+
 </navigation>
