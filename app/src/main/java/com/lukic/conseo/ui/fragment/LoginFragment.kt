@@ -40,7 +40,7 @@ class LoginFragment : Fragment() {
 
         viewModel.proceed.observe(viewLifecycleOwner){
             if(viewModel.biometricsEnabled.value == false)
-                biometricPrompt.authenticate(promptInfo)
+                showBiometricsDialog()
             if(it)
                 startActivity(Intent(requireContext(), MainActivity::class.java))
         }
@@ -64,13 +64,12 @@ class LoginFragment : Fragment() {
                 override fun onAuthenticationError(errorCode: Int,
                                                    errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-
                 }
 
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    showBiometricsDialog()
+                    viewModel.loginUsingBiometrics()
                 }
 
                 override fun onAuthenticationFailed() {
@@ -88,7 +87,7 @@ class LoginFragment : Fragment() {
 
 
         binding.FragmentLoginBiometrics.setOnClickListener{
-            viewModel.loginUsingBiometrics()
+            biometricPrompt.authenticate(promptInfo)
         }
 
         return binding.root
@@ -107,32 +106,4 @@ class LoginFragment : Fragment() {
             }
         }.show()
     }
-/*
-
-    private val promptInfo = BiometricPrompt.PromptInfo.Builder()
-    .setTitle("Biometric login for my app")
-    .setSubtitle("Log in using your biometric credential")
-    .setNegativeButtonText("Use account password")
-    .build()
-
-    private val biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(requireContext()),
-    object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationError(errorCode: Int,
-                                           errString: CharSequence) {
-            super.onAuthenticationError(errorCode, errString)
-            Log.e("Login Fragment", errString.toString())
-        }
-
-        override fun onAuthenticationSucceeded(
-            result: BiometricPrompt.AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            startActivity(Intent(requireContext(), MainActivity::class.java))
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-        }
-    })
-*/
-
 }

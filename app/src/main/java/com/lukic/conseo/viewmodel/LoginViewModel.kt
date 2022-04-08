@@ -97,6 +97,7 @@ class LoginViewModel(
                 val isEnabled = prefs.getString(
                     MyApplication.getAppContext().getString(R.string.email), null
                 )
+                Log.d(TAG, isEnabled.toString())
                 biometricsEnabled.postValue(isEnabled != null)
             } else {
                 biometricsEnabled.postValue(null)
@@ -114,6 +115,8 @@ class LoginViewModel(
             MyApplication.getAppContext().getString(R.string.email_and_password),
             Context.MODE_PRIVATE
         )
+        Log.d(TAG, email.value.toString())
+        Log.d(TAG, password.value.toString())
         prefs.edit().putString(
             MyApplication.getAppContext().getString(R.string.email), email.value!!
         ).apply()

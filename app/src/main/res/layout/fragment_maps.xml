@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.viewmodel.MapsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.MapsFragment">
+
+        <fragment
+            android:id="@+id/Fragment_Maps_Map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent"
+            map:uiRotateGestures="true"
+            map:uiZoomControls="true" />
+
+        <EditText
+            android:id="@+id/Fragment_Maps_Search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="50dp"
+            android:alpha="0.8"
+            android:background="@color/white"
+            android:hint="@string/search_for_a_location"
+            android:minHeight="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="30dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="@={viewModel.searchText}"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/Fragment_Maps_SearchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_baseline_search_24"
+        map:layout_constraintBottom_toBottomOf="@+id/Fragment_Maps_Search"
+        map:layout_constraintEnd_toEndOf="@+id/Fragment_Maps_Search"
+        map:layout_constraintTop_toTopOf="@+id/Fragment_Maps_Search" />
+
+        <Button
+            android:id="@+id/Fragment_Maps_AddLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:layout_margin="20dp"
+            android:backgroundTint="@color/dark_pink"
+            android:text="Add Location"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

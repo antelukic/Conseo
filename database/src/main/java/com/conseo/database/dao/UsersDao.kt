@@ -1,6 +1,5 @@
 package com.conseo.database.dao
 
-import android.graphics.Bitmap
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
