@@ -4,7 +4,8 @@
     android:id="@+id/main_nav_graph"
     app:startDestination="@id/services">
 
-    <include app:graph="@navigation/settings" />
     <include app:graph="@navigation/chats" />
     <include app:graph="@navigation/services" />
+    <include app:graph="@navigation/settings" />
+
 </navigation>

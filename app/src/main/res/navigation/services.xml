@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_servicesFragment_to_addServiceFragment"
             app:destination="@id/addServiceFragment" />
+        <action
+            android:id="@+id/action_servicesFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
     </fragment>
     <fragment
         android:id="@+id/addServiceFragment"
@@ -42,6 +45,18 @@
         <action
             android:id="@+id/action_mapsFragment_to_addServiceFragment"
             app:destination="@id/addServiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.lukic.conseo.ui.fragment.MessageFragment"
+        android:label="MessageFragment"
+        tools:layout="@layout/fragment_message">
+        <argument
+            android:name="receiverID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_messageFragment_to_servicesFragment"
+            app:destination="@id/servicesFragment" />
     </fragment>
 
 

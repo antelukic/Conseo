@@ -28,7 +28,7 @@
             android:id="@+id/Fragment_VerifyRegistration_Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/Fragment_VerifyRegistration_Animation"

@@ -36,11 +36,9 @@ class LoginViewModel(
     private fun validatePassword(): Boolean {
 
         if(password.value?.length == null || password.value!!.length < 6) {
-            Log.d(TAG, "1")
             return false
         }
         if(email.value == null || !email.value!!.contains("@")) {
-            Log.d(TAG, "2")
             return false
         }
         return true
@@ -49,23 +47,19 @@ class LoginViewModel(
     fun loginUser(){
         viewModelScope.launch {
             if (validatePassword()) {
-                try {
-                    val result = appRepository.loginUser(email.value!!.trim(), password.value!!.trim())
-                    result.addOnSuccessListener {
-                        Log.d(TAG, "1 " +result.result.user.toString())
-                        proceed.postValue(true)
-                    }
-                        .addOnFailureListener {
-                            Log.d(TAG, "12 " +result.result.user.toString())
-                            error.postValue(LoginError.SomethingWentWrong)
+                    appRepository.loginUser(email.value!!.trim(), password.value!!.trim())
+                        .addOnCompleteListener { result ->
+                            if(result.isSuccessful)
+                                proceed.postValue(true)
+                            else {
+                                if(result.isCanceled){
+                                    Log.e(TAG, result.exception?.message.toString())
+                                }else {
+                                    proceed.postValue(false)
+                                    error.postValue(LoginError.EmailOrPasswordNotValid)
+                                }
+                            }
                         }
-                        .addOnCanceledListener {
-                            Log.d(TAG, "13 " +result.result.user.toString())
-                            error.postValue(LoginError.SomethingWentWrong)
-                        }
-                } catch (e: FirebaseException) {
-                    error.postValue(LoginError.EmailOrPasswordNotValid)
-                }
             } else {
                 error.postValue(LoginError.EmailOrPasswordNotValid)
             }
@@ -97,7 +91,6 @@ class LoginViewModel(
                 val isEnabled = prefs.getString(
                     MyApplication.getAppContext().getString(R.string.email), null
                 )
-                Log.d(TAG, isEnabled.toString())
                 biometricsEnabled.postValue(isEnabled != null)
             } else {
                 biometricsEnabled.postValue(null)
@@ -115,8 +108,6 @@ class LoginViewModel(
             MyApplication.getAppContext().getString(R.string.email_and_password),
             Context.MODE_PRIVATE
         )
-        Log.d(TAG, email.value.toString())
-        Log.d(TAG, password.value.toString())
         prefs.edit().putString(
             MyApplication.getAppContext().getString(R.string.email), email.value!!
         ).apply()

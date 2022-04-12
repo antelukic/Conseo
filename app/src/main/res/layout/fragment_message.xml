@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.text.TextUtils"/>
+
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.viewmodel.MessageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.MessageFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/Fragment_Message_ReceiverCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/Fragment_Message_BackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                android:backgroundTint="@color/white"/>
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/Fragment_Message_ReceiverImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/baseline_perm_identity_24"
+                android:layout_gravity="center_vertical"
+                app:civ_shadow="true"
+                app:civ_shadow_color="@color/black" />
+
+            <TextView
+                android:id="@+id/Fragment_Message_ReceiverName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/lato"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/Fragment_Message_RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/Fragment_Message_BottomCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Message_ReceiverCardView"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/Fragment_Message_BottomCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <EditText
+                    android:id="@+id/Fragment_Message_MessageInputText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="8"
+                    android:background="@drawable/card_view_border"
+                    android:fontFamily="@font/lato"
+                    android:hint="@string/write_a_message"
+                    android:text="@={viewModel.messageText}"
+                    android:inputType="text"
+                    android:minHeight="50dp"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+
+                <ImageButton
+                    android:id="@+id/Fragment_Message_SendButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:clickable="@{TextUtils.isEmpty(viewModel.messageText) == true ? false:true}"
+                    android:src="@drawable/ic_baseline_send_24" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

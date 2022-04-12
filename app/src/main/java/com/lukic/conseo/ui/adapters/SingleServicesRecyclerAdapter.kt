@@ -8,9 +8,11 @@ import com.bumptech.glide.Glide
 import com.conseo.database.entity.ServiceEntity
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.ItemSingleServiceBinding
+import com.lukic.conseo.utils.OnItemClickListener
 
 class SingleServicesRecyclerAdapter(
-    private val singleServices: List<ServiceEntity>
+    private val singleServices: List<ServiceEntity>,
+    private val listener: OnItemClickListener
 ): RecyclerView.Adapter<SingleServicesRecyclerAdapter.SingleServiceViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleServiceViewHolder =
@@ -26,6 +28,10 @@ class SingleServicesRecyclerAdapter(
         holder.location.text = singleServices[position].location
         Glide.with(holder.itemView.context).load(singleServices[position].image).into(holder.image)
         holder.cardView.setBackgroundResource(R.drawable.card_view_border)
+
+        holder.cardView.setOnClickListener {
+            listener.onClick(singleServices[position])
+        }
     }
 
     override fun getItemCount(): Int = singleServices.size

@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/camera">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chats"
+    app:startDestination="@id/allChatsFragment">
 
+    <fragment
+        android:id="@+id/allChatsFragment"
+        android:name="com.lukic.conseo.ui.fragment.AllChatsFragment"
+        android:label="AllChatsFragment"
+        tools:layout="@layout/fragment_all_chats">
+        <action
+            android:id="@+id/action_allChatsFragment_to_messageFragment2"
+            app:destination="@id/messageFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/messageFragment2"
+        android:name="com.lukic.conseo.ui.fragment.MessageFragment"
+        android:label="MessageFragment"
+        tools:layout="@layout/fragment_message">
+        <action
+            android:id="@+id/action_messageFragment2_to_allChatsFragment"
+            app:destination="@id/allChatsFragment" />
+        <argument
+            android:name="receiverID"
+            app:argType="string" />
+    </fragment>
 </navigation>

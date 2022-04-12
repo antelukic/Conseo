@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.ServiceEntity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.repository.AppRepository
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,7 @@ class AddServiceViewModel(
     val day = MutableLiveData<Int>()
     val location = MutableLiveData<String>()
 
-    val proceed = MutableLiveData(false)
+    val proceed = MutableLiveData<Boolean>()
     var imageBitmap: Bitmap? = null
 
 
@@ -106,6 +107,7 @@ class AddServiceViewModel(
         return when (selectedItemPosition.value) {
             1 -> {
                 ServiceEntity(
+                    creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "restaurants",
                     name = name.value,
                     location = location,
@@ -115,6 +117,7 @@ class AddServiceViewModel(
             }
             2 -> {
                 ServiceEntity(
+                    creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "events",
                     name = name.value,
                     location = location,
@@ -126,6 +129,7 @@ class AddServiceViewModel(
             }
             else -> {
                 ServiceEntity(
+                    creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "bars",
                     name = name.value,
                     location = location,

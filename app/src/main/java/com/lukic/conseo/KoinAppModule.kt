@@ -6,13 +6,15 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { AppRepository(get(), get()) }
+    single { AppRepository(usersDao = get(), serviceDao = get(), chatDao = get()) }
 }
 
 val viewModelModules = module {
-    viewModel { RegisterViewModel(get()) }
-    viewModel { LoginViewModel(get()) }
-    viewModel { SingleServiceViewModel(get()) }
-    viewModel { MapsViewModel(get()) }
-    viewModel { AddServiceViewModel(get()) }
+    viewModel { RegisterViewModel(appRepository = get()) }
+    viewModel { LoginViewModel(appRepository = get()) }
+    viewModel { SingleServiceViewModel(appRepository = get()) }
+    viewModel { MapsViewModel(appRepository = get()) }
+    viewModel { AddServiceViewModel(appRepository = get()) }
+    viewModel { AllChatsViewModel(appRepository = get()) }
+    viewModel { MessageViewModel(appRepository = get()) }
 }
