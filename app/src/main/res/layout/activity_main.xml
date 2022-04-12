@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.activity.MainActivity">
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/Activity_Main_FragmentContainerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:menu="@menu/bottom_nav_menu"
-            app:itemIconTint="@color/dark_pink"
+            app:itemIconTint="@drawable/bottom_nav_selector"
             app:labelVisibilityMode="unlabeled"
             android:background="@drawable/navigation_bar"
             app:layout_constraintBottom_toBottomOf="parent"

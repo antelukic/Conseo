@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,9 +10,7 @@
             type="com.lukic.conseo.viewmodel.RegisterViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.fragment.SetProfilePicture">
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:text="@string/select_your_profile_picture"
             android:textAlignment="center"
             android:textColor="@color/dark_pink"
@@ -35,8 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="serif"
             android:text="@string/set_profile_picture_subtitle"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:text="@string/i_look_beautiful_proceed"
             android:textColor="@color/dark_pink"
             android:textSize="20sp"
@@ -99,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:text="@string/i_m_good_thanks"
             android:textColor="@color/dark_pink"
             android:textSize="20sp"

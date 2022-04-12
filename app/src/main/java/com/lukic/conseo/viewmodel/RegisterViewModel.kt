@@ -9,21 +9,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
-import com.lukic.conseo.MyApplication
-import com.lukic.conseo.R
 import com.lukic.conseo.repository.AppRepository
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.log
 
 sealed class RegisterError(val message: String) {
     object PasswordsDontMatch : RegisterError("Passwords don't match")
@@ -47,6 +42,7 @@ class RegisterViewModel(
     val age = MutableLiveData<Int>(16)
     val gender = MutableLiveData<String>()
     val proceed = MutableLiveData<Boolean>()
+    private var userID = ""
 
 
     fun onProceedClicked() {
@@ -114,16 +110,15 @@ class RegisterViewModel(
     }
 
     fun registerAccount(imageBitmap: Bitmap?) = viewModelScope.launch {
-        appRepository.registerAccount(email.value!!, password.value!!)
-            .addOnSuccessListener {
-                saveUserToDB(imageBitmap)
-            }
-            .addOnCanceledListener {
-                isAccountSaved.postValue(false)
-            }
-            .addOnFailureListener {
-                Log.e(TAG, it.message.toString())
-                isAccountSaved.postValue(false)
+        appRepository.registerAccount(email.value!!.trim(), password.value!!)
+            .addOnCompleteListener { authResult ->
+                if (authResult.isSuccessful) {
+                    userID = authResult.result.user?.uid.toString()
+                    saveUserToDB(imageBitmap)
+                } else {
+                    isAccountSaved.postValue(false)
+                    Log.e(TAG, "registerAccount: ${authResult.exception?.message.toString()}", )
+                }
             }
 
     }
@@ -136,40 +131,54 @@ class RegisterViewModel(
                 storeImageToStorage(image)
             } else
                 storeImageToStorage(imageBitmap)
-            imageUrl.addOnSuccessListener { taskSnapshot ->
-                        try {
-                            val response = appRepository.saveUserToDB(
-                                UserEntity(
-                                    name = name.value!!,
-                                    email = email.value!!,
-                                    password = password.value!!,
-                                    image = taskSnapshot.storage.downloadUrl.toString(),
-                                    age = age.value!!,
-                                    gender = gender.value!!
-                                )
-                            )
-                            response.addOnSuccessListener {
-                                isAccountSaved.postValue(true)
-                            }
-                            response.addOnFailureListener {
-                                Log.e(TAG, it.message.toString())
-                                isAccountSaved.postValue(false)
-                            }
-                            response.addOnCanceledListener {
-                                isAccountSaved.postValue(false)
-                            }
-                        } catch (e: Exception) {
-                            isAccountSaved.postValue(false)
-                            Log.e(TAG, e.message.toString())
-                        }
-                    }
-                    .addOnCanceledListener {
-                        isAccountSaved.postValue(false)
-                    }
-                    .addOnFailureListener {
-                        Log.e(TAG, it.message.toString())
-                        isAccountSaved.postValue(false)
-                    }
+            imageUrl.addOnCompleteListener { taskSnapshot ->
+                if (taskSnapshot.isSuccessful) {
+                    getDownloadUrl(taskSnapshot)
+                } else {
+                    Log.e(TAG, "saveUserToDB: ${taskSnapshot.exception?.message.toString()}",)
+                }
+            }
+        }
+    }
+
+    private fun getDownloadUrl(taskSnapshot: Task<UploadTask.TaskSnapshot>) {
+        if(taskSnapshot.isSuccessful){
+            val user =  UserEntity(
+                id = userID,
+                name = name.value!!,
+                email = email.value!!.trim(),
+                password = password.value!!.trim(),
+                image = null,
+                age = age.value!!,
+                gender = gender.value!!
+            )
+            taskSnapshot.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTaskResult->
+                if(downloadUrlTaskResult.isSuccessful){
+                    user?.image = downloadUrlTaskResult.result.toString()
+                    saveUserToDB(user = user)
+                } else {
+                    isAccountSaved.postValue(false)
+                    Log.e(TAG, "saveUserToDB: ${downloadUrlTaskResult.exception?.message.toString()}", )
+                }
+            }
+        } else{
+            isAccountSaved.postValue(false)
+            Log.e(TAG, "getDownloadUrl: ${taskSnapshot.exception?.message.toString()}", )
+        }
+    }
+
+    private fun saveUserToDB(user: UserEntity){
+        appRepository.saveUserToDB(
+            userEntity = user
+        ).addOnCompleteListener { saveUserTaskResult ->
+            if (saveUserTaskResult.isSuccessful)
+                isAccountSaved.postValue(true)
+            else {
+                isAccountSaved.postValue(false)
+                Log.e(
+                    TAG, "saveUserToDB: ${saveUserTaskResult.exception?.message.toString()}",
+                )
+            }
         }
     }
 

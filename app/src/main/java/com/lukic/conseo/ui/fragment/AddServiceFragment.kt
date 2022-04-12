@@ -28,6 +28,7 @@ import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentAddServiceBinding
 import com.lukic.conseo.viewmodel.AddServiceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import kotlin.math.log
 
 private const val TAG = "AddServiceFragment"
 class AddServiceFragment : Fragment() {
@@ -146,6 +147,8 @@ class AddServiceFragment : Fragment() {
                 imageBitmap = viewModel.getBitmap(pickedImage, requireContext().contentResolver)
                 if(imageBitmap != null)
                     Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentAddServiceImage)
+            } else {
+                Log.e(TAG, "ERROR: ${result.toString()}")
             }
         }
     }

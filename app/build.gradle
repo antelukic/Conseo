@@ -82,4 +82,7 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
 
+    //CircularImageView
+    implementation 'com.mikhaellopez:circularimageview:4.3.0'
+
 }

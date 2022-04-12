@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:text="@string/create_your_conseo_account"
             android:textColor="@color/dark_pink"
             android:textSize="25sp"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:fontFamily="@font/cormorant_light"
+                android:fontFamily="@font/lato"
                 android:text="@={viewModel.name}"
                 android:afterTextChanged="@{() -> viewModel.clearError()}"
                 android:hint="@string/enter_your_name"
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:fontFamily="@font/cormorant_light"
+                android:fontFamily="@font/lato"
                 android:inputType="textEmailAddress"
                 android:text="@={viewModel.email}"
                 android:afterTextChanged="@{() -> viewModel.clearError()}"
@@ -89,7 +89,7 @@
                 android:inputType="textPassword"
                 android:text="@={viewModel.password}"
                 android:afterTextChanged="@{() -> viewModel.clearError()}"
-                android:fontFamily="@font/cormorant_light"
+                android:fontFamily="@font/lato"
                 android:hint="@string/create_your_password"
                 app:hintTextColor="@color/dark_pink" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -111,7 +111,7 @@
                 android:inputType="textPassword"
                 android:text="@={viewModel.repeatPassword}"
                 android:afterTextChanged="@{() -> viewModel.clearError()}"
-                android:fontFamily="@font/cormorant_light"
+                android:fontFamily="@font/lato"
                 android:hint="@string/repeat_your_password"
                 app:hintTextColor="@color/dark_pink" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:text="@string/choose_your_age"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@id/Fragment_Register_RepeatLayout"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="50dp"
             android:backgroundTint="@color/light_yellow"
-            android:fontFamily="@font/cormorant_light"
+            android:fontFamily="@font/lato"
             android:onClick="@{() -> viewModel.onProceedClicked()}"
             android:text="@string/proceed"
             android:textAllCaps="false"
@@ -175,7 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cormorant_light"
+                    android:fontFamily="@font/lato"
                     android:text="@string/choose_your_gender"/>
 
                 <LinearLayout
@@ -186,7 +186,7 @@
                         android:id="@+id/Fragment_Register_Male"
                         android:layout_weight="3"
                         android:text="@string/male"
-                        android:fontFamily="@font/cormorant_light"
+                        android:fontFamily="@font/lato"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" />
 
@@ -194,7 +194,7 @@
                         android:id="@+id/Fragment_Register_Female"
                         android:text="@string/female"
                         android:layout_weight="3"
-                        android:fontFamily="@font/cormorant_light"
+                        android:fontFamily="@font/lato"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"/>
                 </LinearLayout>

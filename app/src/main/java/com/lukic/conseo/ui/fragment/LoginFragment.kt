@@ -39,9 +39,12 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.proceed.observe(viewLifecycleOwner){
-            if(viewModel.biometricsEnabled.value == false)
+            var showingDialog = false
+            if(viewModel.biometricsEnabled.value == false){
                 showBiometricsDialog()
-            if(it)
+                showingDialog = true
+            }
+            if(it && showingDialog == false)
                 startActivity(Intent(requireContext(), MainActivity::class.java))
         }
 

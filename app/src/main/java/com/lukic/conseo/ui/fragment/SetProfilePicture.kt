@@ -6,16 +6,19 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.ContentResolver
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,7 +29,9 @@ import com.lukic.conseo.databinding.FragmentSetProfilePictureBinding
 import com.lukic.conseo.viewmodel.RegisterViewModel
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.log
 
+private const val TAG = "SetProfilePicture"
 
 class SetProfilePicture : Fragment() {
 
@@ -39,24 +44,31 @@ class SetProfilePicture : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_set_profile_picture, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_set_profile_picture,
+            container,
+            false
+        )
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        checkPermissions()
 
         binding.FragmentSetProfilePictureCamera.setOnClickListener {
             takePicture()
         }
 
-        binding.FragmentSetProfilePictureGallery.setOnClickListener{
+        binding.FragmentSetProfilePictureGallery.setOnClickListener {
             chooseImage()
         }
 
-        binding.FragmentSetProfilePictureProceed.setOnClickListener{
+        binding.FragmentSetProfilePictureProceed.setOnClickListener {
             viewModel.registerAccount(imageBitmap)
             findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToVerifyRegistrationFragment())
         }
 
-        binding.FragmentSetProfilePictureSkip.setOnClickListener{
+        binding.FragmentSetProfilePictureSkip.setOnClickListener {
             viewModel.registerAccount(imageBitmap)
             findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToVerifyRegistrationFragment())
         }
@@ -64,16 +76,29 @@ class SetProfilePicture : Fragment() {
         return binding.root
     }
 
-    private fun takePicture() {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            try {
-                resultCameraLauncher.launch(takePictureIntent)
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_LONG).show()
-            }
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_DENIED ||
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+        )
+            showPermissionDialog()
     }
 
-    private fun chooseImage(){
+    private fun takePicture() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            resultCameraLauncher.launch(takePictureIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun chooseImage() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
@@ -81,24 +106,33 @@ class SetProfilePicture : Fragment() {
         resultGalleryLauncher.launch(intent)
     }
 
-    private val resultCameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            imageBitmap = result.data?.extras?.get("data") as Bitmap
-            if(imageBitmap != null)
-            Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentSetProfilePicturePicture)
-        }
-    }
-
-    private val resultGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == Activity.RESULT_OK){
-            if(result.data?.data != null) {
-                val pickedImage: Uri = result.data?.data!!
-                imageBitmap = viewModel.getBitmap(pickedImage, requireContext().contentResolver)
-                if(imageBitmap != null)
-                    Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentSetProfilePicturePicture)
+    private val resultCameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d(TAG, "nes: $result")
+            if (result.resultCode == Activity.RESULT_OK) {
+                imageBitmap = result.data?.extras?.get("data") as Bitmap
+                if (imageBitmap != null)
+                    Glide.with(requireContext()).load(imageBitmap)
+                        .into(binding.FragmentSetProfilePicturePicture)
+            } else {
+                Log.d(TAG, result.toString())
             }
         }
-    }
+
+    private val resultGalleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if (result.data?.data != null) {
+                    val pickedImage: Uri = result.data?.data!!
+                    imageBitmap = viewModel.getBitmap(pickedImage, requireContext().contentResolver)
+                    if (imageBitmap != null)
+                        Glide.with(requireContext()).load(imageBitmap)
+                            .into(binding.FragmentSetProfilePicturePicture)
+                }
+            } else {
+                Log.e(TAG, "resultGalleryLauncher: $result", )
+            }
+        }
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -116,11 +150,11 @@ class SetProfilePicture : Fragment() {
         builder.apply {
             setTitle("Permission required")
             setMessage("If you press no you can only skip this part")
-            setPositiveButton("Yes"){_, _ ->
+            setPositiveButton("Yes") { _, _ ->
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
                 requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
-            setNegativeButton("No"){_, _ ->
+            setNegativeButton("No") { _, _ ->
                 binding.FragmentSetProfilePictureCamera.isEnabled = false
                 binding.FragmentSetProfilePictureGallery.isEnabled = false
                 binding.FragmentSetProfilePictureProceed.isEnabled = false

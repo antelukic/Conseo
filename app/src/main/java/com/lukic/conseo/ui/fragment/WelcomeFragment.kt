@@ -48,19 +48,19 @@ class WelcomeFragment : Fragment() {
 
     private fun setTextAnimation() {
         lifecycleScope.launch {
-            delay(350)
+            delay(100)
             var text = ""
             for (letter in getString(R.string.welcome_to_conseo)) {
                 text += letter
                 binding.FragmentWelcomeTitle.text = text
-                delay(40)
+                delay(20)
             }
             positionWelcomeText()
             text = ""
             for (letter in getString(R.string.login_or_register)) {
                 text += letter
                 binding.FragmentWelcomeSubtitle.text = text
-                delay(40)
+                delay(20)
             }
             showButtons()
         }

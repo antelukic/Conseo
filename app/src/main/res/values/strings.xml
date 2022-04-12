@@ -50,6 +50,7 @@
     <string name="click_on_image_gallery">Click on image to choose from gallery</string>
     <string name="add_from_gallery">Add from gallery</string>
     <string name="confirm_your_location_on_map_if_the_wrong_location_is_shown_search_for_the_right_one">Confirm your location on map. If the wrong location is shown search for the right one</string>
+    <string name="write_a_message">Write a message</string>
     <string-array name="spinner_dropdown">
         <item>Bars</item>
         <item>Restaurants</item>
