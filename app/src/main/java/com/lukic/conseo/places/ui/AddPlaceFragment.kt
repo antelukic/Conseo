@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -35,8 +36,6 @@ class AddPlaceFragment : Fragment() {
     private val viewModel by sharedViewModel<AddPlaceViewModel>()
     private var imageBitmap: Bitmap? = null
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,7 +52,6 @@ class AddPlaceFragment : Fragment() {
         if(viewModel.imageBitmap != null)
             Glide.with(requireContext()).load(viewModel.imageBitmap).into(binding.FragmentAddPlaceImage)
 
-        checkPermissions()
 
         val spinnerAdapter = ArrayAdapter.createFromResource(
             requireContext(), R.array.spinner_dropdown,
@@ -78,11 +76,13 @@ class AddPlaceFragment : Fragment() {
         }
 
         binding.FragmentAddPlaceCameraButton.setOnClickListener {
-            takePicture()
+            if(checkPermission(Manifest.permission.CAMERA))
+                takePicture()
         }
 
         binding.FragmentAddPlaceGalleryButton.setOnClickListener{
-            chooseImage()
+            if(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
+                chooseImage()
         }
 
         viewModel.proceed.observe(viewLifecycleOwner){ proceed ->
@@ -95,19 +95,15 @@ class AddPlaceFragment : Fragment() {
         return binding.root
     }
 
-    private fun checkPermissions() {
-        if(ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        ) == PERMISSION_DENIED)
-            showPermissionDialog()
-
-        if(ContextCompat.checkSelfPermission(
+    private fun checkPermission(permission: String): Boolean {
+        return if(ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PERMISSION_DENIED)
-            showPermissionDialog()
-
+                permission
+            ) != PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(permission)
+            false
+        } else
+            true
     }
 
     private fun takePicture() {
@@ -157,25 +153,8 @@ class AddPlaceFragment : Fragment() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 return@registerForActivityResult
-            } else {
-                showPermissionDialog()
             }
         }
 
-    private fun showPermissionDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.apply {
-            setTitle("Permission required")
-            setMessage("If you press no you can only skip this part")
-            setPositiveButton("Yes"){_, _ ->
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            setNegativeButton("No"){_, _ ->
-                binding.FragmentAddPlaceCameraButton.isEnabled = false
-                binding.FragmentAddPlaceGalleryButton.isEnabled = false
-            }
-        }.show()
-    }
 
 }
