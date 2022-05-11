@@ -8,9 +8,9 @@
         android:title="@string/chats" />
 
     <item
-        android:id="@+id/services"
+        android:id="@+id/places"
         android:icon="@drawable/ic_baseline_dynamic_form_24"
-        android:title="@string/services"/>
+        android:title="@string/places"/>
 
     <item
         android:id="@+id/settings"

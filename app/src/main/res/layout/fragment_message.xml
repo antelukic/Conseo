@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.lukic.conseo.viewmodel.MessageViewModel" />
+            type="com.lukic.conseo.chat.viewmodels.MessageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +15,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragment.MessageFragment">
+        tools:context=".chat.ui.MessageFragment">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/Fragment_Message_ReceiverCardView"

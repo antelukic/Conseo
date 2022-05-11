@@ -34,10 +34,10 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activity.LoginRegisterActivity"
+            android:name=".loginregister.ui.LoginRegisterActivity"
             android:noHistory="true"
             android:exported="true">
             <intent-filter>

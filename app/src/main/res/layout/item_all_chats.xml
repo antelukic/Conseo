@@ -5,7 +5,7 @@
 
         <variable
             name="model"
-            type="com.lukic.conseo.ui.adapters.AllChatsRecyclerAdapter" />
+            type="com.lukic.conseo.chat.ui.adapters.AllChatsRecyclerAdapter" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

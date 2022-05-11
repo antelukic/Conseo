@@ -10,14 +10,14 @@
 
         <variable
             name="viewModel"
-            type="com.lukic.conseo.viewmodel.MapsViewModel" />
+            type="com.lukic.conseo.places.viewmodels.MapsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragment.MapsFragment">
+        tools:context=".places.ui.MapsFragment">
 
         <fragment
             android:id="@+id/Fragment_Maps_Map"

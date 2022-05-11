@@ -9,7 +9,7 @@ import org.koin.dsl.module
 val databaseModule = module {
 
     single { UsersDao(firebase = Firebase, database = Firebase.firestore, storage = FirebaseStorage.getInstance()) }
-    single { ServiceDao(database = Firebase.firestore, storage = FirebaseStorage.getInstance())}
+    single { PlacesDao(database = Firebase.firestore, storage = FirebaseStorage.getInstance())}
     single { ChatDao(database = Firebase.firestore) }
 
 }

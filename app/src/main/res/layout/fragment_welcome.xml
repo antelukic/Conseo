@@ -5,7 +5,7 @@
 
         <variable
             name="model"
-            type="com.lukic.conseo.ui.fragment.WelcomeFragment" />
+            type="com.lukic.conseo.loginregister.ui.WelcomeFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragment.WelcomeFragment"
+        tools:context=".loginregister.ui.WelcomeFragment"
         android:id="@+id/Fragment_Welcome_Layout">
 
         <TextView

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/services"
+    app:startDestination="@id/placesFragment">
+
+    <fragment
+        android:id="@+id/placesFragment"
+        android:name="com.lukic.conseo.places.ui.PlacesFragment"
+        tools:layout="@layout/fragment_places"
+        android:label="PlacesFragment" >
+
+        <action
+            android:id="@+id/action_servicesFragment_to_addServiceFragment"
+            app:destination="@id/addPlaceFragment" />
+        <action
+            android:id="@+id/action_servicesFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addPlaceFragment"
+        android:name="com.lukic.conseo.places.ui.AddPlaceFragment"
+        android:label="AddServiceFragment"
+        tools:layout="@layout/fragment_add_place">
+        <action
+            android:id="@+id/action_addServiceFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_addServiceFragment_to_servicesFragment"
+            app:destination="@id/placesFragment" />
+        <argument
+            android:name="location"
+            app:argType="string"
+            android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.lukic.conseo.places.ui.MapsFragment"
+        android:label="MapsFragment"
+        tools:layout="@layout/fragment_maps">
+        <argument
+            android:name="location"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_mapsFragment_to_addServiceFragment"
+            app:destination="@id/addPlaceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.lukic.conseo.chat.ui.MessageFragment"
+        android:label="MessageFragment"
+        tools:layout="@layout/fragment_message">
+        <argument
+            android:name="receiverID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_messageFragment_to_servicesFragment"
+            app:destination="@id/placesFragment" />
+    </fragment>
+
+
+</navigation>
