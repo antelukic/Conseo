@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.lukic.conseo.ui.adapters.MessageRecyclerAdapter" />
+            type="com.lukic.conseo.chat.ui.adapters.MessageRecyclerAdapter" />
     </data>
 
     <RelativeLayout

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/allChatsFragment"
-        android:name="com.lukic.conseo.ui.fragment.AllChatsFragment"
+        android:name="com.lukic.conseo.chat.ui.AllChatsFragment"
         android:label="AllChatsFragment"
         tools:layout="@layout/fragment_all_chats">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/messageFragment2"
-        android:name="com.lukic.conseo.ui.fragment.MessageFragment"
+        android:name="com.lukic.conseo.chat.ui.MessageFragment"
         android:label="MessageFragment"
         tools:layout="@layout/fragment_message">
         <action

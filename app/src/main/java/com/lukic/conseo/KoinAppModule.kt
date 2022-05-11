@@ -1,20 +1,30 @@
 package com.lukic.conseo
 
-import com.lukic.conseo.repository.AppRepository
-import com.lukic.conseo.viewmodel.*
+import com.lukic.conseo.chat.model.ChatRepository
+import com.lukic.conseo.chat.viewmodels.AllChatsViewModel
+import com.lukic.conseo.chat.viewmodels.MessageViewModel
+import com.lukic.conseo.loginregister.viewmodels.LoginViewModel
+import com.lukic.conseo.loginregister.viewmodels.RegisterViewModel
+import com.lukic.conseo.model.LoginRegisterRepository
+import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
+import com.lukic.conseo.places.viewmodels.MapsViewModel
+import com.lukic.conseo.places.viewmodels.PlaceViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { AppRepository(usersDao = get(), serviceDao = get(), chatDao = get()) }
+    single { PlacesRepository(placesDao = get()) }
+    single { ChatRepository(chatDao = get(), get()) }
+    single { LoginRegisterRepository(usersDao = get()) }
 }
 
 val viewModelModules = module {
-    viewModel { RegisterViewModel(appRepository = get()) }
-    viewModel { LoginViewModel(appRepository = get()) }
-    viewModel { SingleServiceViewModel(appRepository = get()) }
-    viewModel { MapsViewModel(appRepository = get()) }
-    viewModel { AddServiceViewModel(appRepository = get()) }
-    viewModel { AllChatsViewModel(appRepository = get()) }
-    viewModel { MessageViewModel(appRepository = get()) }
+    viewModel { RegisterViewModel(get())}
+    viewModel { LoginViewModel(get()) }
+    viewModel { PlaceViewModel( get()) }
+    viewModel { MapsViewModel( ) }
+    viewModel { AddPlaceViewModel( get()) }
+    viewModel { AllChatsViewModel( get()) }
+    viewModel { MessageViewModel( get()) }
 }
