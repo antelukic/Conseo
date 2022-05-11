@@ -1,10 +1,8 @@
 package com.lukic.conseo
 
-import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -13,14 +11,12 @@ import com.lukic.conseo.databinding.ActivityMainBinding
 
 private const val ERROR_DIALOG_REQUEST = 9001
 private const val TAG = "MainActivity"
-class MainActivity : AppCompatActivity(){
+class MainActivity : BaseActivity<ActivityMainBinding>(){
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+    override fun getLayout(): Int = R.layout.activity_main
+
+    override fun setViews() {
         binding.model = this
         binding.lifecycleOwner = this
 
@@ -31,15 +27,19 @@ class MainActivity : AppCompatActivity(){
         binding.ActivityMainBottomNavigation.setOnItemSelectedListener(bottomNavListener)
     }
 
+    private lateinit var navController: NavController
+    
+
     private val bottomNavListener = object: NavigationBarView.OnItemSelectedListener{
         override fun onNavigationItemSelected(item: MenuItem): Boolean {
+            Log.d(TAG, "onNavigationItemSelected: ${item.itemId}")
             when(item.itemId){
                 R.id.chats -> {
                     navController.navigate(R.id.chats)
                     return@onNavigationItemSelected true
                 }
-                R.id.services -> {
-                    navController.navigate(R.id.services)
+                R.id.places -> {
+                    navController.navigate(R.id.places)
                     return@onNavigationItemSelected true
                 }
                 R.id.settings ->{
