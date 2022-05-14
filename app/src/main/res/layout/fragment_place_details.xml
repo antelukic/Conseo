@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="android.text.TextUtils"/>
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.places.viewmodels.PlaceDetailsViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".places.ui.PlaceDetailsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/Fragment_PlaceDetails_GuidHor03"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.3"/>
+
+            <ImageView
+                android:id="@+id/Fragment_PlaceDetails_Image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/Fragment_PlaceDetails_GuidHor03"/>
+
+            <TextView
+                android:id="@+id/Fragment_PlaceDetails_Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:fontFamily="@font/lato"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_Image"/>
+
+            <TextView
+                android:id="@+id/Fragment_PlaceDetails_Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.place.info}"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/lato"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_Name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/Fragment_PlaceDetails_Location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.place.location}"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/lato"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_Info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/Fragment_PlaceDetails_DateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/lato"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_Location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/Fragment_PlaceDetails_NestedScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:background="@color/light_grey"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_Location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/Fragment_PlaceDetails_Comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:id="@+id/Fragment_PlaceDetails_PostCommentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/dark_grey"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_NestedScrollView">
+
+                <EditText
+                    android:id="@+id/Fragment_PlaceDetails_WriteComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:minHeight="48dp"
+                    android:layout_weight="1"
+                    android:text="@={viewModel.postComment}"
+                    android:textColor="@color/black"
+                    android:inputType="textMultiLine"
+                    android:padding="10dp"
+                    android:hint="@string/write_a_comment"
+                    android:fontFamily="@font/lato"/>
+
+                <TextView
+                    android:id="@+id/Fragment_PlaceDetails_Post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/post"
+                    android:layout_weight="5"
+                    android:textSize="18sp"
+                    android:enabled="@{!TextUtils.isEmpty(viewModel.postComment)}"
+                    android:onClick="@{() -> viewModel.postComment()}"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/lato"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/Fragment_PlaceDetails_SendMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_purple"
+                android:text="@string/send_message"
+                android:layout_margin="30dp"
+                android:fontFamily="@font/lato"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_PostCommentLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <Button
+                android:id="@+id/Fragment_PlaceDetails_CheckOnMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_purple"
+                android:text="@string/check_on_map"
+                android:layout_margin="30dp"
+                android:fontFamily="@font/lato"
+                app:layout_constraintTop_toBottomOf="@id/Fragment_PlaceDetails_PostCommentLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -51,11 +51,15 @@ class MapsFragment : Fragment() {
         val args by navArgs<MapsFragmentArgs>()
         viewModel.searchText.value = args.location
 
-        geoLocate()
-
         getLocationPermission()
 
-        getDeviceLocation()
+
+        binding.FragmentMapsAddLocation.apply {
+            if (args.fromFragment == getString(R.string.add_place_fragment))
+                text = "Add Location"
+            if (args.fromFragment == getString(R.string.place_details_fragment))
+                text = "Return"
+        }
 
         binding.FragmentMapsSearchButton.setOnClickListener {
             if (!binding.FragmentMapsSearch.text.isNullOrEmpty()) {
@@ -64,10 +68,19 @@ class MapsFragment : Fragment() {
         }
 
         binding.FragmentMapsAddLocation.setOnClickListener {
-            if(viewModel.searchText.value.isNullOrEmpty() || address == null)
-                Toast.makeText(requireContext(), "Search the location first", Toast.LENGTH_LONG).show()
-            else
-                findNavController().navigate(MapsFragmentDirections.actionMapsFragmentToAddServiceFragment(address!!.getAddressLine(0)))
+            if (viewModel.searchText.value.isNullOrEmpty() || address == null)
+                Toast.makeText(requireContext(), "Search the location first", Toast.LENGTH_LONG)
+                    .show()
+            else {
+                if (args.fromFragment == getString(R.string.add_place_fragment))
+                    findNavController().navigate(
+                        MapsFragmentDirections.actionMapsFragmentToAddServiceFragment(
+                            address!!.getAddressLine(0)
+                        )
+                    )
+                if (args.fromFragment == getString(R.string.place_details_fragment))
+                    findNavController().navigateUp()
+            }
         }
 
         return binding.root
@@ -80,7 +93,12 @@ class MapsFragment : Fragment() {
             list = geocoder.getFromLocationName(viewModel.searchText.value, 1)
             if (list.isNotEmpty()) {
                 address = list.first()
-                moveCamera(LatLng(address!!.latitude, address!!.longitude), address!!.getAddressLine(0))
+                if(address != null) {
+                    moveCamera(
+                        LatLng(address?.latitude ?: 0.0, address?.longitude ?: 0.0),
+                        address!!.getAddressLine(0)
+                    )
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, e.message.toString())
@@ -126,13 +144,13 @@ class MapsFragment : Fragment() {
             return
         }
         hideSoftKeyboard()
+        Log.d(TAG, "moveCamera: $mMap")
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10F))
-
+        Log.d(TAG, "moveCamera: title $title")
         if (title.isNotEmpty()) {
             val options: MarkerOptions = MarkerOptions().position(latLng)
                 .title(title)
             mMap?.addMarker(options)
-
         }
         mMap?.isMyLocationEnabled = _locationPermissionGranted
         mMap?.uiSettings?.isMyLocationButtonEnabled = true
@@ -189,8 +207,14 @@ class MapsFragment : Fragment() {
     }
 
     private val mapReadyCallback = OnMapReadyCallback { googleMap: GoogleMap ->
-        Log.d(TAG, "google map" + googleMap.toString())
+
         mMap = googleMap
+
+        getDeviceLocation()
+
+
+        geoLocate()
+
     }
 
     private fun hideSoftKeyboard() {

@@ -1,6 +1,6 @@
 package com.conseo.database.entity
 
-data class ServiceEntity(
+data class PlaceEntity(
     val creatorID: String? = null,
     val name: String? = null,
     val location: String? = null,
@@ -8,5 +8,6 @@ data class ServiceEntity(
     val info: String? = null,
     val serviceName: String? = null,
     val date: String? = null,
-    val time: String? = null
+    val time: String? = null,
+    val placeID: String? = null
 )

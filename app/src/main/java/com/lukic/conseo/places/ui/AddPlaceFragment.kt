@@ -62,7 +62,8 @@ class AddPlaceFragment : Fragment() {
 
         binding.FragmentAddPlaceLookOnMap.setOnClickListener{
             if(!viewModel.location.value.isNullOrEmpty())
-                findNavController().navigate(AddPlaceFragmentDirections.actionAddServiceFragmentToMapsFragment(viewModel.location.value!!))
+                findNavController().navigate(AddPlaceFragmentDirections.actionAddServiceFragmentToMapsFragment(viewModel.location.value ?: "", getString(
+                                    R.string.add_place_fragment)))
             else
                 Toast.makeText(requireContext(), "Write the location first!", Toast.LENGTH_LONG).show()
         }

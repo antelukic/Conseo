@@ -15,8 +15,8 @@
             android:id="@+id/action_servicesFragment_to_addServiceFragment"
             app:destination="@id/addPlaceFragment" />
         <action
-            android:id="@+id/action_servicesFragment_to_messageFragment"
-            app:destination="@id/messageFragment" />
+            android:id="@+id/action_placesFragment_to_placeDetailsFragment"
+            app:destination="@id/placeDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addPlaceFragment"
@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_mapsFragment_to_addServiceFragment"
             app:destination="@id/addPlaceFragment" />
+        <argument
+            android:name="fromFragment"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
@@ -54,9 +57,27 @@
         <argument
             android:name="receiverID"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/placeDetailsFragment"
+        android:name="com.lukic.conseo.places.ui.PlaceDetailsFragment"
+        android:label="fragment_place_details"
+        tools:layout="@layout/fragment_place_details" >
         <action
-            android:id="@+id/action_messageFragment_to_servicesFragment"
+            android:id="@+id/action_placeDetailsFragment_to_placesFragment"
             app:destination="@id/placesFragment" />
+        <action
+            android:id="@+id/action_placeDetailsFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_placeDetailsFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+        <argument
+            android:name="serviceID"
+            app:argType="string" />
+        <argument
+            android:name="serviceType"
+            app:argType="string" />
     </fragment>
 
 

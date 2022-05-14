@@ -11,5 +11,6 @@ val databaseModule = module {
     single { UsersDao(firebase = Firebase, database = Firebase.firestore, storage = FirebaseStorage.getInstance()) }
     single { PlacesDao(database = Firebase.firestore, storage = FirebaseStorage.getInstance())}
     single { ChatDao(database = Firebase.firestore) }
+    single { CommentsDao(database = Firebase.firestore) }
 
 }

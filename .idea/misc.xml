@@ -53,10 +53,12 @@
         <entry key="app/src/main/res/layout/fragment_maps.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_message.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_place.xml" value="0.31666666666666665" />
+        <entry key="app/src/main/res/layout/fragment_place_details.xml" value="0.31027253668763105" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_services.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_set_profile_picture.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/item_all_chats.xml" value="0.31666666666666665" />
+        <entry key="app/src/main/res/layout/item_place_comments.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/item_single_place.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.31666666666666665" />
       </map>

@@ -9,12 +9,13 @@ import com.lukic.conseo.model.LoginRegisterRepository
 import com.lukic.conseo.places.model.PlacesRepository
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import com.lukic.conseo.places.viewmodels.MapsViewModel
+import com.lukic.conseo.places.viewmodels.PlaceDetailsViewModel
 import com.lukic.conseo.places.viewmodels.PlaceViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { PlacesRepository(placesDao = get()) }
+    single { PlacesRepository(placesDao = get(), commentsDao = get()) }
     single { ChatRepository(chatDao = get(), get()) }
     single { LoginRegisterRepository(usersDao = get()) }
 }
@@ -27,4 +28,5 @@ val viewModelModules = module {
     viewModel { AddPlaceViewModel( get()) }
     viewModel { AllChatsViewModel( get()) }
     viewModel { MessageViewModel( get()) }
+    viewModel { PlaceDetailsViewModel(get(), get()) }
 }

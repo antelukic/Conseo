@@ -51,6 +51,13 @@
     <string name="add_from_gallery">Add from gallery</string>
     <string name="confirm_your_location_on_map_if_the_wrong_location_is_shown_search_for_the_right_one">Confirm your location on map. If the wrong location is shown search for the right one</string>
     <string name="write_a_message">Write a message</string>
+    <string name="add_review">Add review</string>
+    <string name="check_on_map">Check on map</string>
+    <string name="write_a_comment">Write a comment</string>
+    <string name="post">Post</string>
+    <string name="send_message">Send message</string>
+    <string name="place_details_fragment">PlaceDetailsFragment</string>
+    <string name="add_place_fragment">AddPlaceFragment</string>
     <string-array name="spinner_dropdown">
         <item>Bars</item>
         <item>Restaurants</item>
