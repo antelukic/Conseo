@@ -8,11 +8,10 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.conseo.database.entity.ServiceEntity
+import com.conseo.database.entity.PlaceEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.places.model.PlacesRepository
-import com.lukic.conseo.places.ui.adapters.PlacesRecyclerAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -73,7 +72,7 @@ class AddPlaceViewModel(
                         uploadImageTask.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTask ->
                             if(downloadUrlTask.isSuccessful) {
                                 service.image = downloadUrlTask.result.toString()
-                                placesRepository.storeService(service = service)
+                                placesRepository.storeService(place = service)
                                     .addOnCompleteListener { uploadServiceTask ->
                                         if (uploadServiceTask.isSuccessful) {
                                             proceed.postValue(true)
@@ -93,30 +92,31 @@ class AddPlaceViewModel(
         }
     }
 
-    private fun storeImageToStorage(service: ServiceEntity): UploadTask {
+    private fun storeImageToStorage(place: PlaceEntity): UploadTask {
         val baos = ByteArrayOutputStream()
         imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
         return placesRepository.storeServiceImageToStorage(
-            service = service,
+            place = place,
             imageByteArray = data
         )
     }
 
-    private fun getService(location: String): ServiceEntity {
+    private fun getService(location: String): PlaceEntity {
         return when (selectedItemPosition.value) {
             1 -> {
-                ServiceEntity(
+                PlaceEntity(
                     creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "restaurants",
                     name = name.value,
                     location = location,
                     info = additionalInfo.value,
-                    image = null
+                    image = null,
+                    placeID = UUID.randomUUID().toString()
                 )
             }
             2 -> {
-                ServiceEntity(
+                PlaceEntity(
                     creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "events",
                     name = name.value,
@@ -124,17 +124,19 @@ class AddPlaceViewModel(
                     info = additionalInfo.value,
                     image = null,
                     date = getDateFromPicker(),
-                    time = getTimeFromTimePicker()
+                    time = getTimeFromTimePicker(),
+                    placeID = UUID.randomUUID().toString()
                 )
             }
             else -> {
-                ServiceEntity(
+                PlaceEntity(
                     creatorID = FirebaseAuth.getInstance().currentUser?.uid.toString(),
                     serviceName = "bars",
                     name = name.value,
                     location = location,
                     info = additionalInfo.value,
-                    image = null
+                    image = null,
+                    placeID = UUID.randomUUID().toString()
                 )
             }
         }

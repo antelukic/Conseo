@@ -1,14 +1,19 @@
 package com.lukic.conseo.places.model
 
+import com.conseo.database.dao.CommentsDao
 import com.conseo.database.dao.PlacesDao
-import com.conseo.database.entity.ServiceEntity
+import com.conseo.database.entity.CommentsEntity
+import com.conseo.database.entity.PlaceEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.UploadTask
+import kotlin.jvm.Throws
 
 class PlacesRepository(
-    private val placesDao: PlacesDao
+    private val placesDao: PlacesDao,
+    private val commentsDao: CommentsDao
 ) {
 
 
@@ -16,12 +21,28 @@ class PlacesRepository(
         return placesDao.getAllItemsByService(service)
     }
 
-    fun storeServiceImageToStorage(service: ServiceEntity, imageByteArray: ByteArray): UploadTask {
-        return placesDao.storeImageServiceToStorage(service = service, imageByteArray = imageByteArray)
+    fun storeServiceImageToStorage(place: PlaceEntity, imageByteArray: ByteArray): UploadTask {
+        return placesDao.storeImageServiceToStorage(place = place, imageByteArray = imageByteArray)
     }
 
-    fun storeService(service: ServiceEntity): Task<DocumentReference> {
-        return placesDao.storeService(service = service)
+    fun storeService(place: PlaceEntity): Task<DocumentReference> {
+        return placesDao.storeService(place = place)
+    }
+
+    fun getPlaceByID(placeID: String, serviceType: String): Task<QuerySnapshot> {
+        return placesDao.getPlaceById(placeID = placeID, serviceType = serviceType)
+    }
+
+    fun getCommentsForPlace(placeID: String): Task<QuerySnapshot> {
+        return commentsDao.getCommentsForPlace(placeID = placeID)
+    }
+
+    @Throws(IllegalArgumentException::class)
+    fun postComment(comment: CommentsEntity): Task<DocumentReference> {
+        if(comment.placeID.isNullOrEmpty())
+            throw IllegalArgumentException("PlaceID cannot be null")
+        else
+            return commentsDao.postComment(comment)
     }
 
 }

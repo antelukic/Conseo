@@ -1,6 +1,6 @@
 package com.conseo.database.dao
 
-import com.conseo.database.entity.ServiceEntity
+import com.conseo.database.entity.PlaceEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,11 +17,15 @@ class PlacesDao(
         return database.collection(service).get()
     }
 
-    fun storeService(service: ServiceEntity): Task<DocumentReference> {
-        return database.collection(service.serviceName!!.lowercase()).add(service)
+    fun storeService(place: PlaceEntity): Task<DocumentReference> {
+        return database.collection(place.serviceName!!.lowercase()).add(place)
     }
 
-    fun storeImageServiceToStorage(service: ServiceEntity, imageByteArray: ByteArray): UploadTask {
-        return  storage.reference.child("${service.serviceName}/" + service.name).putBytes(imageByteArray)
+    fun storeImageServiceToStorage(place: PlaceEntity, imageByteArray: ByteArray): UploadTask {
+        return  storage.reference.child("${place.serviceName}/" + place.name).putBytes(imageByteArray)
+    }
+
+    fun getPlaceById(placeID: String, serviceType: String): Task<QuerySnapshot> {
+        return database.collection(serviceType.lowercase()).whereEqualTo("placeID", placeID).get()
     }
 }
