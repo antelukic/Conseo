@@ -2,7 +2,6 @@ package com.lukic.conseo.loginregister.ui
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,22 +18,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentSetProfilePictureBinding
 import com.lukic.conseo.loginregister.viewmodels.RegisterViewModel
+import lv.chi.photopicker.PhotoPickerFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 private const val TAG = "SetProfilePicture"
 
-class SetProfilePicture : Fragment() {
+class SetProfilePicture : Fragment(), PhotoPickerFragment.Callback {
 
     private lateinit var binding: FragmentSetProfilePictureBinding
     private val viewModel: RegisterViewModel by sharedViewModel()
     private var imageBitmap: Bitmap? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,14 +47,21 @@ class SetProfilePicture : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        checkPermissions()
-
         binding.FragmentSetProfilePictureCamera.setOnClickListener {
-            takePicture()
+            if(checkPermissions(Manifest.permission.CAMERA)) {
+                takePicture()
+
+            }
+            else
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
         binding.FragmentSetProfilePictureGallery.setOnClickListener {
-            chooseImage()
+            Log.d(TAG, "onCreateView: ${checkPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)}")
+            if(checkPermissions(Manifest.permission.READ_EXTERNAL_STORAGE))
+                chooseImage()
+            else
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
         binding.FragmentSetProfilePictureProceed.setOnClickListener {
@@ -72,17 +77,15 @@ class SetProfilePicture : Fragment() {
         return binding.root
     }
 
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_DENIED ||
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_DENIED
-        )
-            showPermissionDialog()
+    override fun onImagesPicked(photos: ArrayList<Uri>) {
+        Log.d(TAG, "onImagesPicked: ${photos.size}")
+    }
+
+    private fun checkPermissions(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun takePicture() {
@@ -90,7 +93,7 @@ class SetProfilePicture : Fragment() {
         try {
             resultCameraLauncher.launch(takePictureIntent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_LONG).show()
+            Log.e(TAG, "takePicture: ERROR ${e.message}",)
         }
     }
 
@@ -98,21 +101,25 @@ class SetProfilePicture : Fragment() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-
+        Log.d(TAG, "chooseImage: chooseImage")
         resultGalleryLauncher.launch(intent)
     }
 
     private val resultCameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d(TAG, "nes: $result")
-            if (result.resultCode == Activity.RESULT_OK) {
-                imageBitmap = result.data?.extras?.get("data") as Bitmap
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                imageBitmap = data?.extras?.get("data") as Bitmap
+                Log.d(TAG, "imageBitmap: $imageBitmap")
                 if (imageBitmap != null)
                     Glide.with(requireContext()).load(imageBitmap)
                         .into(binding.FragmentSetProfilePicturePicture)
             } else {
-                Log.d(TAG, result.toString())
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
             }
+
         }
 
     private val resultGalleryLauncher =
@@ -120,13 +127,14 @@ class SetProfilePicture : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data?.data != null) {
                     val pickedImage: Uri = result.data?.data!!
+                    Log.d(TAG, "pickedImage: $pickedImage")
                     imageBitmap = viewModel.getBitmap(pickedImage, requireContext().contentResolver)
                     if (imageBitmap != null)
                         Glide.with(requireContext()).load(imageBitmap)
                             .into(binding.FragmentSetProfilePicturePicture)
                 }
             } else {
-                Log.e(TAG, "resultGalleryLauncher: $result", )
+                Log.e(TAG, "resultGalleryLauncher: $result")
             }
         }
 
@@ -136,26 +144,9 @@ class SetProfilePicture : Fragment() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 return@registerForActivityResult
-            } else {
-                showPermissionDialog()
             }
         }
 
-    private fun showPermissionDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.apply {
-            setTitle("Permission required")
-            setMessage("If you press no you can only skip this part")
-            setPositiveButton("Yes") { _, _ ->
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            setNegativeButton("No") { _, _ ->
-                binding.FragmentSetProfilePictureCamera.isEnabled = false
-                binding.FragmentSetProfilePictureGallery.isEnabled = false
-                binding.FragmentSetProfilePictureProceed.isEnabled = false
-            }
-        }.show()
-    }
+
 
 }
