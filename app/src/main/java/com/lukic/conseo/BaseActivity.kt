@@ -17,12 +17,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.lukic.conseo.utils.CheckNetworkConnection
 
-abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
+abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
 
     lateinit var binding: VB
     private var networkAlertDialog: AlertDialog? = null
     private var locationAlertDialog: AlertDialog? = null
     private var locManager: LocationManager? = null
+    val REQUEST_IMAGE_CAPTURE = 1
 
     abstract fun getLayout(): Int
 
@@ -30,24 +31,27 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(locManager != null)
+        if (locManager != null)
             startRequestingLocation()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, getLayout())
 
         setViews()
-        if(checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION))
+        if (checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION) && checkPermission(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+        )
             locManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         val checkNetworkConnection = CheckNetworkConnection(MyApplication.getInstance())
-        checkNetworkConnection.observe(this){ isConnected ->
-            if(!isConnected){
+        checkNetworkConnection.observe(this) { isConnected ->
+            if (!isConnected) {
                 showInternetDialog()
             } else {
-                if(networkAlertDialog?.isShowing == true)
+                if (networkAlertDialog?.isShowing == true)
                     networkAlertDialog?.dismiss()
             }
         }
@@ -64,7 +68,7 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
         }
 
     private fun checkPermission(permission: String): Boolean {
-        return if(ContextCompat.checkSelfPermission(
+        return if (ContextCompat.checkSelfPermission(
                 this,
                 permission
             ) != PackageManager.PERMISSION_GRANTED
@@ -75,7 +79,7 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
             true
     }
 
-    private fun showInternetDialog(){
+    private fun showInternetDialog() {
         networkAlertDialog = this.let {
             val builder = AlertDialog.Builder(this)
             builder.apply {
@@ -87,7 +91,7 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
         networkAlertDialog?.show()
     }
 
-    private fun showLocationDialog(){
+    private fun showLocationDialog() {
         locationAlertDialog = this.let {
             val builder = AlertDialog.Builder(this)
             builder.apply {
@@ -105,13 +109,14 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
             }
 
             override fun onProviderEnabled(provider: String) {
-                if(locationAlertDialog?.isShowing == true)
+                if (locationAlertDialog?.isShowing == true)
                     locationAlertDialog?.dismiss()
+
                 Log.d("BaseActivity", "onProviderEnabled: $provider")
             }
 
             override fun onProviderDisabled(provider: String) {
-               showLocationDialog()
+                showLocationDialog()
             }
 
             override fun onStatusChanged(
@@ -123,14 +128,13 @@ abstract class BaseActivity<VB: ViewDataBinding>: AppCompatActivity() {
         }
     }
 
-
     override fun onStop() {
         super.onStop()
         try {
-            if(locManager != null)
+            if (locManager != null)
                 locManager!!.removeUpdates(locListener)
         } catch (e: SecurityException) {
-            Log.e("BaseActivity", "onStop: ${e.message}", )
+            Log.e("BaseActivity", "onStop: ${e.message}")
         }
     }
 
