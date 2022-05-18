@@ -9,5 +9,7 @@ data class PlaceEntity(
     val serviceName: String? = null,
     val date: String? = null,
     val time: String? = null,
-    val placeID: String? = null
+    val placeID: String? = null,
+    val latitude: Double? = null,
+    val logitude: Double? = null
 )

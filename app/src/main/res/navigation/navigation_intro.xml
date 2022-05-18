@@ -37,12 +37,7 @@
         android:label="fragment_set_profile_picture"
         tools:layout="@layout/fragment_set_profile_picture" >
         <action
-            android:id="@+id/action_setProfilePicture_to_verifyRegistrationFragment"
-            app:destination="@id/verifyRegistrationFragment" />
+            android:id="@+id/action_setProfilePicture_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/verifyRegistrationFragment"
-        android:name="com.lukic.conseo.loginregister.ui.VerifyRegistrationFragment"
-        android:label="fragment_verify_registration"
-        tools:layout="@layout/fragment_verify_registration" />
 </navigation>

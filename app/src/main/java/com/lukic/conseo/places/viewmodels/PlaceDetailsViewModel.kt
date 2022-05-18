@@ -106,7 +106,7 @@ class PlaceDetailsViewModel(
                 placesRepository.postComment(comment)
                     .addOnCompleteListener { postCommentTask ->
                         if (postCommentTask.isSuccessful) {
-                            val commentsTemp = comments.value as ArrayList<CommentsEntity>
+                            val commentsTemp = comments.value as ArrayList<CommentsEntity>? ?: arrayListOf()
                             commentsTemp.add(comment)
                             _comments.postValue(commentsTemp)
                             postComment.postValue("")

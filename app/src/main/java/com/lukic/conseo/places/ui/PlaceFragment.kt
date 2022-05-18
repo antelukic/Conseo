@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -36,7 +37,14 @@ class PlaceFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.adapterData.observe(viewLifecycleOwner){ adapterData ->
-            binding.FragmentPlaceRecyclerView.adapter = PlacesRecyclerAdapter(singlePlaces = adapterData, listener = itemClickListener)
+            viewModel.getUserLocation()
+        }
+
+        viewModel.userLatLng.observe(viewLifecycleOwner){ latLng ->
+            if(latLng == null)
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
+            else
+                binding.FragmentPlaceRecyclerView.adapter = PlacesRecyclerAdapter(singlePlaces = viewModel.adapterData.value ?: listOf(), listener = itemClickListener)
         }
 
         return binding.root

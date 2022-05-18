@@ -23,12 +23,11 @@ import com.bumptech.glide.Glide
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentSetProfilePictureBinding
 import com.lukic.conseo.loginregister.viewmodels.RegisterViewModel
-import lv.chi.photopicker.PhotoPickerFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 private const val TAG = "SetProfilePicture"
 
-class SetProfilePicture : Fragment(), PhotoPickerFragment.Callback {
+class SetProfilePicture : Fragment() {
 
     private lateinit var binding: FragmentSetProfilePictureBinding
     private val viewModel: RegisterViewModel by sharedViewModel()
@@ -66,20 +65,22 @@ class SetProfilePicture : Fragment(), PhotoPickerFragment.Callback {
 
         binding.FragmentSetProfilePictureProceed.setOnClickListener {
             viewModel.registerAccount(imageBitmap)
-            findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToVerifyRegistrationFragment())
         }
 
         binding.FragmentSetProfilePictureSkip.setOnClickListener {
             viewModel.registerAccount(imageBitmap)
-            findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToVerifyRegistrationFragment())
+        }
+
+        viewModel.isAccountSaved.observe(viewLifecycleOwner){
+            if(it)
+                findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToLoginFragment())
+            else
+                Toast.makeText(requireContext(), "An error occured with registration. Please try again!", Toast.LENGTH_LONG).show()
         }
 
         return binding.root
     }
 
-    override fun onImagesPicked(photos: ArrayList<Uri>) {
-        Log.d(TAG, "onImagesPicked: ${photos.size}")
-    }
 
     private fun checkPermissions(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(

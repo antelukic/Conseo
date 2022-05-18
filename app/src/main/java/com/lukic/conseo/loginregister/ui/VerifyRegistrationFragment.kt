@@ -41,7 +41,6 @@ class VerifyRegistrationFragment : Fragment() {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                startActivity(Intent(requireContext(), MainActivity::class.java))
             }
 
             override fun onAnimationCancel(p0: Animator?) {

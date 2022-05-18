@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="com.lukic.conseo.places.viewmodels.MapsViewModel" />
+            type="com.lukic.conseo.places.viewmodels.AddPlaceViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +29,7 @@
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
             map:uiRotateGestures="true"
-            map:uiZoomControls="true" />
+            map:uiZoomControls="false" />
 
         <EditText
             android:id="@+id/Fragment_Maps_Search"

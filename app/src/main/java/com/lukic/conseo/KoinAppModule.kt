@@ -8,7 +8,6 @@ import com.lukic.conseo.loginregister.viewmodels.RegisterViewModel
 import com.lukic.conseo.model.LoginRegisterRepository
 import com.lukic.conseo.places.model.PlacesRepository
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
-import com.lukic.conseo.places.viewmodels.MapsViewModel
 import com.lukic.conseo.places.viewmodels.PlaceDetailsViewModel
 import com.lukic.conseo.places.viewmodels.PlaceViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -24,7 +23,6 @@ val viewModelModules = module {
     viewModel { RegisterViewModel(get())}
     viewModel { LoginViewModel(get()) }
     viewModel { PlaceViewModel( get()) }
-    viewModel { MapsViewModel( ) }
     viewModel { AddPlaceViewModel( get()) }
     viewModel { AllChatsViewModel( get()) }
     viewModel { MessageViewModel( get()) }

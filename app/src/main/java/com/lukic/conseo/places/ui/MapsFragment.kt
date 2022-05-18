@@ -24,9 +24,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lukic.conseo.R
-import com.lukic.conseo.places.viewmodels.MapsViewModel
+import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.IOException
+import android.location.Location
 
 
 private const val TAG = "MapsFragment"
@@ -34,7 +35,7 @@ private const val TAG = "MapsFragment"
 class MapsFragment : Fragment() {
 
     private lateinit var binding: com.lukic.conseo.databinding.FragmentMapsBinding
-    private val viewModel by sharedViewModel<MapsViewModel>()
+    private val viewModel by sharedViewModel<AddPlaceViewModel>()
     private var _client: FusedLocationProviderClient? = null
     private var _locationPermissionGranted = false
     private var mMap: GoogleMap? = null
@@ -94,8 +95,9 @@ class MapsFragment : Fragment() {
             if (list.isNotEmpty()) {
                 address = list.first()
                 if(address != null) {
+                    viewModel.latlng = LatLng(address?.latitude ?: 0.0, address?.longitude ?: 0.0)
                     moveCamera(
-                        LatLng(address?.latitude ?: 0.0, address?.longitude ?: 0.0),
+                        viewModel.latlng ?: LatLng(0.0, 0.0),
                         address!!.getAddressLine(0)
                     )
                 }

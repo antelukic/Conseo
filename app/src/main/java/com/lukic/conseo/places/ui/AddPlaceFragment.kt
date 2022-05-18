@@ -69,7 +69,7 @@ class AddPlaceFragment : Fragment() {
         }
 
         binding.FragmentAddPlaceAddButton.setOnClickListener {
-            if(args.location.isNotEmpty()) {
+            if(args.location.isNotEmpty() && viewModel.latlng != null) {
                 viewModel.addService(location = args.location)
             } else{
                 Toast.makeText(requireContext(), "Add the location first", Toast.LENGTH_LONG).show()
@@ -77,13 +77,19 @@ class AddPlaceFragment : Fragment() {
         }
 
         binding.FragmentAddPlaceCameraButton.setOnClickListener {
+            Log.d(TAG, "onCreateView: ${checkPermission(Manifest.permission.CAMERA)}")
             if(checkPermission(Manifest.permission.CAMERA))
                 takePicture()
+            else
+                requestPermissionLauncher.launch((Manifest.permission.CAMERA))
         }
 
         binding.FragmentAddPlaceGalleryButton.setOnClickListener{
+            Log.d(TAG, "onCreateView: ${checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)}")
             if(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
                 chooseImage()
+            else
+                requestPermissionLauncher.launch((Manifest.permission.READ_EXTERNAL_STORAGE))
         }
 
         viewModel.proceed.observe(viewLifecycleOwner){ proceed ->

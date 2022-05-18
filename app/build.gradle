@@ -88,5 +88,4 @@ dependencies {
     implementation 'com.mikhaellopez:circularimageview:4.3.0'
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
-    implementation "com.github.ChiliLabs:ChiliPhotoPicker:0.3.1"
 }

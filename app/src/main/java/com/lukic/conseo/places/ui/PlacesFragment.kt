@@ -35,6 +35,7 @@ class PlacesFragment : Fragment() {
         tabLayout.addOnTabSelectedListener(tabSelectedListener)
 
         val animations = listOf("coffee.json", "restaurant.json", "party_ball.json")
+        viewModel.getUserLocation()
 
         binding.FragmentPlaceAnimationPager.apply {
             adapter = PlaceAnimationPagerAdapter(animations)

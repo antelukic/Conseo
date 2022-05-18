@@ -26,7 +26,7 @@ class PlacesRecyclerAdapter(
     override fun onBindViewHolder(holder: SingleServiceViewHolder, position: Int) {
         holder.name.text = singlePlaces[position].name
         holder.location.text = singlePlaces[position].location
-        Glide.with(holder.itemView.context).load(singlePlaces[position].image).into(holder.image)
+        Glide.with(holder.itemView.context).load(singlePlaces[position].image).error(R.mipmap.ic_launcher).into(holder.image)
         holder.cardView.setBackgroundResource(R.drawable.card_view_border)
 
         holder.cardView.setOnClickListener {

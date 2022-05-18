@@ -6,8 +6,6 @@ import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.conseo.database.databaseModule
-import lv.chi.photopicker.ChiliPhotoPicker
-import lv.chi.photopicker.loader.ImageLoader
 import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
@@ -27,10 +25,6 @@ class MyApplication : Application() {
                 )
             )
         }
-        ChiliPhotoPicker.init(
-            loader = GlideImageLoader(),
-            authority = "com.lukic.conseo.fileprovider"
-        )
     }
 
     companion object {
@@ -43,8 +37,3 @@ class MyApplication : Application() {
     }
 }
 
-class GlideImageLoader(): ImageLoader {
-    override fun loadImage(context: Context, view: ImageView, uri: Uri) {
-        Glide.with(context).load(uri).placeholder(R.mipmap.ic_launcher).into(view)
-    }
-}

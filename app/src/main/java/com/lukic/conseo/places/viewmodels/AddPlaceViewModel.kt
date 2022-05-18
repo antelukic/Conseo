@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.PlaceEntity
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.places.model.PlacesRepository
@@ -36,6 +37,11 @@ class AddPlaceViewModel(
     val month = MutableLiveData<Int>()
     val day = MutableLiveData<Int>()
     val location = MutableLiveData<String>()
+
+    val searchText = MutableLiveData<String>()
+
+
+    var latlng: LatLng? = null
 
     val proceed = MutableLiveData<Boolean>()
     var imageBitmap: Bitmap? = null
@@ -112,7 +118,9 @@ class AddPlaceViewModel(
                     location = location,
                     info = additionalInfo.value,
                     image = null,
-                    placeID = UUID.randomUUID().toString()
+                    placeID = UUID.randomUUID().toString(),
+                    latitude = latlng?.latitude ?: 0.0,
+                    logitude = latlng?.longitude ?: 0.0
                 )
             }
             2 -> {
@@ -125,7 +133,9 @@ class AddPlaceViewModel(
                     image = null,
                     date = getDateFromPicker(),
                     time = getTimeFromTimePicker(),
-                    placeID = UUID.randomUUID().toString()
+                    placeID = UUID.randomUUID().toString(),
+                    latitude = latlng?.latitude ?: 0.0,
+                    logitude = latlng?.longitude ?: 0.0
                 )
             }
             else -> {
@@ -136,7 +146,9 @@ class AddPlaceViewModel(
                     location = location,
                     info = additionalInfo.value,
                     image = null,
-                    placeID = UUID.randomUUID().toString()
+                    placeID = UUID.randomUUID().toString(),
+                    latitude = latlng?.latitude ?: 0.0,
+                    logitude = latlng?.longitude ?: 0.0
                 )
             }
         }
