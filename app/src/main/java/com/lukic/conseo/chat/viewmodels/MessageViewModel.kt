@@ -111,8 +111,8 @@ class MessageViewModel(
             chatRepository.getUserById(id = receiverID)
                 .addOnCompleteListener { userTaskResult ->
                     if(userTaskResult.isSuccessful){
-                        val user = userTaskResult.result.toObjects(UserEntity::class.java)
-                        receiver.postValue(user.first())
+                        val user = userTaskResult.result.toObject(UserEntity::class.java)
+                        receiver.postValue(user)
                     }
                 }
         }

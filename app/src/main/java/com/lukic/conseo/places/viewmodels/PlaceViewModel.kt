@@ -58,7 +58,6 @@ class PlaceViewModel(
                 latitude = userLatLng.value!!.latitude
                 longitude = userLatLng.value!!.longitude
             }
-            val result = floatArrayOf(0f)
             services.forEach { place ->
                 val placeLoc = Location("temp").apply {
                     latitude = place.latitude ?: 0.0

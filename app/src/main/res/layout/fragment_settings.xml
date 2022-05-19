@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.settings.viewmodels.SettingsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".settings.ui.SettingsFragment">
+
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/Fragment_Settings_UserImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/baseline_perm_identity_24"
+            app:civ_shadow="true"
+            app:civ_shadow_color="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Fragment_Settings_UserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/lato"
+            android:text="@{viewModel.user.name}"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_UserImage"
+            app:layout_constraintStart_toStartOf="@id/Fragment_Settings_UserImage"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_UserImage" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/Fragment_Settings_ChangeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:elevation="100dp"
+            app:cardBackgroundColor="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_UserName">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/lato"
+                    android:padding="15dp"
+                    android:text="@string/change_name"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/Fragment_Settings_Logout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="100dp"
+            app:cardBackgroundColor="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_ChangeName"
+            app:layout_constraintStart_toStartOf="@id/Fragment_Settings_ChangeName"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_ChangeName">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/lato"
+                    android:padding="15dp"
+                    android:text="@string/log_out"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <EditText
+            android:id="@+id/Fragment_Settings_CurrentMaxDistance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:backgroundTint="@color/black"
+            android:minHeight="48dp"
+            android:inputType="numberSigned"
+            app:layout_constraintEnd_toStartOf="@+id/Fragment_Settings_SaveDistanceButton"
+            app:layout_constraintStart_toStartOf="@+id/Fragment_Settings_Logout"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_Settings_Logout" />
+
+        <Button
+            android:id="@+id/Fragment_Settings_SaveDistanceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/light_grey"
+            android:elevation="100dp"
+            android:padding="10dp"
+            android:text="@string/save_distance"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/Fragment_Settings_CurrentMaxDistance"
+            app:layout_constraintEnd_toEndOf="@+id/Fragment_Settings_Logout" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato"
+            android:padding="15dp"
+            android:text="Maximum distance is written in km"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_Settings_CurrentMaxDistance" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,7 +1,6 @@
 package com.lukic.conseo.places.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.conseo.database.entity.PlaceEntity
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationServices
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentPlaceBinding
 import com.lukic.conseo.places.ui.adapters.PlacesRecyclerAdapter
@@ -36,7 +31,7 @@ class PlaceFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.adapterData.observe(viewLifecycleOwner){ adapterData ->
+        viewModel.adapterData.observe(viewLifecycleOwner){
             viewModel.getUserLocation()
         }
 

@@ -36,17 +36,21 @@ class MessageFragment : Fragment() {
 
         viewModel.getMessages()
         viewModel.getReceiverUser()
-        viewModel.adapterData.observe(viewLifecycleOwner){ adapterData ->
+        viewModel.adapterData.observe(viewLifecycleOwner) { adapterData ->
             binding.FragmentMessageRecyclerView.adapter = MessageRecyclerAdapter(adapterData)
         }
 
 
-        viewModel.isMessageSent.observe(viewLifecycleOwner){ isMessageSent ->
-            if(isMessageSent == false)
-                Toast.makeText(requireContext(), "An error occured, please try again!", Toast.LENGTH_LONG).show()
+        viewModel.isMessageSent.observe(viewLifecycleOwner) { isMessageSent ->
+            if (isMessageSent == false)
+                Toast.makeText(
+                    requireContext(),
+                    "An error occured, please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
         }
 
-        viewModel.receiver.observe(viewLifecycleOwner){ user ->
+        viewModel.receiver.observe(viewLifecycleOwner) { user ->
             Glide.with(requireContext()).load(user.image).into(binding.FragmentMessageReceiverImage)
             binding.FragmentMessageReceiverName.text = user.name
         }

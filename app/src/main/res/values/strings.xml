@@ -58,6 +58,10 @@
     <string name="send_message">Send message</string>
     <string name="place_details_fragment">PlaceDetailsFragment</string>
     <string name="add_place_fragment">AddPlaceFragment</string>
+    <string name="log_out">Log out</string>
+    <string name="change_name">Change Name</string>
+    <string name="save_location">Save Location</string>
+    <string name="save_distance">save distance</string>
     <string-array name="spinner_dropdown">
         <item>Bars</item>
         <item>Restaurants</item>

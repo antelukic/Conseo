@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
-import com.lukic.conseo.model.LoginRegisterRepository
+import com.lukic.conseo.loginregister.model.LoginRegisterRepository
 import kotlinx.coroutines.launch
 
 sealed class LoginError(val message: String){
