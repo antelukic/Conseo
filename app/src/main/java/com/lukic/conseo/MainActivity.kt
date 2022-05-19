@@ -43,7 +43,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
                     return@onNavigationItemSelected true
                 }
                 R.id.settings ->{
-                    Toast.makeText(this@MainActivity, "Not available yet", Toast.LENGTH_LONG).show()
+                    navController.navigate(R.id.settings)
                     return@onNavigationItemSelected true
                 }
                 else -> return@onNavigationItemSelected false

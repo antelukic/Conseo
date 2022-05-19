@@ -12,7 +12,7 @@ import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
-import com.lukic.conseo.model.LoginRegisterRepository
+import com.lukic.conseo.loginregister.model.LoginRegisterRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -153,7 +153,7 @@ class RegisterViewModel(
             )
             taskSnapshot.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTaskResult->
                 if(downloadUrlTaskResult.isSuccessful){
-                    user?.image = downloadUrlTaskResult.result.toString()
+                    user.image = downloadUrlTaskResult.result.toString()
                     saveUserToDB(user = user)
                 } else {
                     isAccountSaved.postValue(false)

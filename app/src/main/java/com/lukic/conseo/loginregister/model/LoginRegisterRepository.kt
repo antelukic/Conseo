@@ -1,4 +1,4 @@
-package com.lukic.conseo.model
+package com.lukic.conseo.loginregister.model
 
 import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.UserEntity
@@ -19,7 +19,7 @@ class LoginRegisterRepository(
         return usersDao.registerAccount(email, password)
     }
 
-    fun saveUserToDB(userEntity: UserEntity): Task<DocumentReference> {
+    fun saveUserToDB(userEntity: UserEntity): Task<Void> {
         return usersDao.storeAccount(userEntity)
     }
 

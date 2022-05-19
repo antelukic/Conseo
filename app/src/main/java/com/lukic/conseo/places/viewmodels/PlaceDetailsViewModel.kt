@@ -47,7 +47,7 @@ class PlaceDetailsViewModel(
                 .addOnCompleteListener { getUserTask ->
                     if (getUserTask.isSuccessful)
                         _user.postValue(
-                            getUserTask.result.toObjects(UserEntity::class.java).first()
+                            getUserTask.result.toObject(UserEntity::class.java)
                         )
                     else
                         Log.e(

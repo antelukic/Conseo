@@ -88,8 +88,8 @@ class MapsFragment : Fragment() {
     }
 
     private fun geoLocate() {
-        val geocoder: Geocoder = Geocoder(requireContext())
-        var list = mutableListOf<Address>()
+        val geocoder = Geocoder(requireContext())
+        val list: MutableList<Address>
         try {
             list = geocoder.getFromLocationName(viewModel.searchText.value, 1)
             if (list.isNotEmpty()) {

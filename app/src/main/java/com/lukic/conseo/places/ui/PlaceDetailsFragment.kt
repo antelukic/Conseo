@@ -70,7 +70,8 @@ class PlaceDetailsFragment : Fragment() {
 
     private fun setupUI(placeDetails: PlaceEntity?) {
         Glide.with(requireContext()).load(placeDetails?.image).error(R.mipmap.ic_launcher).into(binding.FragmentPlaceDetailsImage)
-        binding.FragmentPlaceDetailsName.text = placeDetails?.serviceName?.first()?.uppercase().toString() + " " + placeDetails?.name
+        placeDetails?.serviceName?.first()?.uppercase()
+        binding.FragmentPlaceDetailsName.text = placeDetails?.serviceName.toString() + " " + placeDetails?.name
         if(placeDetails?.date == null)
             binding.FragmentPlaceDetailsDateTime.visibility = View.GONE
         else
