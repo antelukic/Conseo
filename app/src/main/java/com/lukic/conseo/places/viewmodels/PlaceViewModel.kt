@@ -13,12 +13,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.launch
 
 private const val TAG = "SingleServiceViewModel"
 
 class PlaceViewModel(
-    private val placesRepository: PlacesRepository
+    private val placesRepository: PlacesRepository,
+    private val appPrefs: AppPrefs
 ) : ViewModel() {
 
     private val _adapterData = MutableLiveData<List<PlaceEntity>>()
@@ -41,8 +43,8 @@ class PlaceViewModel(
                 result.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val services = task.result.toObjects(PlaceEntity::class.java)
-                        getPlacesWithinRange(services)
-                        _adapterData.postValue(services as List<PlaceEntity>)
+                        val filteredPlaces = filterPlacesByLocationDistance(services)
+                        _adapterData.postValue(filteredPlaces)
                     }
                     Log.d(TAG, result.toString())
                 }
@@ -52,21 +54,29 @@ class PlaceViewModel(
         }
     }
 
-    private fun getPlacesWithinRange(services: List<PlaceEntity>) {
-        if(userLatLng.value != null) {
+    private fun filterPlacesByLocationDistance(services: List<PlaceEntity>): List<PlaceEntity> {
+        return services.filter { place -> getPlacesWithinRange(place) }
+    }
+
+    private fun getPlacesWithinRange(place: PlaceEntity): Boolean {
+        return if (userLatLng.value != null) {
             val userLocation = Location("userLocation").apply {
                 latitude = userLatLng.value!!.latitude
                 longitude = userLatLng.value!!.longitude
             }
-            services.forEach { place ->
-                val placeLoc = Location("temp").apply {
-                    latitude = place.latitude ?: 0.0
-                    longitude = place.logitude ?: 0.0
-                }
-                val distance = userLocation.distanceTo(placeLoc)
-                Log.d(TAG, "getPlacesWithinRange: distance $distance")
+            val placeLoc = Location("temp").apply {
+                latitude = place.latitude ?: 0.0
+                longitude = place.longitude ?: 0.0
             }
-        }
+            val distance = userLocation.distanceTo(placeLoc)
+            Log.d(TAG, "getPlacesWithinRange: distance $distance")
+            distance.toInt() <= getDistanceFromPrefs()
+        } else
+            false
+    }
+
+    private fun getDistanceFromPrefs(): Int {
+        return appPrefs.getInt(AppPrefs.distanceKey) * 1000
     }
 
 

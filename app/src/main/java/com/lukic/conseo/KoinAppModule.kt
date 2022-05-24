@@ -5,6 +5,8 @@ import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.chat.model.ChatRepository
 import com.lukic.conseo.chat.viewmodels.AllChatsViewModel
 import com.lukic.conseo.chat.viewmodels.MessageViewModel
+import com.lukic.conseo.geofencing.GeofencingRepository
+import com.lukic.conseo.geofencing.GeofencingViewModel
 import com.lukic.conseo.loginregister.model.LoginRegisterRepository
 import com.lukic.conseo.loginregister.viewmodels.LoginViewModel
 import com.lukic.conseo.loginregister.viewmodels.RegisterViewModel
@@ -23,17 +25,19 @@ val repositoryModule = module {
     single { ChatRepository(chatDao = get(), get()) }
     single { LoginRegisterRepository(usersDao = get()) }
     single { SettingsRepository(userDao = get()) }
+    single { GeofencingRepository(get()) }
 }
 
 val viewModelModules = module {
     viewModel { RegisterViewModel(get())}
     viewModel { LoginViewModel(get()) }
-    viewModel { PlaceViewModel( get()) }
+    viewModel { PlaceViewModel( get(), get()) }
     viewModel { AddPlaceViewModel( get()) }
     viewModel { AllChatsViewModel( get()) }
     viewModel { MessageViewModel( get()) }
     viewModel { PlaceDetailsViewModel(get(), get()) }
     viewModel { SettingsViewModel(get(), Firebase.auth, get()) }
+    viewModel { GeofencingViewModel(get(), get()) }
 }
 
 val utilsModule = module {

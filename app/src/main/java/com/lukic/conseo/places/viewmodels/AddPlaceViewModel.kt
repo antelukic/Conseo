@@ -120,7 +120,7 @@ class AddPlaceViewModel(
                     image = null,
                     placeID = UUID.randomUUID().toString(),
                     latitude = latlng?.latitude ?: 0.0,
-                    logitude = latlng?.longitude ?: 0.0
+                    longitude = latlng?.longitude ?: 0.0
                 )
             }
             2 -> {
@@ -135,7 +135,7 @@ class AddPlaceViewModel(
                     time = getTimeFromTimePicker(),
                     placeID = UUID.randomUUID().toString(),
                     latitude = latlng?.latitude ?: 0.0,
-                    logitude = latlng?.longitude ?: 0.0
+                    longitude = latlng?.longitude ?: 0.0
                 )
             }
             else -> {
@@ -148,7 +148,7 @@ class AddPlaceViewModel(
                     image = null,
                     placeID = UUID.randomUUID().toString(),
                     latitude = latlng?.latitude ?: 0.0,
-                    logitude = latlng?.longitude ?: 0.0
+                    longitude = latlng?.longitude ?: 0.0
                 )
             }
         }

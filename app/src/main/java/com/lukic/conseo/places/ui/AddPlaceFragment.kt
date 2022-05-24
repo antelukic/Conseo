@@ -28,6 +28,7 @@ import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentAddPlaceBinding
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.ext.clearQuotes
 
 private const val TAG = "AddServiceFragment"
 class AddPlaceFragment : Fragment() {
@@ -48,7 +49,7 @@ class AddPlaceFragment : Fragment() {
         val args by navArgs<AddPlaceFragmentArgs>()
         if(args.location.isNotEmpty())
             viewModel.location.value = args.location
-        else viewModel.location.value = ""
+
         if(viewModel.imageBitmap != null)
             Glide.with(requireContext()).load(viewModel.imageBitmap).into(binding.FragmentAddPlaceImage)
 

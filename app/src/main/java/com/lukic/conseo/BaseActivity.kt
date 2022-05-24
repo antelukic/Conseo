@@ -23,7 +23,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
     private var networkAlertDialog: AlertDialog? = null
     private var locationAlertDialog: AlertDialog? = null
     private var locManager: LocationManager? = null
-    val REQUEST_IMAGE_CAPTURE = 1
+
 
     abstract fun getLayout(): Int
 
@@ -46,6 +46,8 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
         )
             locManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+
+
         val checkNetworkConnection = CheckNetworkConnection(MyApplication.getInstance())
         checkNetworkConnection.observe(this) { isConnected ->
             if (!isConnected) {
@@ -55,7 +57,11 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
                     networkAlertDialog?.dismiss()
             }
         }
+
+
     }
+
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -103,6 +109,10 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
         networkAlertDialog?.show()
     }
 
+
+
+
+
     private val locListener: LocationListener by lazy {
         object : LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -117,13 +127,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
 
             override fun onProviderDisabled(provider: String) {
                 showLocationDialog()
-            }
-
-            override fun onStatusChanged(
-                provider: String,
-                status: Int,
-                extras: Bundle
-            ) {
             }
         }
     }
