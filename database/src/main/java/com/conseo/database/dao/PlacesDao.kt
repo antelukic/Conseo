@@ -28,4 +28,16 @@ class PlacesDao(
     fun getPlaceById(placeID: String, serviceType: String): Task<QuerySnapshot> {
         return database.collection(serviceType.lowercase()).whereEqualTo("placeID", placeID).get()
     }
+
+    fun getAllBars(): Task<QuerySnapshot> {
+        return database.collection("bars").get()
+    }
+
+    fun getAllRestaurants(): Task<QuerySnapshot> {
+        return database.collection("restaurants").get()
+    }
+
+    fun getAllEvents(): Task<QuerySnapshot>{
+        return database.collection("events").get()
+    }
 }

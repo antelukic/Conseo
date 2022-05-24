@@ -100,7 +100,7 @@ class SettingsFragment : Fragment() {
     }
 
     private val setNewDistanceClickListener = View.OnClickListener {
-        settingsViewModel.updateDistance(binding.FragmentSettingsCurrentMaxDistance.text.toString().toInt())
+        settingsViewModel.updateDistance(binding.FragmentSettingsCurrentMaxDistance.text.toString().take(5).toInt())
     }
 }
 

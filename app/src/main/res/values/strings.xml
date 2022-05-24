@@ -62,6 +62,18 @@
     <string name="change_name">Change Name</string>
     <string name="save_location">Save Location</string>
     <string name="save_distance">save distance</string>
+    <string name="geofence_not_available">Geofence not available</string>
+    <string name="geofence_too_many_geofences">Too many geofences</string>
+    <string name="geofence_too_many_pending_intents">To many pending intents</string>
+    <string name="unknown_geofence_error">Unknown geofence error</string>
+    <string name="geofences_added">Geofences added</string>
+    <string name="geofences_not_added">Geofences not added</string>
+    <string name="geofence_entered">Geofence entered</string>
+    <string name="geofences_removed">Geofences Removed</string>
+    <string name="geofences_not_removed">Geofences not removed</string>
+    <string name="notification_channel_description">Youre close to a place</string>
+    <string name="content_text">You are close to a location</string>
+    <string name="channel_name">Conseo channel</string>
     <string-array name="spinner_dropdown">
         <item>Bars</item>
         <item>Restaurants</item>

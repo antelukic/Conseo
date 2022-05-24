@@ -106,6 +106,7 @@
                         android:id="@+id/Fragment_AddPlace_Info"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
+                        android:padding="15dp"
                         android:layout_margin="10dp"
                         android:layout_weight="10"
                         android:gravity="top"
@@ -188,6 +189,7 @@
                         android:layout_margin="10dp"/>
 
                     <EditText
+                        android:id="@+id/Fragment_AddPlace_Location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
