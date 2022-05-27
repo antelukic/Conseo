@@ -12,9 +12,9 @@ import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
+import com.lukic.conseo.MainActivity
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
-import com.lukic.conseo.loginregister.ui.LoginRegisterActivity
 
 private const val TAG = "GeofencingBroadcastReceiver"
 
@@ -72,7 +72,7 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
             channel.enableLights(true)
             channel.lightColor = Color.GREEN
             channel.enableVibration(false)
-            val intent = Intent(MyApplication.getAppContext(), LoginRegisterActivity::class.java)
+            val intent = Intent(MyApplication.getAppContext(), MainActivity::class.java)
             val pendingIntent =
                 PendingIntent.getActivity(MyApplication.getAppContext(), 0, intent, 0)
 

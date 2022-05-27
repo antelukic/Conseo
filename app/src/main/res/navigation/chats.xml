@@ -25,5 +25,6 @@
         <argument
             android:name="receiverID"
             app:argType="string" />
+        <deepLink android:id="@+id/deepLinkToMessageFragment" app:uri="conseo://com.lukic.conseo/messages/{receiverID}"/>
     </fragment>
 </navigation>

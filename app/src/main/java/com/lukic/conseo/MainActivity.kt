@@ -4,15 +4,19 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.lukic.conseo.base.BaseActivity
 import com.lukic.conseo.base.BaseViewModel
@@ -26,7 +30,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
 
     private lateinit var geofencingClient: GeofencingClient
     private val geofenceViewModel by viewModel<GeofencingViewModel>()
-    private lateinit var navController: NavController
     private val baseViewModel by viewModel<BaseViewModel>()
 
     override fun getLayout(): Int = R.layout.activity_main
@@ -36,16 +39,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         binding.model = this
         binding.lifecycleOwner = this
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.Activity_Main_FragmentContainerView) as NavHostFragment
-        navController = navHostFragment.navController
-
         geofencingClient = LocationServices.getGeofencingClient(this)
         geofenceViewModel.getAllPlaces()
 
         baseViewModel.checkUserToken()
 
-        binding.ActivityMainBottomNavigation.setupWithNavController(navController)
-        binding.ActivityMainBottomNavigation.setOnItemSelectedListener(bottomNavListener)
+        val receiverID = intent.extras?.getString("receiverID")
+        if(!receiverID.isNullOrEmpty() && Firebase.auth.currentUser != null){
+            val uri = Uri.parse("conseo://com.lukic.conseo/messages/$receiverID")
+            findNavController(R.id.Activity_Main_FragmentContainerView).navigate(uri)
+        }
 
         FirebaseMessaging.getInstance().subscribeToTopic("bars")
         geofenceViewModel.allPlaces.observe(this){
@@ -96,29 +99,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-
-    private val bottomNavListener =
-        NavigationBarView.OnItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.chats -> {
-                    navController.navigate(R.id.chats)
-                    true
-                }
-                R.id.places -> {
-                    navController.navigate(R.id.places)
-                    true
-                }
-                R.id.settings ->{
-                    navController.navigate(R.id.settings)
-                    true
-                }
-                else -> false
-            }
-        }
-
-
-
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp()
+        onBackPressedDispatcher.onBackPressed()
+        return super.onSupportNavigateUp()
     }
 }

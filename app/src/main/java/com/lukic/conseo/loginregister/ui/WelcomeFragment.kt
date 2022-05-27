@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentWelcomeBinding
 import kotlinx.coroutines.Job
@@ -53,6 +55,12 @@ class WelcomeFragment : Fragment() {
                 binding.FragmentWelcomeTitle.text = text
                 delay(20)
             }
+
+            if(isUserLoggedIn()) {
+                delay(300)
+                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToMainFragment())
+            }
+
             positionWelcomeText()
             text = ""
             for (letter in getString(R.string.login_or_register)) {
@@ -62,6 +70,10 @@ class WelcomeFragment : Fragment() {
             }
             showButtons()
         }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return Firebase.auth.currentUser != null
     }
 
     private fun showButtons() {
