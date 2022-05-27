@@ -79,4 +79,6 @@
         <item>Restaurants</item>
         <item>Events</item>
     </string-array>
+    <string name="token">tokenPrefs</string>
+    <string name="token_key">token_key</string>
 </resources>

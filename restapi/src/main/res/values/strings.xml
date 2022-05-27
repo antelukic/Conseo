@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">restapi</string>
+    <string name="token">tokenPrefs</string>
+    <string name="token_key">token_key</string>
+</resources>

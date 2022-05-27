@@ -32,7 +32,7 @@
         <argument
             android:name="location"
             app:argType="string"
-            android:defaultValue='""' />
+            android:defaultValue='' />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"

@@ -1,6 +1,7 @@
 package com.lukic.conseo.loginregister.viewmodels
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -13,6 +14,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.loginregister.model.LoginRegisterRepository
+import com.lukic.conseo.FirebaseService
+import com.lukic.conseo.MyApplication
+import com.lukic.conseo.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -116,7 +120,7 @@ class RegisterViewModel(
                     saveUserToDB(imageBitmap)
                 } else {
                     isAccountSaved.postValue(false)
-                    Log.e(TAG, "registerAccount: ${authResult.exception?.message.toString()}", )
+                    Log.e(TAG, "registerAccount: ${authResult.exception?.message.toString()}")
                 }
             }
 
@@ -134,49 +138,66 @@ class RegisterViewModel(
                 if (taskSnapshot.isSuccessful) {
                     getDownloadUrl(taskSnapshot)
                 } else {
-                    Log.e(TAG, "saveUserToDB: ${taskSnapshot.exception?.message.toString()}",)
+                    Log.e(TAG, "saveUserToDB: ${taskSnapshot.exception?.message.toString()}")
                 }
             }
         }
     }
 
     private fun getDownloadUrl(taskSnapshot: Task<UploadTask.TaskSnapshot>) {
-        if(taskSnapshot.isSuccessful){
-            val user =  UserEntity(
+        if (taskSnapshot.isSuccessful) {
+            val user = UserEntity(
                 id = userID,
                 name = name.value!!,
                 email = email.value!!.trim(),
                 password = password.value!!.trim(),
                 image = null,
                 age = age.value!!,
-                gender = gender.value!!
+                gender = gender.value!!,
+                token = getTokenFromPrefs()
             )
-            taskSnapshot.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTaskResult->
-                if(downloadUrlTaskResult.isSuccessful){
+            taskSnapshot.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTaskResult ->
+                if (downloadUrlTaskResult.isSuccessful) {
                     user.image = downloadUrlTaskResult.result.toString()
                     saveUserToDB(user = user)
                 } else {
                     isAccountSaved.postValue(false)
-                    Log.e(TAG, "saveUserToDB: ${downloadUrlTaskResult.exception?.message.toString()}", )
+                    Log.e(
+                        TAG,
+                        "saveUserToDB: ${downloadUrlTaskResult.exception?.message.toString()}",
+                    )
                 }
             }
-        } else{
+        } else {
             isAccountSaved.postValue(false)
-            Log.e(TAG, "getDownloadUrl: ${taskSnapshot.exception?.message.toString()}", )
+            Log.e(TAG, "getDownloadUrl: ${taskSnapshot.exception?.message.toString()}")
         }
     }
 
-    private fun saveUserToDB(user: UserEntity){
-        loginRegisterRepository.saveUserToDB(
-            userEntity = user
-        ).addOnCompleteListener { saveUserTaskResult ->
-            if (saveUserTaskResult.isSuccessful)
-                isAccountSaved.postValue(true)
-            else {
-                isAccountSaved.postValue(false)
-                Log.e(
-                    TAG, "saveUserToDB: ${saveUserTaskResult.exception?.message.toString()}",
-                )
+    private fun getTokenFromPrefs(): String? {
+        val prefs = MyApplication.getAppContext().getSharedPreferences(
+            MyApplication.getAppContext().getString(R.string.token),
+            Context.MODE_PRIVATE
+        )
+        return prefs.getString(
+            MyApplication.getAppContext().getString(R.string.token_key),
+        null)
+    }
+
+    private fun saveUserToDB(user: UserEntity) {
+        if (!user.token.isNullOrEmpty()) {
+            loginRegisterRepository.saveUserToDB(
+                userEntity = user
+            ).addOnCompleteListener { saveUserTaskResult ->
+                if (saveUserTaskResult.isSuccessful)
+                    isAccountSaved.postValue(true)
+                else {
+                    isAccountSaved.postValue(false)
+                    Log.e(
+                        TAG,
+                        "saveUserToDB: ${saveUserTaskResult.exception?.message.toString()}",
+                    )
+                }
             }
         }
     }

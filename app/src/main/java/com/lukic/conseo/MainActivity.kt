@@ -5,17 +5,17 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.messaging.FirebaseMessaging
+import com.lukic.conseo.base.BaseActivity
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.databinding.ActivityMainBinding
 import com.lukic.conseo.geofencing.GeofencingBroadcastReceiver
 import com.lukic.conseo.geofencing.GeofencingViewModel
@@ -27,7 +27,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
     private lateinit var geofencingClient: GeofencingClient
     private val geofenceViewModel by viewModel<GeofencingViewModel>()
     private lateinit var navController: NavController
-
+    private val baseViewModel by viewModel<BaseViewModel>()
 
     override fun getLayout(): Int = R.layout.activity_main
 
@@ -42,10 +42,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         geofencingClient = LocationServices.getGeofencingClient(this)
         geofenceViewModel.getAllPlaces()
 
+        baseViewModel.checkUserToken()
 
         binding.ActivityMainBottomNavigation.setupWithNavController(navController)
         binding.ActivityMainBottomNavigation.setOnItemSelectedListener(bottomNavListener)
 
+        FirebaseMessaging.getInstance().subscribeToTopic("bars")
         geofenceViewModel.allPlaces.observe(this){
             if(it != null)
                 geofenceViewModel.passPlacesToGeonfencingList()

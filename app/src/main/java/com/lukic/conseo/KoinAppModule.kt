@@ -2,6 +2,8 @@ package com.lukic.conseo
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.lukic.conseo.base.BaseRepository
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.chat.model.ChatRepository
 import com.lukic.conseo.chat.viewmodels.AllChatsViewModel
 import com.lukic.conseo.chat.viewmodels.MessageViewModel
@@ -22,10 +24,11 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single { PlacesRepository(placesDao = get(), commentsDao = get()) }
-    single { ChatRepository(chatDao = get(), get()) }
+    single { ChatRepository(chatDao = get(), get(), get()) }
     single { LoginRegisterRepository(usersDao = get()) }
     single { SettingsRepository(userDao = get()) }
     single { GeofencingRepository(get()) }
+    single { BaseRepository(get()) }
 }
 
 val viewModelModules = module {
@@ -38,6 +41,7 @@ val viewModelModules = module {
     viewModel { PlaceDetailsViewModel(get(), get()) }
     viewModel { SettingsViewModel(get(), Firebase.auth, get()) }
     viewModel { GeofencingViewModel(get(), get()) }
+    viewModel { BaseViewModel (get()) }
 }
 
 val utilsModule = module {

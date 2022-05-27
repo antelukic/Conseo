@@ -43,4 +43,8 @@ class UsersDao(
     fun updateUserDocument(userID: String, name: String): Task<Void> {
         return database.collection("users").document(userID).update("name", name)
     }
+
+    fun updateUserToken(userID: String, token: String): Task<Void>{
+        return database.collection("users").document(userID).update("token", token)
+    }
 }

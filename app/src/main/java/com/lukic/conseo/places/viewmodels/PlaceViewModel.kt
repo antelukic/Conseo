@@ -64,6 +64,7 @@ class PlaceViewModel(
                 latitude = userLatLng.value!!.latitude
                 longitude = userLatLng.value!!.longitude
             }
+
             val placeLoc = Location("temp").apply {
                 latitude = place.latitude ?: 0.0
                 longitude = place.longitude ?: 0.0

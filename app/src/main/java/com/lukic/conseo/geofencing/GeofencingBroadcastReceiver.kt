@@ -9,11 +9,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
-import com.lukic.conseo.BaseActivity
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
 import com.lukic.conseo.loginregister.ui.LoginRegisterActivity

@@ -1,4 +1,4 @@
-package com.lukic.conseo
+package com.lukic.conseo.base
 
 import android.Manifest
 import android.content.Context
@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.lukic.conseo.MyApplication
 import com.lukic.conseo.utils.CheckNetworkConnection
 
 abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {

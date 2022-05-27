@@ -1,6 +1,6 @@
 package com.lukic.conseo.loginregister.ui
 
-import com.lukic.conseo.BaseActivity
+import com.lukic.conseo.base.BaseActivity
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.ActivityLoginRegisterBinding
 
