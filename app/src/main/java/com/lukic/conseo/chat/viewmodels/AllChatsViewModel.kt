@@ -1,6 +1,7 @@
 package com.lukic.conseo.chat.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +27,6 @@ class AllChatsViewModel(
                 .addOnCompleteListener{ taskResult ->
                     if(taskResult.isSuccessful){
                         val chats = taskResult.result.toObjects(Chat::class.java)
-                        Log.d(TAG, "chats $chats")
                         getMessages(chats = chats)
                     } else {
                         adapterData.postValue(null)
@@ -61,7 +61,6 @@ class AllChatsViewModel(
         val ids = mutableListOf<String>()
         chats.forEach { chat ->
             chat.forEach { message ->
-                Log.d(TAG, "getUsers: chat-$chat message-$message")
                 if (message.recieverID.toString() != currentUserId) {
                     if (!ids.contains(message.recieverID.toString().trim()))
                         ids.add(message.recieverID.toString().trim())
@@ -78,7 +77,6 @@ class AllChatsViewModel(
                 .addOnCompleteListener { taskResult ->
                     if (taskResult.isSuccessful) {
                         val allUsers = taskResult.result.toObjects(UserEntity::class.java) as List<UserEntity>
-                        Log.d(TAG, "all users $allUsers")
                         getChatUsers(ids, allUsers)
                     } else {
                         Log.e(TAG, taskResult.exception?.message.toString())

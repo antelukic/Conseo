@@ -2,10 +2,9 @@ package com.lukic.conseo
 
 import android.app.Application
 import android.content.Context
-import android.net.Uri
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.conseo.database.databaseModule
+import com.google.firebase.messaging.FirebaseMessaging
+import com.lukic.restapi.firebase.retrofitModules
 import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
@@ -22,10 +21,13 @@ class MyApplication : Application() {
                     databaseModule,
                     repositoryModule,
                     viewModelModules,
-                    utilsModule
+                    utilsModule,
+                    retrofitModules
                 )
             )
         }
+
+        FirebaseMessaging.getInstance().isAutoInitEnabled = true
     }
 
     companion object {

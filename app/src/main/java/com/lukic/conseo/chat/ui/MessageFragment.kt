@@ -1,12 +1,13 @@
 package com.lukic.conseo.chat.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -15,11 +16,14 @@ import com.lukic.conseo.chat.ui.adapters.MessageRecyclerAdapter
 import com.lukic.conseo.chat.viewmodels.MessageViewModel
 import com.lukic.conseo.databinding.FragmentMessageBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import kotlin.math.log
 
+private const val TAG = "MessageFragment"
 class MessageFragment : Fragment() {
 
     private lateinit var binding: FragmentMessageBinding
     private val viewModel by sharedViewModel<MessageViewModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +32,8 @@ class MessageFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_message, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel.getCurrentUser()
 
         val args by navArgs<MessageFragmentArgs>()
         viewModel.receiverID = args.receiverID
@@ -55,15 +61,25 @@ class MessageFragment : Fragment() {
             binding.FragmentMessageReceiverName.text = user.name
         }
 
-        binding.FragmentMessageSendButton.setOnClickListener {
-            viewModel.sendMessage()
+        viewModel.currentUser.observe(viewLifecycleOwner){ user ->
+            if(user?.id.isNullOrEmpty()){
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
+                findNavController().navigateUp()
+            }
+        }
+
+        viewModel.remoteMessage.observe(viewLifecycleOwner){
+            Log.d(TAG, "onCreateView: remoteMessage ${it.data}")
+            viewModel.updateChatWithRemoteMessage()
         }
 
         binding.FragmentMessageBackButton.setOnClickListener {
             findNavController().navigateUp()
         }
-
+        
         return binding.root
     }
+
+
 
 }

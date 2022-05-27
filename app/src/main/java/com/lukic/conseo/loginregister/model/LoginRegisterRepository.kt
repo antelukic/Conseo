@@ -4,7 +4,6 @@ import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.storage.UploadTask
 
 class LoginRegisterRepository(

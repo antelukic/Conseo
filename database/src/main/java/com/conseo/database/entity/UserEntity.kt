@@ -7,5 +7,6 @@ data class UserEntity(
     val age: Int? = null,
     val email: String? = null,
     val password: String? = null,
-    var image: String? = null
+    var image: String? = null,
+    var token: String? = null
 )
