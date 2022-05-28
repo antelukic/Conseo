@@ -1,15 +1,14 @@
 package com.lukic.conseo.places.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.conseo.database.entity.ServiceEntity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.conseo.database.entity.PlaceEntity
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentPlaceBinding
 import com.lukic.conseo.places.ui.adapters.PlacesRecyclerAdapter
@@ -31,18 +30,25 @@ class PlaceFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.adapterData.observe(viewLifecycleOwner){ adapterData ->
-            binding.FragmentPlaceRecyclerView.adapter = PlacesRecyclerAdapter(singleServices = adapterData, listener = itemClickListener)
+        viewModel.adapterData.observe(viewLifecycleOwner){
+            viewModel.getUserLocation()
+        }
+
+        viewModel.userLatLng.observe(viewLifecycleOwner){ latLng ->
+            if(latLng == null)
+                Toast.makeText(requireContext(), "Turn on your location please", Toast.LENGTH_LONG).show()
+            else
+                binding.FragmentPlaceRecyclerView.adapter = PlacesRecyclerAdapter(singlePlaces = viewModel.adapterData.value ?: listOf(), listener = itemClickListener)
         }
 
         return binding.root
     }
 
+
     private val itemClickListener = object: OnItemClickListener{
         override fun onClick(item: Any) {
-            item as ServiceEntity
-            if(Firebase.auth.currentUser?.uid.toString() != item.creatorID)
-                findNavController().navigate(PlacesFragmentDirections.actionServicesFragmentToMessageFragment(item.creatorID.toString()))
+            item as PlaceEntity
+            findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToPlaceDetailsFragment(item.placeID ?: "", item.serviceName ?: ""))
         }
     }
 

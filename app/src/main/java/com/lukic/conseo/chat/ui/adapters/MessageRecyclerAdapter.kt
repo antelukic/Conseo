@@ -13,20 +13,17 @@ import com.lukic.conseo.databinding.ItemSendLayoutBinding
 class MessageRecyclerAdapter(private val messages: ArrayList<MessageEntity>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val ITEM_RECIEVE = 1
-    private val ITEM_SENT = 2
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        if(viewType == 1){
-            return RecieveMessageViewHolder(
+        return if(viewType == 1){
+            ReceiveMessageViewHolder(
                 DataBindingUtil.inflate(
                     LayoutInflater.from(parent.context),
                     R.layout.item_receive_layout,
                     parent,
                     false))
         } else{
-            return SentMessageViewHolder(
+            SentMessageViewHolder(
                 DataBindingUtil.inflate(
                     LayoutInflater.from(parent.context),
                     R.layout.item_send_layout,
@@ -41,9 +38,9 @@ class MessageRecyclerAdapter(private val messages: ArrayList<MessageEntity>)
             val viewHolder = holder as SentMessageViewHolder
             viewHolder.sentMessage.text = messages[position].message
         }
-        if(holder.javaClass == RecieveMessageViewHolder::class.java){
-            val viewHolder = holder as RecieveMessageViewHolder
-            viewHolder.recieveMessage.text = messages[position].message
+        if(holder.javaClass == ReceiveMessageViewHolder::class.java){
+            val viewHolder = holder as ReceiveMessageViewHolder
+            viewHolder.receiveMessage.text = messages[position].message
         }
     }
 
@@ -51,10 +48,10 @@ class MessageRecyclerAdapter(private val messages: ArrayList<MessageEntity>)
 
     override fun getItemViewType(position: Int): Int {
         val currentMessage = messages[position]
-        if(currentMessage.senderID == FirebaseAuth.getInstance().currentUser?.uid.toString()){
-            return ITEM_SENT
+        return if(currentMessage.senderID == FirebaseAuth.getInstance().currentUser?.uid.toString()){
+            ITEM_SENT
         } else {
-            return ITEM_RECIEVE
+            ITEM_RECEIVE
         }
     }
 
@@ -62,7 +59,12 @@ class MessageRecyclerAdapter(private val messages: ArrayList<MessageEntity>)
         val sentMessage = binding.ItemSendSentMessage
     }
 
-    inner class RecieveMessageViewHolder(binding: ItemReceiveLayoutBinding): RecyclerView.ViewHolder(binding.root){
-        val recieveMessage = binding.ItemRecieveMessage
+    inner class ReceiveMessageViewHolder(binding: ItemReceiveLayoutBinding): RecyclerView.ViewHolder(binding.root){
+        val receiveMessage = binding.ItemRecieveMessage
+    }
+
+    private companion object{
+        private const val ITEM_RECEIVE = 1
+        private const val ITEM_SENT = 2
     }
 }

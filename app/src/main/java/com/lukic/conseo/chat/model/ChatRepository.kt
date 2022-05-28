@@ -5,11 +5,17 @@ import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.MessageEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
+import com.lukic.restapi.firebase.RetrofitInstance
+import com.lukic.restapi.firebase.models.PushNotification
+import okhttp3.ResponseBody
+import retrofit2.Response
 
 class ChatRepository(
     private val chatDao: ChatDao,
-    private val usersDao: UsersDao
+    private val usersDao: UsersDao,
+    private val fcmRetrofit: RetrofitInstance
 ) {
     fun storeChat(room: String, userID: String): Task<DocumentReference> {
         return chatDao.storeChat(room = room, userID = userID)
@@ -31,7 +37,11 @@ class ChatRepository(
         return chatDao.sendMessage(message = message, room = room)
     }
 
-    fun getUserById(id: String): Task<QuerySnapshot> {
+    fun getUserById(id: String): Task<DocumentSnapshot> {
         return usersDao.getUserById(id = id)
+    }
+
+    suspend fun sendChatNotification(notification: PushNotification): Response<ResponseBody> {
+        return fcmRetrofit.api.postNotification(notification)
     }
 }

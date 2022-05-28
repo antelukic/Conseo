@@ -4,11 +4,7 @@ import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Filter
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -24,11 +20,11 @@ class UsersDao(
     }
 
     fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): UploadTask {
-        return storage.reference.child("userImages/" + userEmail).putBytes(imageByteArray)
+        return storage.reference.child("userImages/$userEmail").putBytes(imageByteArray)
     }
 
-    fun storeAccount(userEntity: UserEntity): Task<DocumentReference> {
-        return database.collection("users").add(userEntity)
+    fun storeAccount(userEntity: UserEntity): Task<Void> {
+        return database.collection("users").document(userEntity.id ?: "noID").set(userEntity)
     }
 
     fun loginUser(email: String, password: String): Task<AuthResult> {
@@ -39,7 +35,15 @@ class UsersDao(
         return database.collection("users").get()
     }
 
-    fun getUserById(id: String): Task<QuerySnapshot> {
-        return database.collection("users").whereEqualTo("id", id).get()
+    fun getUserById(id: String): Task<DocumentSnapshot> {
+        return database.collection("users").document(id).get()
+    }
+
+    fun updateUserDocument(userID: String, name: String): Task<Void> {
+        return database.collection("users").document(userID).update("name", name)
+    }
+
+    fun updateUserToken(userID: String, token: String): Task<Void>{
+        return database.collection("users").document(userID).update("token", token)
     }
 }

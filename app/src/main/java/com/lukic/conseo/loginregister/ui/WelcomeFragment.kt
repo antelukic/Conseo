@@ -9,16 +9,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.R
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.databinding.FragmentWelcomeBinding
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class WelcomeFragment : Fragment() {
 
     private lateinit var binding: FragmentWelcomeBinding
+    private val baseViewModel by sharedViewModel<BaseViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +32,7 @@ class WelcomeFragment : Fragment() {
         binding.model = this
         binding.lifecycleOwner = viewLifecycleOwner
 
-
+        baseViewModel.bottomNavVisibility.postValue(false)
 
         setTextAnimation()
 
@@ -53,6 +57,12 @@ class WelcomeFragment : Fragment() {
                 binding.FragmentWelcomeTitle.text = text
                 delay(20)
             }
+
+            if(isUserLoggedIn()) {
+                delay(1000)
+                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToMainNavGraph())
+            }
+
             positionWelcomeText()
             text = ""
             for (letter in getString(R.string.login_or_register)) {
@@ -62,6 +72,10 @@ class WelcomeFragment : Fragment() {
             }
             showButtons()
         }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return Firebase.auth.currentUser != null
     }
 
     private fun showButtons() {

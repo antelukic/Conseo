@@ -1,10 +1,9 @@
-package com.lukic.conseo.model
+package com.lukic.conseo.loginregister.model
 
 import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.storage.UploadTask
 
 class LoginRegisterRepository(
@@ -19,7 +18,7 @@ class LoginRegisterRepository(
         return usersDao.registerAccount(email, password)
     }
 
-    fun saveUserToDB(userEntity: UserEntity): Task<DocumentReference> {
+    fun saveUserToDB(userEntity: UserEntity): Task<Void> {
         return usersDao.storeAccount(userEntity)
     }
 

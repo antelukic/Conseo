@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Conseo"
 include ':app'
 include ':database'
+include ':restapi'

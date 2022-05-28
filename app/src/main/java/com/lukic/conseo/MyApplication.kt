@@ -3,25 +3,31 @@ package com.lukic.conseo
 import android.app.Application
 import android.content.Context
 import com.conseo.database.databaseModule
+import com.google.firebase.messaging.FirebaseMessaging
+import com.lukic.restapi.firebase.retrofitModules
 import org.koin.core.context.startKoin
 
-class MyApplication: Application() {
+class MyApplication : Application() {
 
-    init{
+    init {
         instance = this
     }
 
     override fun onCreate() {
         super.onCreate()
-        startKoin{
+        startKoin {
             modules(
                 listOf(
                     databaseModule,
                     repositoryModule,
-                    viewModelModules
+                    viewModelModules,
+                    utilsModule,
+                    retrofitModules
                 )
             )
         }
+
+        FirebaseMessaging.getInstance().isAutoInitEnabled = true
     }
 
     companion object {
@@ -33,3 +39,4 @@ class MyApplication: Application() {
         }
     }
 }
+

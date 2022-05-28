@@ -7,7 +7,10 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,7 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lukic.conseo.R
-import com.lukic.conseo.places.viewmodels.MapsViewModel
+import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.IOException
 
@@ -34,7 +37,7 @@ private const val TAG = "MapsFragment"
 class MapsFragment : Fragment() {
 
     private lateinit var binding: com.lukic.conseo.databinding.FragmentMapsBinding
-    private val viewModel by sharedViewModel<MapsViewModel>()
+    private val viewModel by sharedViewModel<AddPlaceViewModel>()
     private var _client: FusedLocationProviderClient? = null
     private var _locationPermissionGranted = false
     private var mMap: GoogleMap? = null
@@ -51,11 +54,15 @@ class MapsFragment : Fragment() {
         val args by navArgs<MapsFragmentArgs>()
         viewModel.searchText.value = args.location
 
-        geoLocate()
-
         getLocationPermission()
 
-        getDeviceLocation()
+
+        binding.FragmentMapsAddLocation.apply {
+            if (args.fromFragment == getString(R.string.add_place_fragment))
+                text = "Add Location"
+            if (args.fromFragment == getString(R.string.place_details_fragment))
+                text = "Return"
+        }
 
         binding.FragmentMapsSearchButton.setOnClickListener {
             if (!binding.FragmentMapsSearch.text.isNullOrEmpty()) {
@@ -64,23 +71,38 @@ class MapsFragment : Fragment() {
         }
 
         binding.FragmentMapsAddLocation.setOnClickListener {
-            if(viewModel.searchText.value.isNullOrEmpty() || address == null)
-                Toast.makeText(requireContext(), "Search the location first", Toast.LENGTH_LONG).show()
-            else
-                findNavController().navigate(MapsFragmentDirections.actionMapsFragmentToAddServiceFragment(address!!.getAddressLine(0)))
+            if (viewModel.searchText.value.isNullOrEmpty() || address == null)
+                Toast.makeText(requireContext(), "Search the location first", Toast.LENGTH_LONG)
+                    .show()
+            else {
+                if (args.fromFragment == getString(R.string.add_place_fragment))
+                    findNavController().navigate(
+                        MapsFragmentDirections.actionMapsFragmentToAddServiceFragment(
+                            address!!.getAddressLine(0)
+                        )
+                    )
+                if (args.fromFragment == getString(R.string.place_details_fragment))
+                    findNavController().navigateUp()
+            }
         }
 
         return binding.root
     }
 
     private fun geoLocate() {
-        val geocoder: Geocoder = Geocoder(requireContext())
-        var list = mutableListOf<Address>()
+        val geocoder = Geocoder(requireContext())
+        val list: MutableList<Address>
         try {
             list = geocoder.getFromLocationName(viewModel.searchText.value, 1)
             if (list.isNotEmpty()) {
                 address = list.first()
-                moveCamera(LatLng(address!!.latitude, address!!.longitude), address!!.getAddressLine(0))
+                if(address != null) {
+                    viewModel.latlng = LatLng(address?.latitude ?: 0.0, address?.longitude ?: 0.0)
+                    moveCamera(
+                        viewModel.latlng ?: LatLng(0.0, 0.0),
+                        address!!.getAddressLine(0)
+                    )
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, e.message.toString())
@@ -126,13 +148,13 @@ class MapsFragment : Fragment() {
             return
         }
         hideSoftKeyboard()
+        Log.d(TAG, "moveCamera: $mMap")
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10F))
-
+        Log.d(TAG, "moveCamera: title $title")
         if (title.isNotEmpty()) {
             val options: MarkerOptions = MarkerOptions().position(latLng)
                 .title(title)
             mMap?.addMarker(options)
-
         }
         mMap?.isMyLocationEnabled = _locationPermissionGranted
         mMap?.uiSettings?.isMyLocationButtonEnabled = true
@@ -189,8 +211,14 @@ class MapsFragment : Fragment() {
     }
 
     private val mapReadyCallback = OnMapReadyCallback { googleMap: GoogleMap ->
-        Log.d(TAG, "google map" + googleMap.toString())
+
         mMap = googleMap
+
+        getDeviceLocation()
+
+
+        geoLocate()
+
     }
 
     private fun hideSoftKeyboard() {
