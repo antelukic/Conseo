@@ -2,13 +2,13 @@ package com.lukic.conseo.base
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.MyApplication
-import com.lukic.conseo.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,6 +18,7 @@ class BaseViewModel(
     private val baseRepository: BaseRepository
 ) : ViewModel() {
 
+    val bottomNavVisibility = MutableLiveData<Boolean>()
 
     fun checkUserToken() {
         viewModelScope.launch(Dispatchers.IO) {

@@ -2,10 +2,10 @@
 <layout>
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
-            name="model"
-            type="com.lukic.conseo.MainActivity" />
+            name="viewModel"
+            type="com.lukic.conseo.base.BaseViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,17 +15,18 @@
         android:layout_height="match_parent"
         tools:context=".ui.activity.MainActivity">
 
+
         <fragment
             android:id="@+id/Activity_Main_FragmentContainerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/Activity_Main_Guideline"
             android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/main_nav_graph"
+            app:layout_constraintBottom_toTopOf="@id/Activity_Main_BottomNavigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/navigation_intro" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/Activity_Main_Guideline"
@@ -38,14 +39,15 @@
             android:id="@+id/Activity_Main_BottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:menu="@menu/bottom_nav_menu"
+            android:visibility="@{viewModel.bottomNavVisibility == true ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/navigation_bar"
             app:itemIconTint="@drawable/bottom_nav_selector"
             app:labelVisibilityMode="unlabeled"
-            android:background="@drawable/navigation_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Activity_Main_Guideline" />
+            app:layout_constraintTop_toBottomOf="@id/Activity_Main_Guideline"
+            app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

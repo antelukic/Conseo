@@ -15,7 +15,6 @@ import com.lukic.conseo.databinding.FragmentAllChatsBinding
 import com.lukic.conseo.utils.OnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-private const val TAG = "AllChatsFragment"
 class AllChatsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllChatsBinding
@@ -24,7 +23,7 @@ class AllChatsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_all_chats, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

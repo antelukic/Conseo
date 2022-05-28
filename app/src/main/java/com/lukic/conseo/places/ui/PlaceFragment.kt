@@ -17,7 +17,6 @@ import com.lukic.conseo.utils.OnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-private const val TAG = "PlaceFragment"
 class PlaceFragment : Fragment() {
 
     private val viewModel by sharedViewModel<PlaceViewModel>()

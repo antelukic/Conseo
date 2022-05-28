@@ -1,6 +1,7 @@
 package com.lukic.conseo.loginregister.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ class RegisterFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.error.observe(viewLifecycleOwner){ error ->
+            Log.d("RegisterFragment", "onCreateView: error $error")
             if(error != null)
                 setErrorUI(error)
         }
@@ -37,11 +39,15 @@ class RegisterFragment : Fragment() {
         }
 
         binding.FragmentRegisterFemale.setOnClickListener {
+            viewModel.gender.postValue("")
             viewModel.gender.postValue("Female")
+            binding.FragmentRegisterMale.isChecked = false
         }
 
         binding.FragmentRegisterMale.setOnClickListener {
+            viewModel.gender.postValue("")
             viewModel.gender.postValue("Male")
+            binding.FragmentRegisterFemale.isChecked = false
         }
         return binding.root
     }
@@ -63,4 +69,8 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.deleteValues()
+    }
 }

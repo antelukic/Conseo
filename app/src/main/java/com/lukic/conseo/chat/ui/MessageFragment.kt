@@ -12,26 +12,28 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.lukic.conseo.R
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.chat.ui.adapters.MessageRecyclerAdapter
 import com.lukic.conseo.chat.viewmodels.MessageViewModel
 import com.lukic.conseo.databinding.FragmentMessageBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import kotlin.math.log
 
 private const val TAG = "MessageFragment"
 class MessageFragment : Fragment() {
 
     private lateinit var binding: FragmentMessageBinding
     private val viewModel by sharedViewModel<MessageViewModel>()
-
+    private val baseViewModel by sharedViewModel<BaseViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_message, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        baseViewModel.bottomNavVisibility.postValue(false)
 
         viewModel.getCurrentUser()
 
@@ -51,7 +53,7 @@ class MessageFragment : Fragment() {
             if (isMessageSent == false)
                 Toast.makeText(
                     requireContext(),
-                    "An error occured, please try again!",
+                    "An error occurred, please try again!",
                     Toast.LENGTH_LONG
                 ).show()
         }
@@ -80,6 +82,8 @@ class MessageFragment : Fragment() {
         return binding.root
     }
 
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        baseViewModel.bottomNavVisibility.postValue(true)
+    }
 }

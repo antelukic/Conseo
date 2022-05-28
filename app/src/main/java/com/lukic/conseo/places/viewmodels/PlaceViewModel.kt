@@ -16,7 +16,6 @@ import com.lukic.conseo.places.model.PlacesRepository
 import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.launch
 
-private const val TAG = "SingleServiceViewModel"
 
 class PlaceViewModel(
     private val placesRepository: PlacesRepository,
@@ -46,10 +45,9 @@ class PlaceViewModel(
                         val filteredPlaces = filterPlacesByLocationDistance(services)
                         _adapterData.postValue(filteredPlaces)
                     }
-                    Log.d(TAG, result.toString())
                 }
             } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
+                Log.e("PlaceViewModel", e.message.toString())
             }
         }
     }
@@ -70,7 +68,6 @@ class PlaceViewModel(
                 longitude = place.longitude ?: 0.0
             }
             val distance = userLocation.distanceTo(placeLoc)
-            Log.d(TAG, "getPlacesWithinRange: distance $distance")
             distance.toInt() <= getDistanceFromPrefs()
         } else
             false

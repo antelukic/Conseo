@@ -3,7 +3,6 @@ package com.lukic.conseo.settings.model
 import com.conseo.database.dao.UsersDao
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
 
 class SettingsRepository(
     private val userDao: UsersDao,

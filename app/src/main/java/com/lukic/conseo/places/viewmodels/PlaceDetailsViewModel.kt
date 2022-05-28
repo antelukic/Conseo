@@ -14,7 +14,6 @@ import com.lukic.conseo.chat.model.ChatRepository
 import com.lukic.conseo.places.model.PlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.w3c.dom.Comment
 import java.lang.IllegalArgumentException
 
 
@@ -35,7 +34,7 @@ class PlaceDetailsViewModel(
 
     val postComment = MutableLiveData<String>()
 
-    val errorOccured = MutableLiveData(false)
+    val errorOccurred = MutableLiveData(false)
 
     init {
         getCurrentUserDetails()
@@ -66,10 +65,10 @@ class PlaceDetailsViewModel(
                     if (getPlaceTask.isSuccessful) {
                         val placeObject = getPlaceTask.result.toObjects(PlaceEntity::class.java)
                         Log.d(TAG, "getPlaceByID: placeobject $placeObject")
-                        if (!placeObject.isNullOrEmpty())
+                        if (placeObject.isNotEmpty())
                             _place.postValue(placeObject.first())
                     } else {
-                        errorOccured.postValue(true)
+                        errorOccurred.postValue(true)
                         Log.e(TAG, "getPlaceByID: ERROR ${getPlaceTask.exception?.message}")
                     }
                 }
@@ -83,10 +82,9 @@ class PlaceDetailsViewModel(
                     if (getCommentsTask.isSuccessful) {
                         val commentsObject =
                             getCommentsTask.result.toObjects(CommentsEntity::class.java)
-                        Log.d(TAG, "getPlaceByID: placeobject $commentsObject")
                         _comments.postValue(commentsObject)
                     } else {
-                        errorOccured.postValue(true)
+                        errorOccurred.postValue(true)
                         Log.e(TAG, "getCommentsBy: ERROR ${getCommentsTask.exception?.message}")
                     }
 

@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.lukic.conseo.loginregister.ui.LoginRegisterActivity
 
 private const val TAG = "FirebaseService"
 class FirebaseService: FirebaseMessagingService() {
@@ -46,9 +45,10 @@ class FirebaseService: FirebaseMessagingService() {
         channel.enableLights(true)
         channel.lightColor = Color.GREEN
         channel.enableVibration(false)
-        val intent = Intent(this, LoginRegisterActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("receiverID", message.data["senderID"])
         val pendingIntent =
-            PendingIntent.getActivity(this, 0, intent, 0)
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -65,7 +65,6 @@ class FirebaseService: FirebaseMessagingService() {
 
 
     companion object{
-        var token: String? = null
         val remoteMessage = MutableLiveData<RemoteMessage>()
     }
 }

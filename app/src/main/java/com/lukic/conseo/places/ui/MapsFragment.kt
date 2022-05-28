@@ -7,7 +7,10 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -27,7 +30,6 @@ import com.lukic.conseo.R
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.IOException
-import android.location.Location
 
 
 private const val TAG = "MapsFragment"

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +15,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.loginregister.model.LoginRegisterRepository
-import com.lukic.conseo.FirebaseService
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +22,14 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.regex.Pattern
 
 sealed class RegisterError(val message: String) {
     object PasswordsDontMatch : RegisterError("Passwords don't match")
     object InvalidEmail : RegisterError("Invalid email")
     object EmptyInput : RegisterError("This field is required to proceed")
+    object PasswordError :
+        RegisterError("Invalid Password. Password must contain number, special character and letter.")
 }
 
 private const val TAG = "RegisterViewModel"
@@ -42,7 +45,7 @@ class RegisterViewModel(
     val password = MutableLiveData<String>()
     val repeatPassword = MutableLiveData<String>()
     val error = MutableLiveData<RegisterError?>()
-    val age = MutableLiveData<Int>(16)
+    val age = MutableLiveData(16)
     val gender = MutableLiveData<String>()
     val proceed = MutableLiveData<Boolean>()
     private var userID = ""
@@ -51,6 +54,7 @@ class RegisterViewModel(
     fun onProceedClicked() {
         viewModelScope.launch(Dispatchers.Default) {
             val valid = checkInputs()
+            Log.d(TAG, "onProceedClicked: valid $valid")
             if (valid)
                 proceed.postValue(true)
         }
@@ -82,8 +86,12 @@ class RegisterViewModel(
             error.postValue(RegisterError.EmptyInput)
             return false
         }
-        if (!email.value!!.contains("@")) {
+        if(isValidEmail()){
             error.postValue(RegisterError.InvalidEmail)
+            return false
+        }
+        if(isValidPassword()){
+            error.postValue(RegisterError.PasswordError)
             return false
         }
 
@@ -108,22 +116,50 @@ class RegisterViewModel(
             }
 
         } catch (e: FileNotFoundException) {
+            Log.e(TAG, "getBitmap: ${e.message}")
         }
         return bitmap
     }
 
     fun registerAccount(imageBitmap: Bitmap?) = viewModelScope.launch {
-        loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
-            .addOnCompleteListener { authResult ->
-                if (authResult.isSuccessful) {
-                    userID = authResult.result.user?.uid.toString()
-                    saveUserToDB(imageBitmap)
-                } else {
-                    isAccountSaved.postValue(false)
-                    Log.e(TAG, "registerAccount: ${authResult.exception?.message.toString()}")
-                }
+        if (isValidPassword()) {
+            if (isValidEmail()) {
+                loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
+                    .addOnCompleteListener { authResult ->
+                        if (authResult.isSuccessful) {
+                            userID = authResult.result.user?.uid.toString()
+                            saveUserToDB(imageBitmap)
+                        } else {
+                            isAccountSaved.postValue(false)
+                            Log.e(
+                                TAG,
+                                "registerAccount: ${authResult.exception?.message.toString()}"
+                            )
+                        }
+                    }
+            } else {
+                Log.e(TAG, "registerAccount: Email ERROR")
             }
+        } else {
+            Log.e(TAG, "registerAccount: Password ERROR")
+        }
+    }
 
+    private fun isValidPassword(): Boolean {
+
+        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
+
+        val pattern = Pattern.compile(passwordPattern)
+        val matcher = pattern.matcher(password.value.toString())
+
+        return matcher.matches()
+
+    }
+
+    private fun isValidEmail(): Boolean {
+        return !TextUtils.isEmpty(email.value) && android.util.Patterns.EMAIL_ADDRESS.matcher(
+            email.value.toString()
+        ).matches()
     }
 
     private fun saveUserToDB(imageBitmap: Bitmap?) {
@@ -181,7 +217,8 @@ class RegisterViewModel(
         )
         return prefs.getString(
             MyApplication.getAppContext().getString(R.string.token_key),
-        null)
+            null
+        )
     }
 
     private fun saveUserToDB(user: UserEntity) {
@@ -207,6 +244,16 @@ class RegisterViewModel(
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
         return loginRegisterRepository.storeImageToStorage(data, email.value!!)
+    }
+
+    fun deleteValues() {
+        name.postValue("")
+        email.postValue("")
+        password.postValue("")
+        repeatPassword.postValue("")
+        error.postValue(null)
+        age.postValue(16)
+        gender.postValue("")
     }
 
 }

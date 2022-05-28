@@ -1,9 +1,7 @@
 package com.lukic.conseo.loginregister.ui
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,8 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.lukic.conseo.MainActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentLoginBinding
 import com.lukic.conseo.loginregister.viewmodels.LoginError
@@ -43,7 +42,7 @@ class LoginFragment : Fragment() {
                 showingDialog = true
             }
             if(it && showingDialog == false)
-                startActivity(Intent(requireContext(), MainActivity::class.java))
+                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainNavGraph())
         }
 
         viewModel.error.observe(viewLifecycleOwner){ error ->
@@ -62,10 +61,6 @@ class LoginFragment : Fragment() {
         executor = ContextCompat.getMainExecutor(requireContext())
         biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int,
-                                                   errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                }
 
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult) {
@@ -73,9 +68,6 @@ class LoginFragment : Fragment() {
                     viewModel.loginUsingBiometrics()
                 }
 
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                }
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
@@ -100,10 +92,10 @@ class LoginFragment : Fragment() {
             it.setMessage(getString(R.string.biometric_authentication_message))
             it.setPositiveButton(getString(R.string.allow)){_,_->
                 viewModel.allowBiometricAuthentication()
-                startActivity(Intent(requireContext(), MainActivity::class.java))
+                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainNavGraph())
             }
             it.setNegativeButton(getString(R.string.dont_allow)){_, _ ->
-                startActivity(Intent(requireContext(), MainActivity::class.java))
+                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainNavGraph())
             }
         }.show()
     }
