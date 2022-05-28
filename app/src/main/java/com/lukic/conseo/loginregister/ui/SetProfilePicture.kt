@@ -56,7 +56,6 @@ class SetProfilePicture : Fragment() {
         }
 
         binding.FragmentSetProfilePictureGallery.setOnClickListener {
-            Log.d(TAG, "onCreateView: ${checkPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)}")
             if(checkPermissions(Manifest.permission.READ_EXTERNAL_STORAGE))
                 chooseImage()
             else
@@ -75,7 +74,7 @@ class SetProfilePicture : Fragment() {
             if(it)
                 findNavController().navigate(SetProfilePictureDirections.actionSetProfilePictureToLoginFragment())
             else
-                Toast.makeText(requireContext(), "An error occured with registration. Please try again!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "An error occurred with registration. Please try again!", Toast.LENGTH_LONG).show()
         }
 
         return binding.root
@@ -94,7 +93,7 @@ class SetProfilePicture : Fragment() {
         try {
             resultCameraLauncher.launch(takePictureIntent)
         } catch (e: ActivityNotFoundException) {
-            Log.e(TAG, "takePicture: ERROR ${e.message}",)
+            Log.e(TAG, "takePicture: ERROR ${e.message}")
         }
     }
 

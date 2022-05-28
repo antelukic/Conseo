@@ -12,13 +12,19 @@
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
         <action
             android:id="@+id/action_welcomeFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
         <action
-            android:id="@+id/action_welcomeFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            android:id="@+id/action_welcomeFragment_to_main_nav_graph"
+            app:destination="@id/main_nav_graph"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -26,8 +32,10 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            android:id="@+id/action_loginFragment_to_main_nav_graph"
+            app:destination="@id/main_nav_graph"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -36,7 +44,9 @@
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/action_registerFragment_to_setProfilePicture"
-            app:destination="@id/setProfilePicture" />
+            app:destination="@id/setProfilePicture"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
     </fragment>
     <fragment
         android:id="@+id/setProfilePicture"
@@ -45,11 +55,9 @@
         tools:layout="@layout/fragment_set_profile_picture" >
         <action
             android:id="@+id/action_setProfilePicture_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
     </fragment>
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.lukic.conseo.MainFragment"
-        android:label="MainFragment"
-        tools:layout="@layout/fragment_main"/>
+    <include app:graph="@navigation/main_nav_graph" />
 </navigation>

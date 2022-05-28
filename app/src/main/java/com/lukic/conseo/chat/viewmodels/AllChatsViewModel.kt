@@ -1,7 +1,6 @@
 package com.lukic.conseo.chat.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +18,7 @@ class AllChatsViewModel(
 ): ViewModel() {
 
     val adapterData = MutableLiveData<List<UserEntity>?>()
-    val currentUserId by lazy { FirebaseAuth.getInstance().currentUser?.uid.toString() }
+    private val currentUserId by lazy { FirebaseAuth.getInstance().currentUser?.uid.toString() }
 
     fun getAllChats(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -43,7 +42,6 @@ class AllChatsViewModel(
                 .addOnCompleteListener { taskResult ->
                     if(taskResult.isSuccessful){
                         val message = taskResult.result.toObjects(MessageEntity::class.java)
-                        Log.d(TAG, "message $message")
                         data.add(message)
 
                         if(index < chats.size)
@@ -71,7 +69,6 @@ class AllChatsViewModel(
                 }
             }
         }
-        Log.d(TAG, "ids $ids")
         if(ids.isNotEmpty()) {
             chatRepository.getAllUsers()
                 .addOnCompleteListener { taskResult ->

@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.utils.CheckNetworkConnection
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
 
@@ -24,6 +25,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
     private var networkAlertDialog: AlertDialog? = null
     private var locationAlertDialog: AlertDialog? = null
     private var locManager: LocationManager? = null
+    val baseViewModel by viewModel<BaseViewModel>()
 
 
     abstract fun getLayout(): Int
@@ -122,8 +124,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
             override fun onProviderEnabled(provider: String) {
                 if (locationAlertDialog?.isShowing == true)
                     locationAlertDialog?.dismiss()
-
-                Log.d("BaseActivity", "onProviderEnabled: $provider")
             }
 
             override fun onProviderDisabled(provider: String) {
@@ -156,5 +156,6 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
             showLocationDialog()
         }
     }
+
 
 }

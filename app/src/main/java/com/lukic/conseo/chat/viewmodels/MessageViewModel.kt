@@ -1,6 +1,5 @@
 package com.lukic.conseo.chat.viewmodels
 
-import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,15 +9,12 @@ import com.conseo.database.entity.MessageEntity
 import com.conseo.database.entity.UserEntity
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.type.DateTime
 import com.lukic.conseo.FirebaseService
 import com.lukic.conseo.chat.model.ChatRepository
 import com.lukic.restapi.firebase.models.NotificationData
 import com.lukic.restapi.firebase.models.PushNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 private const val TAG = "MessageViewModel"
 
@@ -42,7 +38,7 @@ class MessageViewModel(
     val currentUser get() = _currentUser as LiveData<UserEntity?>
 
     val remoteMessage = FirebaseService.remoteMessage
-    val canSendMessage = MutableLiveData<Boolean>(true)
+    val canSendMessage = MutableLiveData(true)
 
 
     fun getCurrentUser() {
@@ -149,6 +145,7 @@ class MessageViewModel(
                 tempData.add(0, message!!)
                 adapterData.postValue(tempData)
                 isMessageSent.postValue(true)
+                canSendMessage.postValue(true)
             } else {
                 Log.e(TAG, "sendSenderNotification: ERROR ${response.errorBody()}")
                 isMessageSent.postValue(false)

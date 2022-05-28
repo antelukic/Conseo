@@ -5,7 +5,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -21,7 +20,7 @@ class UsersDao(
     }
 
     fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): UploadTask {
-        return storage.reference.child("userImages/" + userEmail).putBytes(imageByteArray)
+        return storage.reference.child("userImages/$userEmail").putBytes(imageByteArray)
     }
 
     fun storeAccount(userEntity: UserEntity): Task<Void> {

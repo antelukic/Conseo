@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.MainActivity
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
@@ -37,15 +39,16 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
             geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT
         ) {
 
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
-            val triggeringGeofences = geofencingEvent.triggeringGeofences
+            // Get the geofence that were triggered. A single event can trigger
+            // multiple geofence.
+            val triggeringGeofence = geofencingEvent.triggeringGeofences
 
             // Get the transition details as a String.
-            val geofenceRequestID = triggeringGeofences.first()?.requestId
+            val geofenceRequestID = triggeringGeofence.first()?.requestId
 
-            if (geofenceRequestID != null) {
-                Log.i(TAG, geofenceRequestID)
+            Log.d(TAG, "onReceive: geofenceRequestID $geofenceRequestID")
+            Log.d(TAG, "onReceive: user ${Firebase.auth.currentUser}")
+            if (geofenceRequestID != null && Firebase.auth.currentUser != null) {
                 sendGeofenceEnteredNotification(geofenceRequestID)
             }
         } else {
@@ -73,8 +76,10 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
             channel.lightColor = Color.GREEN
             channel.enableVibration(false)
             val intent = Intent(MyApplication.getAppContext(), MainActivity::class.java)
+            intent.putExtra("placeID", place.first().placeID)
+            intent.putExtra("placeType", place.first().serviceName)
             val pendingIntent =
-                PendingIntent.getActivity(MyApplication.getAppContext(), 0, intent, 0)
+                PendingIntent.getActivity(MyApplication.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val mNotificationManager =
                 MyApplication.getAppContext()

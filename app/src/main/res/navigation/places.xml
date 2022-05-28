@@ -13,10 +13,14 @@
 
         <action
             android:id="@+id/action_servicesFragment_to_addServiceFragment"
-            app:destination="@id/addPlaceFragment" />
+            app:destination="@id/addPlaceFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
         <action
             android:id="@+id/action_placesFragment_to_placeDetailsFragment"
-            app:destination="@id/placeDetailsFragment" />
+            app:destination="@id/placeDetailsFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
     </fragment>
     <fragment
         android:id="@+id/addPlaceFragment"
@@ -25,10 +29,14 @@
         tools:layout="@layout/fragment_add_place">
         <action
             android:id="@+id/action_addServiceFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
+            app:destination="@id/mapsFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
         <action
             android:id="@+id/action_addServiceFragment_to_servicesFragment"
-            app:destination="@id/placesFragment" />
+            app:destination="@id/placesFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
         <argument
             android:name="location"
             app:argType="string"
@@ -44,7 +52,9 @@
             app:argType="string"/>
         <action
             android:id="@+id/action_mapsFragment_to_addServiceFragment"
-            app:destination="@id/addPlaceFragment" />
+            app:destination="@id/addPlaceFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
         <argument
             android:name="fromFragment"
             app:argType="string" />
@@ -65,19 +75,27 @@
         tools:layout="@layout/fragment_place_details" >
         <action
             android:id="@+id/action_placeDetailsFragment_to_placesFragment"
-            app:destination="@id/placesFragment" />
+            app:destination="@id/placesFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
         <action
             android:id="@+id/action_placeDetailsFragment_to_messageFragment"
-            app:destination="@id/messageFragment" />
+            app:destination="@id/messageFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
         <action
             android:id="@+id/action_placeDetailsFragment_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
+            app:destination="@id/mapsFragment"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
         <argument
             android:name="serviceID"
             app:argType="string" />
         <argument
             android:name="serviceType"
             app:argType="string" />
+
+        <deepLink android:id="@+id/deepLinkToPlaceDetails" app:uri="conseo://com.lukic.conseo/place-details/{serviceID}/{serviceType}"/>
     </fragment>
 
 

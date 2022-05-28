@@ -12,15 +12,17 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.R
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.databinding.FragmentWelcomeBinding
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class WelcomeFragment : Fragment() {
 
     private lateinit var binding: FragmentWelcomeBinding
+    private val baseViewModel by sharedViewModel<BaseViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +32,7 @@ class WelcomeFragment : Fragment() {
         binding.model = this
         binding.lifecycleOwner = viewLifecycleOwner
 
-
+        baseViewModel.bottomNavVisibility.postValue(false)
 
         setTextAnimation()
 
@@ -57,8 +59,8 @@ class WelcomeFragment : Fragment() {
             }
 
             if(isUserLoggedIn()) {
-                delay(300)
-                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToMainFragment())
+                delay(1000)
+                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToMainNavGraph())
             }
 
             positionWelcomeText()

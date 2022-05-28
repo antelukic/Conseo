@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_all_chats">
         <action
             android:id="@+id/action_allChatsFragment_to_messageFragment2"
-            app:destination="@id/messageFragment2" />
+            app:destination="@id/messageFragment2"
+            app:enterAnim="@anim/left_to_right"
+            app:popEnterAnim="@anim/left_to_right" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment2"
@@ -21,7 +23,9 @@
         tools:layout="@layout/fragment_message">
         <action
             android:id="@+id/action_messageFragment2_to_allChatsFragment"
-            app:destination="@id/allChatsFragment" />
+            app:destination="@id/allChatsFragment"
+            app:enterAnim="@anim/right_to_left"
+            app:popEnterAnim="@anim/right_to_left" />
         <argument
             android:name="receiverID"
             app:argType="string" />

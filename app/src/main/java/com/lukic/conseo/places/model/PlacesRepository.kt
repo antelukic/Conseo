@@ -6,10 +6,8 @@ import com.conseo.database.entity.CommentsEntity
 import com.conseo.database.entity.PlaceEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.UploadTask
-import kotlin.jvm.Throws
 
 class PlacesRepository(
     private val placesDao: PlacesDao,

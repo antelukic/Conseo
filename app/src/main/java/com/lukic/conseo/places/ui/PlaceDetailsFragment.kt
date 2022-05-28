@@ -53,15 +53,17 @@ class PlaceDetailsFragment : Fragment() {
             setupUI(placeDetails)
         }
 
-        viewModel.errorOccured.observe(viewLifecycleOwner){
+        viewModel.errorOccurred.observe(viewLifecycleOwner){
             if(it)
                 Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_LONG).show()
         }
 
         viewModel.comments.observe(viewLifecycleOwner){ comments ->
+            Log.d("PlaceDetailsFragment", "onCreateView: comments $comments")
             if(comments.isNullOrEmpty()) {
                 binding.FragmentPlaceDetailsComments.visibility = View.GONE
             } else {
+                binding.FragmentPlaceDetailsComments.visibility = View.VISIBLE
                 binding.FragmentPlaceDetailsComments.adapter = PlaceCommentRecyclerAdapter(comments)
             }
         }

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lukic.conseo.R
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.databinding.FragmentPlacesBinding
 import com.lukic.conseo.places.ui.adapters.PlaceAnimationPagerAdapter
 import com.lukic.conseo.places.ui.adapters.PlacePagerAdapter
@@ -17,11 +18,11 @@ import com.lukic.conseo.places.viewmodels.PlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-private const val  TAG = "ServicesFragment"
 class PlacesFragment : Fragment() {
 
     private lateinit var binding: FragmentPlacesBinding
     private val viewModel by sharedViewModel<PlaceViewModel>()
+    private val baseViewModel by sharedViewModel<BaseViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +31,8 @@ class PlacesFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_places, container, false)
         binding.model = this
         binding.lifecycleOwner = viewLifecycleOwner
+
+        baseViewModel.bottomNavVisibility.postValue(true)
 
         val tabLayout = binding.FragmentPlaceTabLayout
         tabLayout.addOnTabSelectedListener(tabSelectedListener)

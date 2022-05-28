@@ -46,7 +46,7 @@ class FirebaseService: FirebaseMessagingService() {
         channel.lightColor = Color.GREEN
         channel.enableVibration(false)
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("receiverID", message.data.get("senderID"))
+        intent.putExtra("receiverID", message.data["senderID"])
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
@@ -65,7 +65,6 @@ class FirebaseService: FirebaseMessagingService() {
 
 
     companion object{
-        var token: String? = null
         val remoteMessage = MutableLiveData<RemoteMessage>()
     }
 }

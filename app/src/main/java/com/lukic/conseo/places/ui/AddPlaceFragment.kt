@@ -2,17 +2,14 @@ package com.lukic.conseo.places.ui
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -28,7 +26,6 @@ import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentAddPlaceBinding
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.ext.clearQuotes
 
 private const val TAG = "AddServiceFragment"
 class AddPlaceFragment : Fragment() {
@@ -40,7 +37,7 @@ class AddPlaceFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_place, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -150,7 +147,7 @@ class AddPlaceFragment : Fragment() {
                 if(imageBitmap != null)
                     Glide.with(requireContext()).load(imageBitmap).into(binding.FragmentAddPlaceImage)
             } else {
-                Log.e(TAG, "ERROR: ${result.toString()}")
+                Log.e(TAG, "ERROR: $result")
             }
         }
     }
