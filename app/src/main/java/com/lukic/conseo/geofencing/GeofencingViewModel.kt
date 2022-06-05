@@ -8,16 +8,24 @@ import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.PlaceEntity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
+import com.lukic.conseo.BuildConfig
+import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent
 
 private const val TAG = "GeofencingViewModel"
 
 class GeofencingViewModel(
-    private val geofencingRepository: GeofencingRepository,
-    private val appPrefs: AppPrefs
+    private val geofencingRepository: GeofencingRepository
 ) : ViewModel() {
+
+    private val appPrefs: AppPreferences by KoinJavaComponent.inject(
+        qualifier = named("SharedPreferences"),
+        clazz = AppPrefs::class.java
+    )
 
     private val _allPlaces = MutableLiveData<MutableList<PlaceEntity>?>()
     val allPlaces get() = _allPlaces as LiveData<MutableList<PlaceEntity>?>
@@ -97,7 +105,7 @@ class GeofencingViewModel(
 
 
     private fun getUserDistanceInMeters(): Int {
-        val distance = appPrefs.getInt(AppPrefs.distanceKey)
+        val distance = appPrefs.getInt(AppPrefs.DISTANCE_KEY)
         return if(distance == 0)
             1
         else

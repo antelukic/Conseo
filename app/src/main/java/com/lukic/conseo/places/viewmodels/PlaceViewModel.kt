@@ -13,14 +13,19 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.launch
+import org.koin.core.qualifier.named
+import org.koin.core.qualifier.qualifier
+import org.koin.java.KoinJavaComponent.inject
 
 
 class PlaceViewModel(
     private val placesRepository: PlacesRepository,
-    private val appPrefs: AppPrefs
 ) : ViewModel() {
+
+    private val appPrefs: AppPreferences by inject(qualifier = named("SharedPreferences"), clazz = AppPrefs::class.java)
 
     private val _adapterData = MutableLiveData<List<PlaceEntity>>()
     val adapterData get() = _adapterData as LiveData<List<PlaceEntity>>
@@ -74,7 +79,7 @@ class PlaceViewModel(
     }
 
     private fun getDistanceFromPrefs(): Int {
-        return appPrefs.getInt(AppPrefs.distanceKey) * 1000
+        return appPrefs.getInt(AppPrefs.DISTANCE_KEY) * 1000
     }
 
 
