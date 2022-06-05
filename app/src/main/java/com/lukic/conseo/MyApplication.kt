@@ -21,7 +21,7 @@ class MyApplication : Application() {
                     databaseModule,
                     repositoryModule,
                     viewModelModules,
-                    utilsModule,
+                    utilsModules,
                     retrofitModules
                 )
             )

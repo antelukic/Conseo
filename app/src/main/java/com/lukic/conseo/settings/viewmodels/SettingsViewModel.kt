@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.lukic.conseo.settings.model.SettingsRepository
+import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent
 
 
 private const val TAG = "SettingsViewModel"
@@ -18,8 +21,12 @@ private const val TAG = "SettingsViewModel"
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val auth: FirebaseAuth,
-    private val appPrefs: AppPrefs
 ) : ViewModel() {
+
+    private val appPrefs: AppPreferences by KoinJavaComponent.inject(
+        qualifier = named("SharedPreferences"),
+        clazz = AppPrefs::class.java
+    )
 
     private val _user = MutableLiveData<UserEntity?>()
     val user get() = _user as LiveData<UserEntity?>
@@ -43,11 +50,11 @@ class SettingsViewModel(
     }
 
     fun getDistance(){
-            distance.postValue(appPrefs.getInt(AppPrefs.distanceKey))
+            distance.postValue(appPrefs.getInt(AppPrefs.DISTANCE_KEY))
     }
 
     fun updateDistance(distance: Int) {
-        appPrefs.storeInt(AppPrefs.distanceKey, distance)
+        appPrefs.putInt(key = AppPrefs.DISTANCE_KEY,value = distance)
         this.distance.postValue(distance)
     }
 
