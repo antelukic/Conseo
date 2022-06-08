@@ -3,6 +3,7 @@ package com.lukic.conseo.places.viewmodels
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,19 +40,23 @@ class PlaceViewModel(
         )
     }
 
+    val loaderVisibility = MutableLiveData(View.GONE)
 
     fun getAllItemsByService(serviceName: String) {
         viewModelScope.launch {
             try {
+                loaderVisibility.postValue(View.VISIBLE)
                 val result = placesRepository.getAllItemsByService(serviceName)
                 result.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val services = task.result.toObjects(PlaceEntity::class.java)
                         val filteredPlaces = filterPlacesByLocationDistance(services)
                         _adapterData.postValue(filteredPlaces)
+                        loaderVisibility.postValue(View.GONE)
                     }
                 }
             } catch (e: Exception) {
+                loaderVisibility.postValue(View.GONE)
                 Log.e("PlaceViewModel", e.message.toString())
             }
         }

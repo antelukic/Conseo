@@ -1,6 +1,5 @@
 package com.lukic.restapi.firebase
 
-import com.lukic.restapi.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

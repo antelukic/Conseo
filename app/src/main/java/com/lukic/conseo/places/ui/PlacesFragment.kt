@@ -29,7 +29,7 @@ class PlacesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_places, container, false)
-        binding.model = this
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         baseViewModel.bottomNavVisibility.postValue(true)

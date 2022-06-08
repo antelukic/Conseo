@@ -5,6 +5,7 @@ import android.content.Context
 import com.conseo.database.databaseModule
 import com.google.firebase.messaging.FirebaseMessaging
 import com.lukic.restapi.firebase.retrofitModules
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
@@ -16,6 +17,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
+            androidContext(this@MyApplication)
             modules(
                 listOf(
                     databaseModule,

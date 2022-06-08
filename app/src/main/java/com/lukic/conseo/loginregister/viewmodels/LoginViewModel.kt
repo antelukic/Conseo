@@ -1,6 +1,7 @@
 package com.lukic.conseo.loginregister.viewmodels
 
 import android.util.Log
+import android.view.View
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,7 @@ class LoginViewModel(
     val password = MutableLiveData<String>()
     val biometricsEnabled = MutableLiveData<Boolean?>()
     val proceed = MutableLiveData<Boolean>()
+    val loaderVisibility = MutableLiveData<Int>(View.GONE)
 
     var error = MutableLiveData<LoginError?>()
 
@@ -54,9 +56,11 @@ class LoginViewModel(
 
     fun loginUser() {
         viewModelScope.launch {
+            loaderVisibility.postValue(View.VISIBLE)
             if (validatePassword()) {
                 loginRegisterRepository.loginUser(email.value!!.trim(), password.value!!.trim())
                     .addOnCompleteListener { result ->
+                        loaderVisibility.postValue(View.GONE)
                         if (result.isSuccessful)
                             proceed.postValue(true)
                         else {
