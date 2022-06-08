@@ -20,7 +20,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.Conseo.Light">
         <receiver android:name=".geofencing.GeofencingBroadcastReceiver"
             android:enabled="true"/>
@@ -45,7 +45,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyApR6tl5nslXgYwBsD_k_9z-Ghn9gte1-w" />
+            android:value="${MAPS_API_KEY}"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

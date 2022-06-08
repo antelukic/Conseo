@@ -79,4 +79,6 @@ class PlaceDetailsFragment : Fragment() {
         else
             binding.FragmentPlaceDetailsDateTime.text = "Date and Time: " + placeDetails.date + " " + placeDetails.time
     }
+
+
 }

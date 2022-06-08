@@ -34,10 +34,13 @@ class PlaceFragment : Fragment() {
             viewModel.getUserLocation()
         }
 
+        var isShown = false
         viewModel.userLatLng.observe(viewLifecycleOwner){ latLng ->
-            if(latLng == null)
-                Toast.makeText(requireContext(), "Turn on your location please", Toast.LENGTH_LONG).show()
-            else
+            if(latLng == null && !isShown) {
+                Toast.makeText(requireContext(), "Turn on your location please", Toast.LENGTH_LONG)
+                    .show()
+                isShown = true
+            } else
                 binding.FragmentPlaceRecyclerView.adapter = PlacesRecyclerAdapter(singlePlaces = viewModel.adapterData.value ?: listOf(), listener = itemClickListener)
         }
 

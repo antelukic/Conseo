@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,6 +49,7 @@ class RegisterViewModel(
     val age = MutableLiveData(16)
     val gender = MutableLiveData<String>()
     val proceed = MutableLiveData<Boolean>()
+    val loaderVisibility = MutableLiveData<Int>(View.GONE)
     private var userID = ""
 
 
@@ -86,12 +88,8 @@ class RegisterViewModel(
             error.postValue(RegisterError.EmptyInput)
             return false
         }
-        if(isValidEmail()){
+        if (!isValidEmail()) {
             error.postValue(RegisterError.InvalidEmail)
-            return false
-        }
-        if(isValidPassword()){
-            error.postValue(RegisterError.PasswordError)
             return false
         }
 
@@ -122,41 +120,35 @@ class RegisterViewModel(
     }
 
     fun registerAccount(imageBitmap: Bitmap?) = viewModelScope.launch {
-        if (isValidPassword()) {
-            if (isValidEmail()) {
-                loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
-                    .addOnCompleteListener { authResult ->
-                        if (authResult.isSuccessful) {
-                            userID = authResult.result.user?.uid.toString()
-                            saveUserToDB(imageBitmap)
-                        } else {
-                            isAccountSaved.postValue(false)
-                            Log.e(
-                                TAG,
-                                "registerAccount: ${authResult.exception?.message.toString()}"
-                            )
-                        }
+        loaderVisibility.postValue(View.VISIBLE)
+        if (isValidEmail()) {
+            loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
+                .addOnCompleteListener { authResult ->
+                    if (authResult.isSuccessful) {
+                        userID = authResult.result.user?.uid.toString()
+                        saveUserToDB(imageBitmap)
+                    } else {
+                        isAccountSaved.postValue(false)
+                        loaderVisibility.postValue(View.GONE)
+                        Log.e(
+                            TAG,
+                            "registerAccount: ${authResult.exception?.message.toString()}"
+                        )
                     }
-            } else {
-                Log.e(TAG, "registerAccount: Email ERROR")
-            }
+                }
         } else {
-            Log.e(TAG, "registerAccount: Password ERROR")
+            Log.e(TAG, "registerAccount: Email ERROR")
         }
     }
 
-    private fun isValidPassword(): Boolean {
-
-        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
-
-        val pattern = Pattern.compile(passwordPattern)
-        val matcher = pattern.matcher(password.value.toString())
-
-        return matcher.matches()
-
-    }
-
     private fun isValidEmail(): Boolean {
+        Log.d(TAG, "isValidEmail: ${!TextUtils.isEmpty(email.value)}")
+        Log.d(
+            TAG,
+            "isValidEmail: ${
+                android.util.Patterns.EMAIL_ADDRESS.matcher(email.value.toString()).matches()
+            }"
+        )
         return !TextUtils.isEmpty(email.value) && android.util.Patterns.EMAIL_ADDRESS.matcher(
             email.value.toString()
         ).matches()
@@ -174,6 +166,7 @@ class RegisterViewModel(
                 if (taskSnapshot.isSuccessful) {
                     getDownloadUrl(taskSnapshot)
                 } else {
+                    loaderVisibility.postValue(View.GONE)
                     Log.e(TAG, "saveUserToDB: ${taskSnapshot.exception?.message.toString()}")
                 }
             }
@@ -197,6 +190,7 @@ class RegisterViewModel(
                     user.image = downloadUrlTaskResult.result.toString()
                     saveUserToDB(user = user)
                 } else {
+                    loaderVisibility.postValue(View.GONE)
                     isAccountSaved.postValue(false)
                     Log.e(
                         TAG,
@@ -226,6 +220,7 @@ class RegisterViewModel(
             loginRegisterRepository.saveUserToDB(
                 userEntity = user
             ).addOnCompleteListener { saveUserTaskResult ->
+                loaderVisibility.postValue(View.GONE)
                 if (saveUserTaskResult.isSuccessful)
                     isAccountSaved.postValue(true)
                 else {

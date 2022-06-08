@@ -69,8 +69,5 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.deleteValues()
-    }
+
 }

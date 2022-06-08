@@ -147,6 +147,8 @@ class SetProfilePicture : Fragment() {
             }
         }
 
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.deleteValues()
+    }
 }

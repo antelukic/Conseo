@@ -16,6 +16,21 @@
         tools:context=".loginregister.ui.SetProfilePicture">
 
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{viewModel.loaderVisibility}"
+            android:elevation="10dp"
+            app:lottie_fileName="loader.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+
+
+
         <TextView
             android:id="@+id/Fragment_SetProfilePicture_Title"
             android:layout_width="match_parent"

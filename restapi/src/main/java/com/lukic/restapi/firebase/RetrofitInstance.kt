@@ -28,7 +28,7 @@ class RetrofitInstance {
     internal companion object{
 
         private const val BASE_URL = "https://fcm.googleapis.com"
-        const val SERVER_KEY = "AAAASt8ul4A:APA91bG0Zkis-pHZbdMXztbhmkYO33-ORIJD-Xtn8k-vVvW4q5fmRBZRO2rCtXO9Z1SSBQ5d_Cn1ZLw5caKB6LyungnNViWfKihzPveKlgx0NpWVOO2RvNm31ok7EiD8oe_118p0EStJ "
+        const val SERVER_KEY = "AAAASt8ul4A:APA91bG0Zkis-pHZbdMXztbhmkYO33-ORIJD-Xtn8k-vVvW4q5fmRBZRO2rCtXO9Z1SSBQ5d_Cn1ZLw5caKB6LyungnNViWfKihzPveKlgx0NpWVOO2RvNm31ok7EiD8oe_118p0EStJ"
         const val CONTENT_TYPE = "application/json"
     }
 }

@@ -19,7 +19,11 @@ import com.lukic.conseo.places.viewmodels.PlaceViewModel
 import com.lukic.conseo.settings.model.SettingsRepository
 import com.lukic.conseo.settings.viewmodels.SettingsViewModel
 import com.lukic.conseo.utils.AppPrefs
+import com.lukic.conseo.utils.EncryptedAppPrefs
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -34,16 +38,17 @@ val repositoryModule = module {
 val viewModelModules = module {
     viewModel { RegisterViewModel(get())}
     viewModel { LoginViewModel(get()) }
-    viewModel { PlaceViewModel( get(), get()) }
+    viewModel { PlaceViewModel( get() ) }
     viewModel { AddPlaceViewModel( get()) }
     viewModel { AllChatsViewModel( get()) }
     viewModel { MessageViewModel( get()) }
     viewModel { PlaceDetailsViewModel(get(), get()) }
-    viewModel { SettingsViewModel(get(), Firebase.auth, get()) }
-    viewModel { GeofencingViewModel(get(), get()) }
+    viewModel { SettingsViewModel(get(), Firebase.auth) }
+    viewModel { GeofencingViewModel(get()) }
     viewModel { BaseViewModel (get()) }
 }
 
-val utilsModule = module {
-    single { AppPrefs() }
+val utilsModules = module{
+    single(named("SharedPreferences") ) { AppPrefs() }
+    single(named("EncryptedSharedPreferences") ) {  EncryptedAppPrefs(androidContext()) }
 }

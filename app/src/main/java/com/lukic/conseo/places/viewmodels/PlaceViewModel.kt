@@ -3,6 +3,7 @@ package com.lukic.conseo.places.viewmodels
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,14 +14,19 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
 import kotlinx.coroutines.launch
+import org.koin.core.qualifier.named
+import org.koin.core.qualifier.qualifier
+import org.koin.java.KoinJavaComponent.inject
 
 
 class PlaceViewModel(
     private val placesRepository: PlacesRepository,
-    private val appPrefs: AppPrefs
 ) : ViewModel() {
+
+    private val appPrefs: AppPreferences by inject(qualifier = named("SharedPreferences"), clazz = AppPrefs::class.java)
 
     private val _adapterData = MutableLiveData<List<PlaceEntity>>()
     val adapterData get() = _adapterData as LiveData<List<PlaceEntity>>
@@ -34,19 +40,23 @@ class PlaceViewModel(
         )
     }
 
+    val loaderVisibility = MutableLiveData(View.GONE)
 
     fun getAllItemsByService(serviceName: String) {
         viewModelScope.launch {
             try {
+                loaderVisibility.postValue(View.VISIBLE)
                 val result = placesRepository.getAllItemsByService(serviceName)
                 result.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val services = task.result.toObjects(PlaceEntity::class.java)
                         val filteredPlaces = filterPlacesByLocationDistance(services)
                         _adapterData.postValue(filteredPlaces)
+                        loaderVisibility.postValue(View.GONE)
                     }
                 }
             } catch (e: Exception) {
+                loaderVisibility.postValue(View.GONE)
                 Log.e("PlaceViewModel", e.message.toString())
             }
         }
@@ -74,7 +84,7 @@ class PlaceViewModel(
     }
 
     private fun getDistanceFromPrefs(): Int {
-        return appPrefs.getInt(AppPrefs.distanceKey) * 1000
+        return appPrefs.getInt(AppPrefs.DISTANCE_KEY) * 1000
     }
 
 

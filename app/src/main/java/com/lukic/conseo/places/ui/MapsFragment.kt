@@ -2,6 +2,7 @@ package com.lukic.conseo.places.ui
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -109,6 +110,7 @@ class MapsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
         _client = LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -134,6 +136,7 @@ class MapsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun moveCamera(latLng: LatLng, title: String) {
 
         if (ActivityCompat.checkSelfPermission(
