@@ -23,12 +23,14 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            Properties properties = new Properties()
-            properties.load(project.rootProject.file('local.properties').newDataInputStream())
-            resValue "string", "MAPS_API_KEY", "\"${properties.getProperty('MAPS_API_KEY')}\""
         }
 
+        allTypes{
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            buildConfigField "string", "MAPS_API_KEY", "\"${properties.getProperty('FCM_KEY')}\""
+            buildConfigField "string", "MAPS_API_KEY", "\"${properties.getProperty('FCM_URL')}\""
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

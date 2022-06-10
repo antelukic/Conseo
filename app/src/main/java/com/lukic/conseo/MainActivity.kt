@@ -1,6 +1,7 @@
 package com.lukic.conseo
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -80,6 +81,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun addGeofences(){
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -95,7 +97,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
                 geofencingClient.addGeofences(geofenceViewModel.getGeofencingRequest(), geofencePendingIntent)
                     .run {
                         addOnSuccessListener {
-                            Log.d("BaseActivity", "addGeofences: success")
+                            Log.d("MainActivity", "addGeofences: success")
                         }
                         addOnFailureListener {
                             if ((it.message != null)) {
@@ -109,7 +111,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofencingBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private val bottomNavListener =

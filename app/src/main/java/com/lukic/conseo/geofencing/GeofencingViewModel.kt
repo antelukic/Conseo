@@ -11,6 +11,7 @@ import com.google.android.gms.location.GeofencingRequest
 import com.lukic.conseo.BuildConfig
 import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.qualifier.named
@@ -33,46 +34,31 @@ class GeofencingViewModel(
 
     fun getAllPlaces() {
         viewModelScope.launch(Dispatchers.IO) {
-            geofencingRepository.getAllBars()
-                .addOnCompleteListener { getAllPlacesTask ->
-                    if (getAllPlacesTask.isSuccessful) {
-                        val bars =
-                            getAllPlacesTask.result.toObjects(PlaceEntity::class.java)
-                        _allPlaces.postValue(bars)
-                        geofencingRepository.getAllEvents()
-                            .addOnCompleteListener { getAllEventsTask ->
-                                if (getAllEventsTask.isSuccessful) {
-                                    val events =
-                                        getAllEventsTask.result.toObjects(PlaceEntity::class.java)
-                                    _allPlaces.postValue(events)
-                                    geofencingRepository.getAllRestaurants()
-                                        .addOnCompleteListener { getAllRestaurantsTask ->
-                                            if (getAllRestaurantsTask.isSuccessful) {
-                                                val restaurants =
-                                                    getAllRestaurantsTask.result.toObjects(
-                                                        PlaceEntity::class.java
-                                                    )
-                                                _allPlaces.postValue(restaurants)
-                                            } else {
-                                                Log.e(
-                                                    TAG,
-                                                    "getAllPlaces: ${getAllRestaurantsTask.exception?.message}",
-                                                )
-                                            }
-
-                                        }
-                                } else {
-                                    Log.e(
-                                        TAG,
-                                        "getAllPlaces: ${getAllEventsTask.exception?.message}",
-                                    )
-                                }
-                            }
-                    } else {
-                        _allPlaces.postValue(null)
-                        Log.e(TAG, "getAllPlaces: ERROR ${getAllPlacesTask.exception?.message}")
-                    }
+            try {
+                val barDocuments = geofencingRepository.getAllBars().awaitTask(viewModelScope)
+                if (barDocuments != null) {
+                    val bars =
+                        barDocuments.toObjects(PlaceEntity::class.java)
+                    _allPlaces.postValue(bars)
                 }
+                val eventDocuments =
+                    geofencingRepository.getAllEvents().awaitTask(viewModelScope)
+                if (eventDocuments != null) {
+                    val events = eventDocuments.toObjects(PlaceEntity::class.java)
+                    _allPlaces.postValue(events)
+                }
+                val restaurantDocuments =
+                    geofencingRepository.getAllRestaurants().awaitTask(viewModelScope)
+                if (restaurantDocuments != null) {
+                    val restaurants =
+                        restaurantDocuments.toObjects(
+                            PlaceEntity::class.java
+                        )
+                    _allPlaces.postValue(restaurants)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "getAllPlaces: ${e.message}")
+            }
         }
     }
 
@@ -85,7 +71,7 @@ class GeofencingViewModel(
                     .setCircularRegion(
                         place.latitude ?: 10.0,
                         place.longitude ?: 14.0,
-                        getUserDistanceInMeters().toFloat()
+                        10f
                     )
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
@@ -98,18 +84,9 @@ class GeofencingViewModel(
 
     fun getGeofencingRequest(): GeofencingRequest {
         return GeofencingRequest.Builder().apply {
-            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL or GeofencingRequest.INITIAL_TRIGGER_ENTER)
             addGeofences(geofenceList.value!!)
         }.build()
-    }
-
-
-    private fun getUserDistanceInMeters(): Int {
-        val distance = appPrefs.getInt(AppPrefs.DISTANCE_KEY)
-        return if(distance == 0)
-            1
-        else
-            distance
     }
 
     internal companion object {

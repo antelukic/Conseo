@@ -1,5 +1,6 @@
 package com.conseo.database.dao
 
+import android.net.Uri
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -8,6 +9,8 @@ import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.tasks.asDeferred
+import kotlinx.coroutines.tasks.await
 
 class UsersDao(
     private val storage: FirebaseStorage,
@@ -19,8 +22,8 @@ class UsersDao(
         return firebase.auth.createUserWithEmailAndPassword(email, password)
     }
 
-    fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): UploadTask {
-        return storage.reference.child("userImages/$userEmail").putBytes(imageByteArray)
+    suspend fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): Uri? {
+        return storage.reference.child("userImages/$userEmail").putBytes(imageByteArray).await().storage.downloadUrl.await()
     }
 
     fun storeAccount(userEntity: UserEntity): Task<Void> {

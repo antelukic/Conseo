@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lukic.conseo.chat.model.ChatRepository
 import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
@@ -42,80 +43,87 @@ class PlaceDetailsViewModel(
 
     private fun getCurrentUserDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-            chatsRepository.getUserById(Firebase.auth.currentUser?.uid ?: "")
-                .addOnCompleteListener { getUserTask ->
-                    if (getUserTask.isSuccessful)
-                        _user.postValue(
-                            getUserTask.result.toObject(UserEntity::class.java)
-                        )
-                    else
-                        Log.e(
-                            TAG,
-                            "getCurrentUserDetails: ERROR ${getUserTask.exception?.message}",
-                        )
-                }
+            try {
+                val documentSnapshot =
+                    chatsRepository.getUserById(Firebase.auth.currentUser?.uid ?: "")
+                        .awaitTask(viewModelScope)
+                if (documentSnapshot != null)
+                    _user.postValue(
+                        documentSnapshot.toObject(UserEntity::class.java)
+                    )
+                else
+                    Log.e(
+                        TAG,
+                        "getCurrentUserDetails: user is null",
+                    )
+            } catch (e: Exception) {
+                Log.e(TAG, "getCurrentUserDetails: ${e.message}")
+            }
         }
     }
 
-
     fun getPlaceByID(placeID: String, serviceType: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            placesRepository.getPlaceByID(placeID = placeID, serviceType = serviceType)
-                .addOnCompleteListener { getPlaceTask ->
-                    if (getPlaceTask.isSuccessful) {
-                        val placeObject = getPlaceTask.result.toObjects(PlaceEntity::class.java)
-                        Log.d(TAG, "getPlaceByID: placeobject $placeObject")
-                        if (placeObject.isNotEmpty())
-                            _place.postValue(placeObject.first())
-                    } else {
-                        errorOccurred.postValue(true)
-                        Log.e(TAG, "getPlaceByID: ERROR ${getPlaceTask.exception?.message}")
-                    }
+            try {
+                val querySnapshot =
+                    placesRepository.getPlaceByID(placeID = placeID, serviceType = serviceType)
+                        .awaitTask(viewModelScope)
+                if (querySnapshot != null) {
+                    val placeObject = querySnapshot.toObjects(PlaceEntity::class.java)
+                    if (placeObject.isNotEmpty())
+                        _place.postValue(placeObject.first())
+                } else {
+                    errorOccurred.postValue(true)
+                    Log.e(TAG, "getPlaceByID: querySnapshot is null")
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "getPlaceByID: ${e.message}")
+            }
         }
     }
 
     fun getCommentsBy(placeID: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            placesRepository.getCommentsForPlace(placeID = placeID)
-                .addOnCompleteListener { getCommentsTask ->
-                    if (getCommentsTask.isSuccessful) {
-                        val commentsObject =
-                            getCommentsTask.result.toObjects(CommentsEntity::class.java)
-                        _comments.postValue(commentsObject)
-                    } else {
-                        errorOccurred.postValue(true)
-                        Log.e(TAG, "getCommentsBy: ERROR ${getCommentsTask.exception?.message}")
-                    }
-
+            try {
+                val querySnapshot = placesRepository.getCommentsForPlace(placeID = placeID)
+                    .awaitTask(viewModelScope)
+                if (querySnapshot != null) {
+                    val commentsObject =
+                        querySnapshot.toObjects(CommentsEntity::class.java)
+                    _comments.postValue(commentsObject)
+                } else {
+                    errorOccurred.postValue(true)
+                    Log.e(TAG, "getCommentsBy: ERROR querySnapshot is null")
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "getCommentsBy: ${e.message}")
+            }
         }
     }
 
     fun postComment() {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val comment = CommentsEntity(
                     body = postComment.value,
                     title = _user.value?.name,
                     placeID = place.value?.placeID,
                     image = _user.value?.image
                 )
-                placesRepository.postComment(comment)
-                    .addOnCompleteListener { postCommentTask ->
-                        if (postCommentTask.isSuccessful) {
-                            val commentsTemp = comments.value as ArrayList<CommentsEntity>? ?: arrayListOf()
-                            commentsTemp.add(comment)
-                            _comments.postValue(commentsTemp)
-                            postComment.postValue("")
-                        } else {
-                            Log.e(TAG, "postComment: ERROR ${postCommentTask.exception?.message}")
-                        }
-                    }
+                val querySnapshot = placesRepository.postComment(comment).awaitTask(viewModelScope)
+                if (querySnapshot != null) {
+                    val commentsTemp = comments.value as ArrayList<CommentsEntity>? ?: arrayListOf()
+                    commentsTemp.add(comment)
+                    _comments.postValue(commentsTemp)
+                    postComment.postValue("")
+                } else {
+                    Log.e(TAG, "postComment: querySnapshot is null")
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "postComment: ERROR ${e.message}")
             }
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "postComment: ERROR ${e.message}")
         }
+
     }
 
 }

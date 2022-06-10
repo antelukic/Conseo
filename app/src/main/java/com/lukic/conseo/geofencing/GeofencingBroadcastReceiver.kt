@@ -36,7 +36,7 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
 
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-            geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT
+            geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL
         ) {
 
             // Get the geofence that were triggered. A single event can trigger
@@ -52,7 +52,7 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
                 sendGeofenceEnteredNotification(geofenceRequestID)
             }
         } else {
-            Log.e(TAG, "Geofence Transition Invalid")
+            Log.e(TAG, "Geofence Transition Invalid $geofenceTransition")
         }
 
     }

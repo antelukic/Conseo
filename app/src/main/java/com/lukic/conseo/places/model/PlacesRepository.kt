@@ -1,5 +1,6 @@
 package com.lukic.conseo.places.model
 
+import android.net.Uri
 import com.conseo.database.dao.CommentsDao
 import com.conseo.database.dao.PlacesDao
 import com.conseo.database.entity.CommentsEntity
@@ -8,6 +9,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.tasks.await
 
 class PlacesRepository(
     private val placesDao: PlacesDao,
@@ -19,8 +21,8 @@ class PlacesRepository(
         return placesDao.getAllItemsByService(service)
     }
 
-    fun storeServiceImageToStorage(place: PlaceEntity, imageByteArray: ByteArray): UploadTask {
-        return placesDao.storeImageServiceToStorage(place = place, imageByteArray = imageByteArray)
+    suspend fun storeServiceImageToStorage(place: PlaceEntity, imageByteArray: ByteArray): Uri? {
+        return placesDao.storeImageServiceToStorage(place = place, imageByteArray = imageByteArray).await().storage.downloadUrl.await()
     }
 
     fun storeService(place: PlaceEntity): Task<DocumentReference> {
