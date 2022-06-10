@@ -11,8 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.PlaceEntity
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.places.model.PlacesRepository
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -70,35 +70,26 @@ class AddPlaceViewModel(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val service = getService(location)
-                Log.d(TAG, "imageBitmap" + imageBitmap.toString())
-                val imageTask = storeImageToStorage(service)
-                Log.d(TAG, "service $service")
-                imageTask.addOnCompleteListener { uploadImageTask ->
-                    if (uploadImageTask.isSuccessful) {
-                        uploadImageTask.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTask ->
-                            if(downloadUrlTask.isSuccessful) {
-                                service.image = downloadUrlTask.result.toString()
-                                placesRepository.storeService(place = service)
-                                    .addOnCompleteListener { uploadServiceTask ->
-                                        if (uploadServiceTask.isSuccessful) {
-                                            proceed.postValue(true)
-                                        } else
-                                            proceed.postValue(false)
-                                    }
-                            } else {
-                                proceed.postValue(false)
-                            }
-                        }
-                    } else
+                val imageUrl = storeImageToStorage(service)
+                if (imageUrl != null) {
+                    service.image = imageUrl.toString()
+                    val document =
+                        placesRepository.storeService(place = service).awaitTask(viewModelScope)
+                    if (document != null)
+                        proceed.postValue(true)
+                    else
                         proceed.postValue(false)
-                }
+                } else
+                    proceed.postValue(false)
+
             }
         } catch (e: Exception) {
+            proceed.postValue(false)
             Log.e(TAG, e.message.toString())
         }
     }
 
-    private fun storeImageToStorage(place: PlaceEntity): UploadTask {
+    private suspend fun storeImageToStorage(place: PlaceEntity): Uri? {
         val baos = ByteArrayOutputStream()
         imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()

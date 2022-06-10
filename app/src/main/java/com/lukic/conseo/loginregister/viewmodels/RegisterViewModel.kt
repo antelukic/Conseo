@@ -12,25 +12,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
-import com.google.android.gms.tasks.Task
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import com.lukic.conseo.loginregister.model.LoginRegisterRepository
 import com.lukic.conseo.MyApplication
 import com.lukic.conseo.R
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.regex.Pattern
 
 sealed class RegisterError(val message: String) {
     object PasswordsDontMatch : RegisterError("Passwords don't match")
     object InvalidEmail : RegisterError("Invalid email")
     object EmptyInput : RegisterError("This field is required to proceed")
-    object PasswordError :
-        RegisterError("Invalid Password. Password must contain number, special character and letter.")
 }
 
 private const val TAG = "RegisterViewModel"
@@ -49,14 +44,13 @@ class RegisterViewModel(
     val age = MutableLiveData(16)
     val gender = MutableLiveData<String>()
     val proceed = MutableLiveData<Boolean>()
-    val loaderVisibility = MutableLiveData<Int>(View.GONE)
+    val loaderVisibility = MutableLiveData(View.GONE)
     private var userID = ""
 
 
     fun onProceedClicked() {
         viewModelScope.launch(Dispatchers.Default) {
             val valid = checkInputs()
-            Log.d(TAG, "onProceedClicked: valid $valid")
             if (valid)
                 proceed.postValue(true)
         }
@@ -120,35 +114,28 @@ class RegisterViewModel(
     }
 
     fun registerAccount(imageBitmap: Bitmap?) = viewModelScope.launch {
-        loaderVisibility.postValue(View.VISIBLE)
-        if (isValidEmail()) {
-            loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
-                .addOnCompleteListener { authResult ->
-                    if (authResult.isSuccessful) {
-                        userID = authResult.result.user?.uid.toString()
-                        saveUserToDB(imageBitmap)
-                    } else {
-                        isAccountSaved.postValue(false)
-                        loaderVisibility.postValue(View.GONE)
-                        Log.e(
-                            TAG,
-                            "registerAccount: ${authResult.exception?.message.toString()}"
-                        )
-                    }
+        try {
+            loaderVisibility.postValue(View.VISIBLE)
+            if (isValidEmail()) {
+                val isRegistered =
+                    loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
+                        .awaitTask(viewModelScope)
+                if (isRegistered?.user != null) {
+                    saveUserToDB(imageBitmap)
+                } else {
+                    isAccountSaved.postValue(false)
+                    loaderVisibility.postValue(View.GONE)
                 }
-        } else {
-            Log.e(TAG, "registerAccount: Email ERROR")
+            }
+        }catch (e: Exception){
+            Log.e(TAG, "registerAccount: ${e.message}")
+            isAccountSaved.postValue(false)
+            loaderVisibility.postValue(View.GONE)
         }
     }
 
+
     private fun isValidEmail(): Boolean {
-        Log.d(TAG, "isValidEmail: ${!TextUtils.isEmpty(email.value)}")
-        Log.d(
-            TAG,
-            "isValidEmail: ${
-                android.util.Patterns.EMAIL_ADDRESS.matcher(email.value.toString()).matches()
-            }"
-        )
         return !TextUtils.isEmpty(email.value) && android.util.Patterns.EMAIL_ADDRESS.matcher(
             email.value.toString()
         ).matches()
@@ -162,45 +149,22 @@ class RegisterViewModel(
                 storeImageToStorage(image)
             } else
                 storeImageToStorage(imageBitmap)
-            imageUrl.addOnCompleteListener { taskSnapshot ->
-                if (taskSnapshot.isSuccessful) {
-                    getDownloadUrl(taskSnapshot)
-                } else {
-                    loaderVisibility.postValue(View.GONE)
-                    Log.e(TAG, "saveUserToDB: ${taskSnapshot.exception?.message.toString()}")
-                }
+            if (imageUrl != null) {
+                val user = UserEntity(
+                    id = userID,
+                    name = name.value!!,
+                    email = email.value!!.trim(),
+                    password = password.value!!.trim(),
+                    image = imageUrl.toString(),
+                    age = age.value!!,
+                    gender = gender.value!!,
+                    token = getTokenFromPrefs()
+                )
+                saveUserToDB(user = user)
+            } else {
+                loaderVisibility.postValue(View.GONE)
+                Log.e(TAG, "saveUserToDB: download url is null")
             }
-        }
-    }
-
-    private fun getDownloadUrl(taskSnapshot: Task<UploadTask.TaskSnapshot>) {
-        if (taskSnapshot.isSuccessful) {
-            val user = UserEntity(
-                id = userID,
-                name = name.value!!,
-                email = email.value!!.trim(),
-                password = password.value!!.trim(),
-                image = null,
-                age = age.value!!,
-                gender = gender.value!!,
-                token = getTokenFromPrefs()
-            )
-            taskSnapshot.result.storage.downloadUrl.addOnCompleteListener { downloadUrlTaskResult ->
-                if (downloadUrlTaskResult.isSuccessful) {
-                    user.image = downloadUrlTaskResult.result.toString()
-                    saveUserToDB(user = user)
-                } else {
-                    loaderVisibility.postValue(View.GONE)
-                    isAccountSaved.postValue(false)
-                    Log.e(
-                        TAG,
-                        "saveUserToDB: ${downloadUrlTaskResult.exception?.message.toString()}",
-                    )
-                }
-            }
-        } else {
-            isAccountSaved.postValue(false)
-            Log.e(TAG, "getDownloadUrl: ${taskSnapshot.exception?.message.toString()}")
         }
     }
 
@@ -215,26 +179,23 @@ class RegisterViewModel(
         )
     }
 
-    private fun saveUserToDB(user: UserEntity) {
-        if (!user.token.isNullOrEmpty()) {
-            loginRegisterRepository.saveUserToDB(
-                userEntity = user
-            ).addOnCompleteListener { saveUserTaskResult ->
+    private suspend fun saveUserToDB(user: UserEntity) {
+        try {
+            if (!user.token.isNullOrEmpty()) {
+                val isSaved = loginRegisterRepository.saveUserToDB(
+                    userEntity = user
+                ).awaitTask(this.viewModelScope)
                 loaderVisibility.postValue(View.GONE)
-                if (saveUserTaskResult.isSuccessful)
-                    isAccountSaved.postValue(true)
-                else {
-                    isAccountSaved.postValue(false)
-                    Log.e(
-                        TAG,
-                        "saveUserToDB: ${saveUserTaskResult.exception?.message.toString()}",
-                    )
-                }
+                isAccountSaved.postValue(isSaved != null)
             }
+        } catch (e: Exception) {
+            isAccountSaved.postValue(false)
+            Log.e(TAG, "saveUserToDB: ERROR ${e.message}")
         }
     }
 
-    private fun storeImageToStorage(imageBitmap: Bitmap): StorageTask<UploadTask.TaskSnapshot> {
+
+    private suspend fun storeImageToStorage(imageBitmap: Bitmap): Uri? {
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
@@ -252,3 +213,4 @@ class RegisterViewModel(
     }
 
 }
+

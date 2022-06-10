@@ -11,6 +11,7 @@ import com.lukic.conseo.R
 import com.lukic.conseo.loginregister.model.LoginRegisterRepository
 import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.EncryptedAppPrefs
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.launch
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent
@@ -57,26 +58,31 @@ class LoginViewModel(
     fun loginUser() {
         viewModelScope.launch {
             loaderVisibility.postValue(View.VISIBLE)
-            if (validatePassword()) {
-                loginRegisterRepository.loginUser(email.value!!.trim(), password.value!!.trim())
-                    .addOnCompleteListener { result ->
-                        loaderVisibility.postValue(View.GONE)
-                        if (result.isSuccessful)
-                            proceed.postValue(true)
-                        else {
-                            if (result.isCanceled) {
-                                Log.e(TAG, result.exception?.message.toString())
-                            } else {
-                                proceed.postValue(false)
-                                error.postValue(LoginError.EmailOrPasswordNotValid)
-                            }
-                        }
+            try {
+                if (validatePassword()) {
+                    val isLogged = loginRegisterRepository.loginUser(
+                        email.value!!.trim(),
+                        password.value!!.trim()
+                    ).awaitTask(viewModelScope)
+                    loaderVisibility.postValue(View.GONE)
+                    if (isLogged?.user != null)
+                        proceed.postValue(true)
+                    else {
+                        proceed.postValue(false)
+                        error.postValue(LoginError.EmailOrPasswordNotValid)
                     }
-            } else {
-                error.postValue(LoginError.EmailOrPasswordNotValid)
+                } else {
+                    proceed.postValue(false)
+                    error.postValue(LoginError.EmailOrPasswordNotValid)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "loginUser: ${e.message}")
+                proceed.postValue(false)
+                error.postValue(LoginError.SomethingWentWrong)
             }
         }
     }
+
 
     fun loginUsingBiometrics() {
 
@@ -109,7 +115,6 @@ class LoginViewModel(
             }
         }
     }
-
 
     fun clearError() {
         error.value = null

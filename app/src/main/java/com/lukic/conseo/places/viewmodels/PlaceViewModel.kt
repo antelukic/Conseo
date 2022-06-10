@@ -16,17 +16,23 @@ import com.lukic.conseo.MyApplication
 import com.lukic.conseo.places.model.PlacesRepository
 import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
+import com.lukic.conseo.utils.awaitTask
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.qualifier.named
 import org.koin.core.qualifier.qualifier
 import org.koin.java.KoinJavaComponent.inject
 
+private const val TAG = "PlaceViewModel"
 
 class PlaceViewModel(
     private val placesRepository: PlacesRepository,
 ) : ViewModel() {
 
-    private val appPrefs: AppPreferences by inject(qualifier = named("SharedPreferences"), clazz = AppPrefs::class.java)
+    private val appPrefs: AppPreferences by inject(
+        qualifier = named("SharedPreferences"),
+        clazz = AppPrefs::class.java
+    )
 
     private val _adapterData = MutableLiveData<List<PlaceEntity>>()
     val adapterData get() = _adapterData as LiveData<List<PlaceEntity>>
@@ -46,14 +52,16 @@ class PlaceViewModel(
         viewModelScope.launch {
             try {
                 loaderVisibility.postValue(View.VISIBLE)
-                val result = placesRepository.getAllItemsByService(serviceName)
-                result.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val services = task.result.toObjects(PlaceEntity::class.java)
-                        val filteredPlaces = filterPlacesByLocationDistance(services)
-                        _adapterData.postValue(filteredPlaces)
-                        loaderVisibility.postValue(View.GONE)
-                    }
+                val querySnapshot =
+                    placesRepository.getAllItemsByService(serviceName).awaitTask(viewModelScope)
+                if (querySnapshot != null) {
+                    val services = querySnapshot.toObjects(PlaceEntity::class.java)
+                    val filteredPlaces = filterPlacesByLocationDistance(services)
+                    _adapterData.postValue(filteredPlaces)
+                    loaderVisibility.postValue(View.GONE)
+                } else {
+                    loaderVisibility.postValue(View.GONE)
+                    Log.e(TAG, "getAllItemsByService: querySnapshot is null")
                 }
             } catch (e: Exception) {
                 loaderVisibility.postValue(View.GONE)
@@ -90,13 +98,19 @@ class PlaceViewModel(
 
     @SuppressLint("MissingPermission")
     fun getUserLocation() {
-        client.lastLocation.addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                val lat = task.result.latitude
-                val lng = task.result.longitude
-                _userLatLng.postValue(LatLng(lat, lng))
-            } else
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val location = client.lastLocation.awaitTask(viewModelScope)
+                if (location != null) {
+                    val lat = location.latitude
+                    val lng = location.longitude
+                    _userLatLng.postValue(LatLng(lat, lng))
+                } else
+                    _userLatLng.postValue(null)
+            } catch (e: Exception) {
                 _userLatLng.postValue(null)
+                Log.e(TAG, "getUserLocation: ${e.message}")
+            }
         }
     }
 }

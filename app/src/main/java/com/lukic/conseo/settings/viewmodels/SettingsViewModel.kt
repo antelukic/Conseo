@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.lukic.conseo.settings.model.SettingsRepository
 import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.qualifier.named
@@ -36,16 +37,21 @@ class SettingsViewModel(
 
     fun getCurrentUserData() {
         viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.getUserById(auth.currentUser?.uid ?: "noID")
-                .addOnCompleteListener { getUserTask ->
-                    if (getUserTask.isSuccessful) {
-                        val users = getUserTask.result.toObject(UserEntity::class.java)
-                        _user.postValue(users)
-                    } else {
-                        Log.e(TAG, "getCurrentUserData: ${getUserTask.exception?.message}")
-                        _user.postValue(null)
-                    }
+            try {
+                val documentSnapshot =
+                    settingsRepository.getUserById(auth.currentUser?.uid ?: "noID")
+                        .awaitTask(viewModelScope)
+                if (documentSnapshot != null) {
+                    val users = documentSnapshot.toObject(UserEntity::class.java)
+                    _user.postValue(users)
+                } else {
+                    Log.e(TAG, "getCurrentUserData: document snapshot is null")
+                    _user.postValue(null)
                 }
+            } catch (e: Exception){
+                Log.e(TAG, "getCurrentUserData: ${e.message}", )
+                _user.postValue(null)
+            }
         }
     }
 
@@ -60,16 +66,19 @@ class SettingsViewModel(
 
     fun changeName(userNewName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.getUserDocument(auth.currentUser?.uid ?: "noID", userNewName)
-                .addOnCompleteListener { getUserDocumentTask ->
-                    if (getUserDocumentTask.isSuccessful) {
-                        val user = _user.value
-                        user?.name = userNewName
-                        _user.postValue(user)
-                    } else {
-                        Log.e(TAG, "changeName: ${getUserDocumentTask.exception?.message}")
-                    }
+            try {
+                val documentSnapshot = settingsRepository.getUserDocument(auth.currentUser?.uid ?: "noID", userNewName)
+                    .awaitTask(viewModelScope)
+                if (documentSnapshot != null) {
+                    val user = _user.value
+                    user?.name = userNewName
+                    _user.postValue(user)
+                } else {
+                    Log.e(TAG, "changeName: documentSnapshot is null")
                 }
+            } catch (e: Exception){
+                Log.e(TAG, "changeName: ${e.message}", )
+            }
         }
 
     }

@@ -24,7 +24,7 @@ class MyApplication : Application() {
                     repositoryModule,
                     viewModelModules,
                     utilsModules,
-                    retrofitModules
+                    retrofitModules(BuildConfig.FCM_KEY, BuildConfig.FCM_URL)
                 )
             )
         }

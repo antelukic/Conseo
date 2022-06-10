@@ -2,6 +2,7 @@ package com.lukic.restapi.firebase
 
 import org.koin.dsl.module
 
-val retrofitModules = module {
-    single { RetrofitInstance() }
+fun retrofitModules(fcmKey: String, baseUrl: String) = module {
+    single { AuthorizationInterceptor(fcmKey) }
+    single { RetrofitInstance(baseUrl, get()) }
 }

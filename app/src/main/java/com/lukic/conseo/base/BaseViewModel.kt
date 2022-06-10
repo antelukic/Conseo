@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lukic.conseo.MyApplication
+import com.lukic.conseo.utils.awaitTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,33 +24,44 @@ class BaseViewModel(
 
     fun checkUserToken() {
         viewModelScope.launch(Dispatchers.IO) {
-            baseRepository.getUserById(Firebase.auth.currentUser?.uid.toString())
-                .addOnCompleteListener { getUserTask ->
-                    if (getUserTask.isSuccessful) {
-                        val user = getUserTask.result.toObject(UserEntity::class.java)
-                        if (user?.token != getTokenFromPrefs()) {
+            try {
+                val documentSnapshot =
+                    baseRepository.getUserById(Firebase.auth.currentUser?.uid.toString())
+                        .awaitTask(viewModelScope)
+                if (documentSnapshot != null) {
+                    val user = documentSnapshot.toObject(UserEntity::class.java)
+                    if (user?.token != getTokenFromPrefs()) {
+                        updateUserToken()
+                    } else {
+                        val token = FirebaseMessaging.getInstance().token.awaitTask(viewModelScope)
+                        if (user.token != token) {
                             updateUserToken()
-                        } else {
-                            Log.e(TAG, "checkUserToken: ${getUserTask.exception?.message}")
                         }
                     }
                 }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "checkUserToken: ${e.message}")
+            }
         }
     }
 
     private fun updateUserToken() {
         viewModelScope.launch(Dispatchers.IO) {
-            baseRepository.updateUserToken(
-                Firebase.auth.currentUser?.uid.toString(),
-                getTokenFromPrefs()
-            )
-                .addOnCompleteListener { updateUserToken ->
-                    if (updateUserToken.isSuccessful) {
-                        Log.d(TAG, "updateUserToken: updated token")
-                    } else {
-                        Log.e(TAG, "updateUserToken: ${updateUserToken.exception?.message}")
-                    }
+            try {
+                val result = baseRepository.updateUserToken(
+                    Firebase.auth.currentUser?.uid.toString(),
+                    getTokenFromPrefs()
+                ).awaitTask(viewModelScope)
+                if (result != null) {
+                    Log.d(TAG, "updateUserToken: updated token")
+                } else {
+                    Log.e(TAG, "updateUserToken: token not updated")
                 }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "updateUserToken: ${e.message}")
+            }
         }
     }
 

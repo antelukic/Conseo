@@ -16,17 +16,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-
         }
 
-        debug {
-            Properties properties = new Properties()
-            properties.load(project.rootProject.file('local.properties').newDataInputStream())
-            buildConfigField "String", "FCM_KEY", "\"${properties.getProperty('FCM_KEY')}\""
-        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -38,6 +31,7 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
 }
 
 dependencies {
@@ -64,3 +58,4 @@ dependencies {
     api 'com.google.firebase:firebase-messaging:23.0.5'
 
 }
+

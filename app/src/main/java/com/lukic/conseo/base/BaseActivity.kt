@@ -1,6 +1,7 @@
 package com.lukic.conseo.base
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -142,6 +143,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun startRequestingLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,

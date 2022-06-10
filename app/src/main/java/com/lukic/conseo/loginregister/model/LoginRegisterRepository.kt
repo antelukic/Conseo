@@ -1,5 +1,6 @@
 package com.lukic.conseo.loginregister.model
 
+import android.net.Uri
 import com.conseo.database.dao.UsersDao
 import com.conseo.database.entity.UserEntity
 import com.google.android.gms.tasks.Task
@@ -10,7 +11,7 @@ class LoginRegisterRepository(
     private val usersDao: UsersDao
 ) {
 
-    fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): UploadTask {
+    suspend fun storeImageToStorage(imageByteArray: ByteArray, userEmail: String): Uri? {
         return usersDao.storeImageToStorage(imageByteArray, userEmail)
     }
 
