@@ -15,9 +15,8 @@ class PlaceCommentRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceCommentsViewHolder=
         PlaceCommentsViewHolder(
-            DataBindingUtil.inflate(
+            ItemPlaceCommentsBinding.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.item_place_comments,
                 parent,
                 false
             )

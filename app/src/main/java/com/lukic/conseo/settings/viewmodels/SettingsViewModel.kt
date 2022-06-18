@@ -34,6 +34,9 @@ class SettingsViewModel(
 
     val distance = MutableLiveData<Int>()
 
+    val barsChecked = MutableLiveData<Boolean>()
+    val restaurantsChecked = MutableLiveData<Boolean>()
+    val eventsChecked = MutableLiveData<Boolean>()
 
     fun getCurrentUserData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -55,24 +58,24 @@ class SettingsViewModel(
         }
     }
 
-    fun getDistance(){
+    fun getDistanceInKm(){
             distance.postValue(appPrefs.getInt(AppPrefs.DISTANCE_KEY))
     }
 
-    fun updateDistance(distance: Int) {
-        appPrefs.putInt(key = AppPrefs.DISTANCE_KEY,value = distance)
-        this.distance.postValue(distance)
+    fun updateDistance(value: Float) = viewModelScope.launch(Dispatchers.Default) {
+        distance.postValue(value.toInt())
     }
 
-    fun changeName(userNewName: String) {
+    fun changeName() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentSnapshot = settingsRepository.getUserDocument(auth.currentUser?.uid ?: "noID", userNewName)
-                    .awaitTask(viewModelScope)
+                Log.d(TAG, "changeName: ${user.value}")
+                val documentSnapshot = user.value?.name?.let {
+                    settingsRepository.getUserDocument(auth.currentUser?.uid ?: "noID", it)
+                        .awaitTask(viewModelScope)
+                }
                 if (documentSnapshot != null) {
-                    val user = _user.value
-                    user?.name = userNewName
-                    _user.postValue(user)
+                    _user.postValue(user.value)
                 } else {
                     Log.e(TAG, "changeName: documentSnapshot is null")
                 }
@@ -87,5 +90,26 @@ class SettingsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             auth.signOut()
         }
+    }
+    fun storeDistance(){
+        appPrefs.putInt(key = AppPrefs.DISTANCE_KEY,value = distance.value ?: 0)
+    }
+    
+    fun getAllSubscribedTopics() = viewModelScope.launch(Dispatchers.IO){
+        Log.d(TAG, "getAllSubscribedTopics: bars checked ${appPrefs.getBoolean(AppPrefs.BARS_KEY)}")
+        Log.d(TAG, "getAllSubscribedTopics: restaurants checked ${appPrefs.getBoolean(AppPrefs.EVENTS_KEY)}")
+        Log.d(TAG, "getAllSubscribedTopics: events checked ${appPrefs.getBoolean(AppPrefs.RESTAURANTS_KEY)}")
+        barsChecked.postValue(appPrefs.getBoolean(AppPrefs.BARS_KEY))
+        eventsChecked.postValue(appPrefs.getBoolean(AppPrefs.EVENTS_KEY))
+        restaurantsChecked.postValue(appPrefs.getBoolean(AppPrefs.RESTAURANTS_KEY))
+    }
+
+    fun saveNotificationsChoice() = viewModelScope.launch(Dispatchers.IO){
+        Log.d(TAG, "saveNotificationsChoice: bars ${barsChecked.value}")
+        Log.d(TAG, "saveNotificationsChoice: events ${eventsChecked.value}")
+        Log.d(TAG, "saveNotificationsChoice: restaruants ${restaurantsChecked.value}")
+            appPrefs.putBoolean(key = AppPrefs.BARS_KEY, barsChecked.value ?: false)
+            appPrefs.putBoolean(key = AppPrefs.EVENTS_KEY, eventsChecked.value ?: false)
+            appPrefs.putBoolean(key = AppPrefs.RESTAURANTS_KEY, restaurantsChecked.value ?: false)
     }
 }

@@ -18,15 +18,9 @@ import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent
 
 private const val TAG = "GeofencingViewModel"
-
 class GeofencingViewModel(
     private val geofencingRepository: GeofencingRepository
 ) : ViewModel() {
-
-    private val appPrefs: AppPreferences by KoinJavaComponent.inject(
-        qualifier = named("SharedPreferences"),
-        clazz = AppPrefs::class.java
-    )
 
     private val _allPlaces = MutableLiveData<MutableList<PlaceEntity>?>()
     val allPlaces get() = _allPlaces as LiveData<MutableList<PlaceEntity>?>

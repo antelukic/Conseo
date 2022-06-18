@@ -10,9 +10,14 @@ abstract class AppPreferences {
 
     abstract fun getInt(key: String): Int
 
+    abstract fun putBoolean(key: String, value: Boolean)
+
+    abstract fun getBoolean(key: String): Boolean
+
     companion object{
         const val STRING_DEF_VALUE = "StringDefValue"
         const val INT_DEF_VALUE = 0
+        const val BOOLEAN_DEF_VALUE = false
     }
 
 }

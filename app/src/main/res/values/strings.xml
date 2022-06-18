@@ -82,4 +82,11 @@
     <string name="token">tokenPrefs</string>
     <string name="token_key">token_key</string>
     <string name="skip">Skip</string>
+    <string name="choose_which_notifications_you_want_to_receive">Choose which notifications you want to receive</string>
+    <string name="event_created">Event created</string>
+    <string name="bar_created">Bar created</string>
+    <string name="restaurant_created">Restaurant created</string>
+    <string name="save">save</string>
+    <string name="notifications">Notifications</string>
+    <string name="distance_km">%d km</string>
 </resources>

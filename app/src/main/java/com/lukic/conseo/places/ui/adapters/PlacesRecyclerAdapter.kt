@@ -17,9 +17,8 @@ class PlacesRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleServiceViewHolder =
         SingleServiceViewHolder(
-            DataBindingUtil.inflate(
+            ItemSinglePlaceBinding.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.item_single_place,
             parent,
                 false))
 

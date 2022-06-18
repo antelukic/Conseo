@@ -24,12 +24,11 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false)
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.error.observe(viewLifecycleOwner){ error ->
-            Log.d("RegisterFragment", "onCreateView: error $error")
             if(error != null)
                 setErrorUI(error)
         }

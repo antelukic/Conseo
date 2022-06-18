@@ -4,6 +4,10 @@
     <data>
 
         <variable
+            name="view"
+            type="com.lukic.conseo.settings.ui.SettingsFragment" />
+
+        <variable
             name="viewModel"
             type="com.lukic.conseo.settings.viewmodels.SettingsViewModel" />
     </data>
@@ -25,6 +29,7 @@
             android:src="@drawable/baseline_perm_identity_24"
             app:civ_shadow="true"
             app:civ_shadow_color="@color/black"
+            loadImage="@{viewModel.user.image}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,9 +52,9 @@
             android:id="@+id/Fragment_Settings_ChangeName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:elevation="100dp"
-            app:cardBackgroundColor="@color/light_grey"
+            android:layout_margin="10dp"
+            app:cardElevation="10dp"
+            android:onClick="@{() -> view.showChangeNameDialog()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_UserName">
@@ -66,21 +71,26 @@
                     android:padding="15dp"
                     android:text="@string/change_name"
                     android:textAlignment="center"
+                    android:layout_weight="1"
                     android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    loadImage="@{@drawable/ic_baseline_chevron_right_24}"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/Fragment_Settings_Logout"
+            android:id="@+id/Fragment_Settings_ChooseNotifications"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:elevation="100dp"
-            app:cardBackgroundColor="@color/light_grey"
+            android:layout_marginTop="5dp"
+            app:cardElevation="10dp"
+            android:onClick="@{() -> view.showNotificationsDialog()}"
             app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_ChangeName"
             app:layout_constraintStart_toStartOf="@id/Fragment_Settings_ChangeName"
             app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_ChangeName">
@@ -95,39 +105,77 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/lato"
                     android:padding="15dp"
-                    android:text="@string/log_out"
+                    android:text="@string/notifications"
+                    android:layout_weight="1"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    loadImage="@{@drawable/ic_baseline_chevron_right_24}"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/Fragment_Settings_Logout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:cardElevation="10dp"
+            android:onClick="@{() -> view.logoutDialog()}"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_ChooseNotifications"
+            app:layout_constraintStart_toStartOf="@id/Fragment_Settings_ChooseNotifications"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_ChooseNotifications">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/lato"
+                    android:padding="15dp"
+                    android:text="@string/log_out"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    loadImage="@{@drawable/ic_baseline_chevron_right_24}"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
 
-        <EditText
-            android:id="@+id/Fragment_Settings_CurrentMaxDistance"
-            android:layout_width="0dp"
+        <com.google.android.material.slider.Slider
+            android:id="@+id/Fragment_Settings_DistanceSlider"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
-            android:backgroundTint="@color/black"
-            android:minHeight="48dp"
-            android:inputType="numberSigned"
-            app:layout_constraintEnd_toStartOf="@+id/Fragment_Settings_SaveDistanceButton"
-            app:layout_constraintStart_toStartOf="@+id/Fragment_Settings_Logout"
-            app:layout_constraintTop_toBottomOf="@+id/Fragment_Settings_Logout" />
+            android:value="@{viewModel.distance}"
+            android:stepSize="1.0"
+            app:tickColor="@android:color/transparent"
+            app:thumbColor="@color/dark_pink"
+            app:thumbStrokeColor="@color/dark_pink"
+            app:trackColorActive="@color/dark_pink"
+            app:trackColorInactive="@color/light_yellow"
+            android:valueFrom="0.0"
+            android:valueTo="100.0"
+            app:layout_constraintStart_toStartOf="@id/Fragment_Settings_Logout"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_Logout"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_Settings_Logout" />
 
-        <Button
-            android:id="@+id/Fragment_Settings_SaveDistanceButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/light_grey"
-            android:elevation="100dp"
-            android:padding="10dp"
-            android:text="@string/save_distance"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/Fragment_Settings_CurrentMaxDistance"
-            app:layout_constraintEnd_toEndOf="@+id/Fragment_Settings_Logout" />
+
 
 
         <TextView
@@ -135,13 +183,16 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato"
             android:padding="15dp"
-            android:text="Maximum distance is written in km"
+            android:text="@{String.format(@string/distance_km, viewModel.distance)}"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Fragment_Settings_CurrentMaxDistance" />
+            android:layout_margin="10dp"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_Settings_DistanceSlider"
+            app:layout_constraintStart_toStartOf="@id/Fragment_Settings_DistanceSlider"
+            app:layout_constraintTop_toBottomOf="@+id/Fragment_Settings_DistanceSlider" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

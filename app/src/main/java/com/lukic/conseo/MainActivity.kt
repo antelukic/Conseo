@@ -41,8 +41,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(){
         geofencingClient = LocationServices.getGeofencingClient(this)
         geofenceViewModel.getAllPlaces()
 
-        baseViewModel.checkUserToken()
-
         checkIfUserFromMessageNotification()
         checkIfUserFromGeofenceNotification()
 

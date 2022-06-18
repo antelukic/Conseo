@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.*
 
 sealed class RegisterError(val message: String) {
     object PasswordsDontMatch : RegisterError("Passwords don't match")
@@ -45,8 +46,6 @@ class RegisterViewModel(
     val gender = MutableLiveData<String>()
     val proceed = MutableLiveData<Boolean>()
     val loaderVisibility = MutableLiveData(View.GONE)
-    private var userID = ""
-
 
     fun onProceedClicked() {
         viewModelScope.launch(Dispatchers.Default) {
@@ -121,13 +120,14 @@ class RegisterViewModel(
                     loginRegisterRepository.registerAccount(email.value!!.trim(), password.value!!)
                         .awaitTask(viewModelScope)
                 if (isRegistered?.user != null) {
-                    saveUserToDB(imageBitmap)
+                    saveUserToDB(imageBitmap, isRegistered.user?.uid.toString())
                 } else {
+                    Log.e(TAG, "registerAccount: user failed to register")
                     isAccountSaved.postValue(false)
                     loaderVisibility.postValue(View.GONE)
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(TAG, "registerAccount: ${e.message}")
             isAccountSaved.postValue(false)
             loaderVisibility.postValue(View.GONE)
@@ -141,14 +141,15 @@ class RegisterViewModel(
         ).matches()
     }
 
-    private fun saveUserToDB(imageBitmap: Bitmap?) {
+    private fun saveUserToDB(imageBitmap: Bitmap?, userID: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             val imageUrl = if (imageBitmap == null) {
-                val image = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                val image = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888)
                 storeImageToStorage(image)
             } else
                 storeImageToStorage(imageBitmap)
+
             if (imageUrl != null) {
                 val user = UserEntity(
                     id = userID,
@@ -162,6 +163,7 @@ class RegisterViewModel(
                 )
                 saveUserToDB(user = user)
             } else {
+                isAccountSaved.postValue(false)
                 loaderVisibility.postValue(View.GONE)
                 Log.e(TAG, "saveUserToDB: download url is null")
             }
@@ -181,13 +183,11 @@ class RegisterViewModel(
 
     private suspend fun saveUserToDB(user: UserEntity) {
         try {
-            if (!user.token.isNullOrEmpty()) {
-                val isSaved = loginRegisterRepository.saveUserToDB(
-                    userEntity = user
-                ).awaitTask(this.viewModelScope)
+            val isSaved = loginRegisterRepository.saveUserToDB(
+                userEntity = user
+            ).awaitTask(this.viewModelScope)
+                isAccountSaved.postValue(true)
                 loaderVisibility.postValue(View.GONE)
-                isAccountSaved.postValue(isSaved != null)
-            }
         } catch (e: Exception) {
             isAccountSaved.postValue(false)
             Log.e(TAG, "saveUserToDB: ERROR ${e.message}")
@@ -201,16 +201,5 @@ class RegisterViewModel(
         val data = baos.toByteArray()
         return loginRegisterRepository.storeImageToStorage(data, email.value!!)
     }
-
-    fun deleteValues() {
-        name.postValue("")
-        email.postValue("")
-        password.postValue("")
-        repeatPassword.postValue("")
-        error.postValue(null)
-        age.postValue(16)
-        gender.postValue("")
-    }
-
 }
 

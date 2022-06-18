@@ -15,18 +15,16 @@ class MessageRecyclerAdapter(private val messages: ArrayList<MessageEntity>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return if(viewType == 1){
+        return if(viewType == ITEM_RECEIVE){
             ReceiveMessageViewHolder(
-                DataBindingUtil.inflate(
+                ItemReceiveLayoutBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    R.layout.item_receive_layout,
                     parent,
                     false))
         } else{
             SentMessageViewHolder(
-                DataBindingUtil.inflate(
+                ItemSendLayoutBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    R.layout.item_send_layout,
                     parent,
                     false))
         }
