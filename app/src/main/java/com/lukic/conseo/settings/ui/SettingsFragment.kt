@@ -4,52 +4,43 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import com.bumptech.glide.Glide
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lukic.conseo.MainActivity
 import com.lukic.conseo.R
+import com.lukic.conseo.databinding.DialogChangeNameBinding
+import com.lukic.conseo.databinding.DialogChooseNotificationsBinding
+import com.lukic.conseo.databinding.FragmentSettingsBinding
 import com.lukic.conseo.settings.viewmodels.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
     private val settingsViewModel by sharedViewModel<SettingsViewModel>()
-    private lateinit var binding: com.lukic.conseo.databinding.FragmentSettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.viewModel = settingsViewModel
+        binding.view = this
         binding.lifecycleOwner = viewLifecycleOwner
 
         settingsViewModel.getCurrentUserData()
-        settingsViewModel.getDistance()
+        settingsViewModel.getDistanceInKm()
 
-        binding.FragmentSettingsChangeName.setOnClickListener {
-            showChangeNameDialog()
+        binding.FragmentSettingsDistanceSlider.addOnChangeListener { _, value, _ ->
+            settingsViewModel.updateDistance(value)
         }
-
-        binding.FragmentSettingsSaveDistanceButton.setOnClickListener {
-            settingsViewModel.updateDistance(binding.FragmentSettingsCurrentMaxDistance.text.toString().toInt())
-        }
-
-        settingsViewModel.distance.observe(viewLifecycleOwner){ distance ->
-            binding.FragmentSettingsCurrentMaxDistance.setText(distance.toString())
-        }
-
-        binding.FragmentSettingsSaveDistanceButton.setOnClickListener(setNewDistanceClickListener)
-
-        binding.FragmentSettingsLogout.setOnClickListener(logoutClickListener)
 
         settingsViewModel.user.observe(viewLifecycleOwner) { user ->
             if (user == null)
@@ -58,36 +49,25 @@ class SettingsFragment : Fragment() {
                     "Error occurred with getting your data",
                     Toast.LENGTH_LONG
                 ).show()
-            else
-                Glide
-                    .with(requireContext())
-                    .load(user.image)
-                    .error(R.mipmap.ic_launcher)
-                    .into(binding.FragmentSettingsUserImage)
-
         }
 
         return binding.root
     }
 
-    private fun showChangeNameDialog() {
+    fun showChangeNameDialog() {
         val dialog = Dialog(requireContext()).apply {
-            setCancelable(false)
-            setContentView(R.layout.dialog_change_name)
+            setCancelable(true)
+            show()
         }
+        val binding = DialogChangeNameBinding.inflate(LayoutInflater.from(context))
+        binding.viewModel = settingsViewModel
 
-        val nameEditText = dialog.findViewById<EditText>(R.id.Dialog_ChangeName_NewName)
-        val button = dialog.findViewById<Button>(R.id.Dialog_ChangeName_Button)
-        nameEditText.setText(settingsViewModel.user.value?.name.toString())
-
-        button.setOnClickListener {
-            settingsViewModel.changeName(nameEditText.text.toString())
+        binding.DialogChangeNameClose.setOnClickListener {
             dialog.dismiss()
         }
-        dialog.show()
     }
 
-    private val logoutClickListener = View.OnClickListener {
+    fun logoutDialog(){
         AlertDialog.Builder(requireContext())
             .setTitle("Are you sure you want to logout")
             .setPositiveButton("Yes") { _, _ ->
@@ -99,8 +79,38 @@ class SettingsFragment : Fragment() {
             .show()
     }
 
-    private val setNewDistanceClickListener = View.OnClickListener {
-        settingsViewModel.updateDistance(binding.FragmentSettingsCurrentMaxDistance.text.toString().take(5).toInt())
+    fun showNotificationsDialog() {
+        val binding = DialogChooseNotificationsBinding.inflate(LayoutInflater.from(context))
+        binding.settingsViewModel = settingsViewModel
+
+        val dialog = Dialog(requireContext()).apply {
+            setContentView(binding.root)
+            setCancelable(true)
+            show()
+        }
+        settingsViewModel.getAllSubscribedTopics()
+
+        binding.DialogChooseNotificationsSaveButton.setOnClickListener {
+            if(binding.DialogChooseNotificationsEventCheckbox.isChecked)
+                FirebaseMessaging.getInstance().subscribeToTopic("event")
+            if(binding.DialogChooseNotificationsRestaurantCheckbox.isChecked)
+                FirebaseMessaging.getInstance().subscribeToTopic("restaurant")
+            if(binding.DialogChooseNotificationsBarCheckbox.isChecked)
+                FirebaseMessaging.getInstance().subscribeToTopic("bar")
+            settingsViewModel.saveNotificationsChoice()
+            dialog.dismiss()
+        }
+
+        binding.DialogChooseNotificationsClose.setOnClickListener{
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        settingsViewModel.storeDistance()
     }
 }
 

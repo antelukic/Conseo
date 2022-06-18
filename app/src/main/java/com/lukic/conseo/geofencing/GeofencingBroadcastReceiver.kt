@@ -46,8 +46,6 @@ class GeofencingBroadcastReceiver : BroadcastReceiver() {
             // Get the transition details as a String.
             val geofenceRequestID = triggeringGeofence.first()?.requestId
 
-            Log.d(TAG, "onReceive: geofenceRequestID $geofenceRequestID")
-            Log.d(TAG, "onReceive: user ${Firebase.auth.currentUser}")
             if (geofenceRequestID != null && Firebase.auth.currentUser != null) {
                 sendGeofenceEnteredNotification(geofenceRequestID)
             }

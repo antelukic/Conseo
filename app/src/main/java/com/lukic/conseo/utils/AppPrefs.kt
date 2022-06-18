@@ -23,8 +23,18 @@ class AppPrefs: AppPreferences() {
         sharedPreferences.edit().putInt(key, value).apply()
     }
 
+    override fun putBoolean(key: String, value: Boolean) {
+        sharedPreferences.edit().putBoolean(key, value).apply()
+    }
+
+    override fun getBoolean(key: String): Boolean {
+        return sharedPreferences.getBoolean(key, BOOLEAN_DEF_VALUE)
+    }
+
     companion object{
         const val DISTANCE_KEY = "distance_key"
-
+        const val BARS_KEY = "bars_key"
+        const val RESTAURANTS_KEY = "restaurants_key"
+        const val EVENTS_KEY = "events_key"
     }
 }

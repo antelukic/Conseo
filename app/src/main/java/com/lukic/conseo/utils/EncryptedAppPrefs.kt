@@ -34,9 +34,17 @@ class EncryptedAppPrefs(
         return encPrefs.getInt(key, INT_DEF_VALUE)
     }
 
+    override fun putBoolean(key: String, value: Boolean) {
+        encPrefs.edit().putBoolean(key, value)
+    }
+
+    override fun getBoolean(key: String): Boolean {
+        return encPrefs.getBoolean(key, BOOLEAN_DEF_VALUE)
+    }
+
     companion object {
 
-        private val FILE_NAME = "EncryptedPrefs"
+        private const val FILE_NAME = "EncryptedPrefs"
 
     }
 }

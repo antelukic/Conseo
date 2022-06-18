@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.lukic.conseo.settings.viewmodels.SettingsViewModel" />
+    </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,6 +33,7 @@
         android:fontFamily="@font/lato"
         android:textColor="@color/black"
         android:layout_margin="20dp"
+        android:text="@={viewModel.user.name}"
         app:layout_constraintStart_toStartOf="@id/Dialog_ChangeName_Title"
         app:layout_constraintEnd_toEndOf="@id/Dialog_ChangeName_Title"
         app:layout_constraintTop_toBottomOf="@id/Dialog_ChangeName_Title"/>
@@ -39,7 +46,17 @@
         android:text="@string/change_name"
         android:layout_margin="20dp"
         android:backgroundTint="@color/dark_pink"
+        android:onClick="@{() -> viewModel.changeName()}"
         app:layout_constraintEnd_toEndOf="@id/Dialog_ChangeName_NewName"
         app:layout_constraintStart_toStartOf="@id/Dialog_ChangeName_NewName"
         app:layout_constraintTop_toBottomOf="@id/Dialog_ChangeName_NewName"/>
+
+    <ImageView
+        android:id="@+id/Dialog_ChangeName_Close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        loadImage="@{@drawable/ic_close_24}"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

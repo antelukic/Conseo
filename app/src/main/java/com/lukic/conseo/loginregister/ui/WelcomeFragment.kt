@@ -28,7 +28,7 @@ class WelcomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_welcome, container, false)
+        binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         binding.model = this
         binding.lifecycleOwner = viewLifecycleOwner
 

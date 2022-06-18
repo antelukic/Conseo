@@ -14,9 +14,8 @@ class AllChatsRecyclerAdapter(private val chats: List<UserEntity>, private val l
     :RecyclerView.Adapter<AllChatsRecyclerAdapter.AllChatsViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = AllChatsViewHolder(
-        DataBindingUtil.inflate(
+       ItemAllChatsBinding.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.item_all_chats,
             parent,
             false
         )

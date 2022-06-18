@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.1327937649880096" />
         <entry key="../../../.gradle/caches/transforms-3/ff8b8c3544c058305b68064d7696ecee/transformed/ChiliPhotoPicker-0.3.1/res/layout/fragment_photo_picker.xml" value="0.15416666666666667" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/baseline_perm_identity_24.xml" value="0.124" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/app/src/main/res/drawable/bottom_nav_select.xml" value="0.2565" />
@@ -46,11 +47,14 @@
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/database/src/main/res/layout/activity_main.xml" value="0.21739130434782608" />
         <entry key="..\:/Users/lukic/AndroidStudioProjects/Conseo/database/src/main/res/menu/bottom_nav_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lukic/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/drawable/ic_baseline_chevron_right_24.xml" value="0.155" />
+        <entry key="app/src/main/res/drawable/ic_close_24.xml" value="0.155" />
         <entry key="app/src/main/res/drawable/ic_icons8_round.xml" value="0.2975" />
         <entry key="app/src/main/res/drawable/receieve_message_drawable.xml" value="0.155" />
         <entry key="app/src/main/res/layout/activity_login_register.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/dialog_change_name.xml" value="0.31666666666666665" />
+        <entry key="app/src/main/res/layout/dialog_choose_notifications.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_add_place.xml" value="0.29636533084808947" />
         <entry key="app/src/main/res/layout/fragment_add_service.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_all_chats.xml" value="0.31666666666666665" />
@@ -62,7 +66,7 @@
         <entry key="app/src/main/res/layout/fragment_place.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_place_details.xml" value="0.31027253668763105" />
         <entry key="app/src/main/res/layout/fragment_places.xml" value="0.31666666666666665" />
-        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.4947111472742067" />
         <entry key="app/src/main/res/layout/fragment_services.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_set_profile_picture.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.31666666666666665" />

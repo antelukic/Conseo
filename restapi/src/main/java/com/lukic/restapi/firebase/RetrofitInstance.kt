@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitInstance(fcmUrl: String, val authorizationInterceptor: AuthorizationInterceptor) {
+class RetrofitInstance(fcmUrl: String, private val authorizationInterceptor: AuthorizationInterceptor) {
 
     private val loggingInterceptor by lazy { HttpLoggingInterceptor().also { it.level = HttpLoggingInterceptor.Level.BODY } }
 
@@ -24,10 +24,5 @@ class RetrofitInstance(fcmUrl: String, val authorizationInterceptor: Authorizati
 
     val api by lazy {
         retrofit.create(NotificationAPI::class.java)
-    }
-
-    internal companion object{
-
-        const val CONTENT_TYPE = "application/json"
     }
 }

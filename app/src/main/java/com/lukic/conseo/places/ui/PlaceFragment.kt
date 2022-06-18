@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.conseo.database.entity.PlaceEntity
 import com.lukic.conseo.R
+import com.lukic.conseo.base.BaseViewModel
 import com.lukic.conseo.databinding.FragmentPlaceBinding
 import com.lukic.conseo.places.ui.adapters.PlacesRecyclerAdapter
 import com.lukic.conseo.places.viewmodels.PlaceViewModel
@@ -20,15 +21,18 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class PlaceFragment : Fragment() {
 
     private val viewModel by sharedViewModel<PlaceViewModel>()
+    private val baseViewModel by sharedViewModel<BaseViewModel>()
     private lateinit var binding: FragmentPlaceBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_place, container, false)
+        binding = FragmentPlaceBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        baseViewModel.checkUserToken()
 
         viewModel.adapterData.observe(viewLifecycleOwner){
             viewModel.getUserLocation()
