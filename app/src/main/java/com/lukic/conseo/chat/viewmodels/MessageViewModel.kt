@@ -11,6 +11,8 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.lukic.conseo.FirebaseService
 import com.lukic.conseo.chat.model.ChatRepository
+import com.lukic.conseo.utils.awaitTask
+import com.lukic.conseo.utils.loadImage
 import com.lukic.restapi.firebase.models.NotificationData
 import com.lukic.restapi.firebase.models.PushNotification
 import kotlinx.coroutines.Dispatchers
@@ -43,43 +45,51 @@ class MessageViewModel(
 
     fun getCurrentUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            chatRepository.getUserById(currentUserId)
-                .addOnCompleteListener { getCurrentUserTask ->
-                    if (getCurrentUserTask.isSuccessful) {
-                        val user = getCurrentUserTask.result.toObject(UserEntity::class.java)
-                        _currentUser.postValue(user)
-                    } else {
-                        Log.e(
-                            TAG,
-                            "getCurrentUser: ERROR ${getCurrentUserTask.exception?.message}",
-                        )
-                        _currentUser.postValue(null)
-                    }
+            try {
+                val documentSnapshot =
+                    chatRepository.getUserById(currentUserId).awaitTask(viewModelScope)
+                if (documentSnapshot != null) {
+                    val user = documentSnapshot.toObject(UserEntity::class.java)
+                    _currentUser.postValue(user)
+                } else {
+                    Log.e(
+                        TAG,
+                        "getCurrentUser: ERROR document is null",
+                    )
+                    _currentUser.postValue(null)
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "getCurrentUser: ${e.message.toString()}")
+            }
         }
     }
 
 
     fun sendMessage() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (!messageText.value.isNullOrEmpty()) {
-                canSendMessage.postValue(false)
-                message = MessageEntity(
-                    senderID = currentUserId,
-                    message = messageText.value,
-                    recieverID = receiverID.trim(),
-                    time = getCurrentTime()
-                )
-                chatRepository.storeChat(room = receiversRoom, userID = receiverID.trim())
-                    .addOnCompleteListener { receiverTask ->
-                        if (receiverTask.isSuccessful) {
-                            storeChatForSender()
-                        } else {
-                            isMessageSent.postValue(false)
-                            canSendMessage.postValue(true)
-                            Log.e(TAG, receiverTask.exception?.message.toString())
-                        }
+            try {
+
+                if (!messageText.value.isNullOrEmpty()) {
+                    canSendMessage.postValue(false)
+                    message = MessageEntity(
+                        senderID = currentUserId,
+                        message = messageText.value,
+                        recieverID = receiverID.trim(),
+                        time = getCurrentTime()
+                    )
+                    val document =
+                        chatRepository.storeChat(room = receiversRoom, userID = receiverID.trim())
+                            .awaitTask(viewModelScope)
+                    if (document != null) {
+                        storeChatForSender()
+                    } else {
+                        isMessageSent.postValue(false)
+                        canSendMessage.postValue(true)
+                        Log.e(TAG, "document reference is null")
                     }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "sendMessage: ${e.message.toString()}")
             }
         }
     }
@@ -89,95 +99,108 @@ class MessageViewModel(
     }
 
     private fun storeChatForSender() {
-        chatRepository.storeChat(room = sendersRoom, userID = currentUserId.trim())
-            .addOnCompleteListener { senderTask ->
-                if (senderTask.isSuccessful) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val document =
+                    chatRepository.storeChat(room = sendersRoom, userID = currentUserId.trim())
+                        .awaitTask(viewModelScope)
+                if (document != null) {
                     sendMessageForReceiver()
                 } else {
                     isMessageSent.postValue(false)
                     canSendMessage.postValue(true)
+                    Log.e(TAG, "storeChatForSender: document reference is null")
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "storeChatForSender: ${e.message.toString()}")
             }
-
+        }
     }
 
-    private fun sendMessageForReceiver() {
-        chatRepository.sendMessage(message = message!!, room = receiversRoom)
-            .addOnCompleteListener { taskResult ->
-                if (taskResult.isSuccessful) {
-                    sendMessageForSender()
-                } else {
-                    Log.e(TAG, taskResult.exception?.message.toString())
-                    isMessageSent.postValue(false)
-                    canSendMessage.postValue(true)
-                }
-            }
-    }
-
-    private fun sendMessageForSender() {
-        chatRepository.sendMessage(message = message!!, room = sendersRoom)
-            .addOnCompleteListener { taskResult ->
-                if (taskResult.isSuccessful) {
-                    sendSenderNotification()
-                } else {
-                    Log.d(TAG, taskResult.exception?.message.toString())
-                    isMessageSent.postValue(false)
-                    canSendMessage.postValue(true)
-                }
-            }
-    }
-
-    private fun sendSenderNotification() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = chatRepository.sendChatNotification(
-                PushNotification(
-                    NotificationData(
-                        title = currentUser.value!!.name ?: "Name error",
-                        message = messageText.value ?: "",
-                        senderID = currentUserId
-                    ),
-                    to = receiver.value?.token ?: "Token error"
-                )
-            )
-            if (response.isSuccessful) {
-                messageText.postValue("")
-                val tempData = adapterData.value ?: arrayListOf()
-                tempData.add(0, message!!)
-                adapterData.postValue(tempData)
-                isMessageSent.postValue(true)
-                canSendMessage.postValue(true)
+    private fun sendMessageForReceiver() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val document = chatRepository.sendMessage(message = message!!, room = receiversRoom)
+                .awaitTask(viewModelScope)
+            if (document != null) {
+                sendMessageForSender()
             } else {
-                Log.e(TAG, "sendSenderNotification: ERROR ${response.errorBody()}")
+                Log.e(TAG, "document reference is null")
                 isMessageSent.postValue(false)
                 canSendMessage.postValue(true)
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "sendMessageForReceiver: ${e.message.toString()}")
         }
     }
 
-    fun getMessages() {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "getMessages: sendersRoom: $sendersRoom")
-            chatRepository.getMessages(sendersRoom)
-                .addOnCompleteListener { messagesResult ->
-                    if (messagesResult.isSuccessful) {
-                        val messages = messagesResult.result.toObjects(MessageEntity::class.java)
-                        adapterData.postValue(messages as ArrayList<MessageEntity>?)
-                    } else {
-                        Log.e(TAG, messagesResult.exception?.message.toString())
-                    }
-                }
+
+    private fun sendMessageForSender() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val document = chatRepository.sendMessage(message = message!!, room = sendersRoom)
+                .awaitTask(viewModelScope)
+            if (document != null) {
+                sendSenderNotification()
+            } else {
+                Log.d(TAG, "document is null")
+                isMessageSent.postValue(false)
+                canSendMessage.postValue(true)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "sendMessageForSender: ${e.message.toString()}")
         }
     }
 
-    fun getReceiverUser() {
-        viewModelScope.launch(Dispatchers.IO) {
-            chatRepository.getUserById(id = receiverID)
-                .addOnCompleteListener { userTaskResult ->
-                    if (userTaskResult.isSuccessful) {
-                        val user = userTaskResult.result.toObject(UserEntity::class.java)
-                        user?.let { receiver.postValue(it) }
-                    }
-                }
+    private fun sendSenderNotification() = viewModelScope.launch(Dispatchers.IO) {
+        val response = chatRepository.sendChatNotification(
+            PushNotification(
+                NotificationData(
+                    title = currentUser.value!!.name ?: "Name error",
+                    message = messageText.value ?: "",
+                    senderID = currentUserId
+                ),
+                to = receiver.value?.token ?: "Token error"
+            )
+        )
+        if (response.isSuccessful) {
+            messageText.postValue("")
+            val tempData = adapterData.value ?: arrayListOf()
+            tempData.add(0, message!!)
+            adapterData.postValue(tempData)
+            isMessageSent.postValue(true)
+            canSendMessage.postValue(true)
+        } else {
+            Log.e(TAG, "sendSenderNotification: ERROR ${response.raw()}")
+            isMessageSent.postValue(false)
+            canSendMessage.postValue(true)
+        }
+    }
+
+    fun getMessages() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val querySnapshot = chatRepository.getMessages(sendersRoom).awaitTask(viewModelScope)
+            if (querySnapshot != null) {
+                val messages = querySnapshot.toObjects(MessageEntity::class.java)
+                adapterData.postValue(messages as ArrayList<MessageEntity>?)
+            } else {
+                Log.e(TAG, "querySnapshot is null")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "getMessages: ${e.message.toString()}")
+        }
+    }
+
+    fun getReceiverUser() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val documentSnapshot =
+                chatRepository.getUserById(id = receiverID).awaitTask(viewModelScope)
+            if (documentSnapshot != null) {
+                val user = documentSnapshot.toObject(UserEntity::class.java)
+                user?.let { receiver.postValue(it) }
+            } else {
+                Log.e(TAG, "getReceiverUser: documentSnapshot is null")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "getReceiverUser: ${e.message.toString()}")
         }
     }
 

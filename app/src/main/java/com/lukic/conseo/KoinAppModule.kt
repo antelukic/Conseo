@@ -27,7 +27,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { PlacesRepository(placesDao = get(), commentsDao = get()) }
+    single { PlacesRepository(placesDao = get(), commentsDao = get(), retrofitInstance = get()) }
     single { ChatRepository(chatDao = get(), get(), get()) }
     single { LoginRegisterRepository(usersDao = get()) }
     single { SettingsRepository(userDao = get()) }

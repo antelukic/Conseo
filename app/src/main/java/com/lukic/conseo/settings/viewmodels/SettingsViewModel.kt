@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conseo.database.entity.UserEntity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lukic.conseo.settings.model.SettingsRepository
 import com.lukic.conseo.utils.AppPreferences
 import com.lukic.conseo.utils.AppPrefs
@@ -51,15 +52,15 @@ class SettingsViewModel(
                     Log.e(TAG, "getCurrentUserData: document snapshot is null")
                     _user.postValue(null)
                 }
-            } catch (e: Exception){
-                Log.e(TAG, "getCurrentUserData: ${e.message}", )
+            } catch (e: Exception) {
+                Log.e(TAG, "getCurrentUserData: ${e.message}")
                 _user.postValue(null)
             }
         }
     }
 
-    fun getDistanceInKm(){
-            distance.postValue(appPrefs.getInt(AppPrefs.DISTANCE_KEY))
+    fun getDistanceInKm() {
+        distance.postValue(appPrefs.getInt(AppPrefs.DISTANCE_KEY))
     }
 
     fun updateDistance(value: Float) = viewModelScope.launch(Dispatchers.Default) {
@@ -79,8 +80,8 @@ class SettingsViewModel(
                 } else {
                     Log.e(TAG, "changeName: documentSnapshot is null")
                 }
-            } catch (e: Exception){
-                Log.e(TAG, "changeName: ${e.message}", )
+            } catch (e: Exception) {
+                Log.e(TAG, "changeName: ${e.message}")
             }
         }
 
@@ -91,25 +92,45 @@ class SettingsViewModel(
             auth.signOut()
         }
     }
-    fun storeDistance(){
-        appPrefs.putInt(key = AppPrefs.DISTANCE_KEY,value = distance.value ?: 0)
+
+    fun storeDistance() {
+        appPrefs.putInt(key = AppPrefs.DISTANCE_KEY, value = distance.value ?: 0)
     }
-    
-    fun getAllSubscribedTopics() = viewModelScope.launch(Dispatchers.IO){
+
+    fun getAllSubscribedTopics() = viewModelScope.launch(Dispatchers.IO) {
         Log.d(TAG, "getAllSubscribedTopics: bars checked ${appPrefs.getBoolean(AppPrefs.BARS_KEY)}")
-        Log.d(TAG, "getAllSubscribedTopics: restaurants checked ${appPrefs.getBoolean(AppPrefs.EVENTS_KEY)}")
-        Log.d(TAG, "getAllSubscribedTopics: events checked ${appPrefs.getBoolean(AppPrefs.RESTAURANTS_KEY)}")
+        Log.d(
+            TAG,
+            "getAllSubscribedTopics: restaurants checked ${appPrefs.getBoolean(AppPrefs.EVENTS_KEY)}"
+        )
+        Log.d(
+            TAG,
+            "getAllSubscribedTopics: events checked ${appPrefs.getBoolean(AppPrefs.RESTAURANTS_KEY)}"
+        )
         barsChecked.postValue(appPrefs.getBoolean(AppPrefs.BARS_KEY))
         eventsChecked.postValue(appPrefs.getBoolean(AppPrefs.EVENTS_KEY))
         restaurantsChecked.postValue(appPrefs.getBoolean(AppPrefs.RESTAURANTS_KEY))
     }
 
-    fun saveNotificationsChoice() = viewModelScope.launch(Dispatchers.IO){
-        Log.d(TAG, "saveNotificationsChoice: bars ${barsChecked.value}")
-        Log.d(TAG, "saveNotificationsChoice: events ${eventsChecked.value}")
-        Log.d(TAG, "saveNotificationsChoice: restaruants ${restaurantsChecked.value}")
-            appPrefs.putBoolean(key = AppPrefs.BARS_KEY, barsChecked.value ?: false)
-            appPrefs.putBoolean(key = AppPrefs.EVENTS_KEY, eventsChecked.value ?: false)
-            appPrefs.putBoolean(key = AppPrefs.RESTAURANTS_KEY, restaurantsChecked.value ?: false)
+    fun saveNotificationsChoice() = viewModelScope.launch(Dispatchers.IO) {
+        if (eventsChecked.value == true) {
+            FirebaseMessaging.getInstance().subscribeToTopic("events")
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("events")
+        }
+        if (restaurantsChecked.value == true) {
+            FirebaseMessaging.getInstance().subscribeToTopic("restaurants")
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("restaurants")
+        }
+        if (barsChecked.value == true) {
+            FirebaseMessaging.getInstance().subscribeToTopic("bars")
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("bars")
+        }
+
+        appPrefs.putBoolean(key = AppPrefs.BARS_KEY, barsChecked.value ?: false)
+        appPrefs.putBoolean(key = AppPrefs.EVENTS_KEY, eventsChecked.value ?: false)
+        appPrefs.putBoolean(key = AppPrefs.RESTAURANTS_KEY, restaurantsChecked.value ?: false)
     }
 }

@@ -55,11 +55,12 @@ class SettingsFragment : Fragment() {
     }
 
     fun showChangeNameDialog() {
+        val binding = DialogChangeNameBinding.inflate(LayoutInflater.from(context))
         val dialog = Dialog(requireContext()).apply {
+            setContentView(binding.root)
             setCancelable(true)
             show()
         }
-        val binding = DialogChangeNameBinding.inflate(LayoutInflater.from(context))
         binding.viewModel = settingsViewModel
 
         binding.DialogChangeNameClose.setOnClickListener {
@@ -91,12 +92,7 @@ class SettingsFragment : Fragment() {
         settingsViewModel.getAllSubscribedTopics()
 
         binding.DialogChooseNotificationsSaveButton.setOnClickListener {
-            if(binding.DialogChooseNotificationsEventCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("event")
-            if(binding.DialogChooseNotificationsRestaurantCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("restaurant")
-            if(binding.DialogChooseNotificationsBarCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("bar")
+
             settingsViewModel.saveNotificationsChoice()
             dialog.dismiss()
         }
@@ -104,8 +100,6 @@ class SettingsFragment : Fragment() {
         binding.DialogChooseNotificationsClose.setOnClickListener{
             dialog.dismiss()
         }
-
-        dialog.show()
     }
 
     override fun onDestroyView() {
