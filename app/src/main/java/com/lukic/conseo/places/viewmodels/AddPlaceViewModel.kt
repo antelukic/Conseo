@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.lukic.conseo.places.model.PlacesRepository
 import com.lukic.conseo.utils.awaitTask
+import com.lukic.restapi.firebase.models.NotificationData
+import com.lukic.restapi.firebase.models.PushNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -43,7 +45,7 @@ class AddPlaceViewModel(
 
     var latlng: LatLng? = null
 
-    val proceed = MutableLiveData<Boolean>()
+    val proceed = MutableLiveData<Boolean?>()
     var imageBitmap: Bitmap? = null
 
 
@@ -66,17 +68,17 @@ class AddPlaceViewModel(
         return bitmap
     }
 
-    fun addService(location: String) {
+    fun addPlace(location: String) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                val service = getService(location)
-                val imageUrl = storeImageToStorage(service)
+                val place = getPlace(location)
+                val imageUrl = storeImageToStorage(place)
                 if (imageUrl != null) {
-                    service.image = imageUrl.toString()
+                    place.image = imageUrl.toString()
                     val document =
-                        placesRepository.storeService(place = service).awaitTask(viewModelScope)
+                        placesRepository.storePlace(place = place).awaitTask(viewModelScope)
                     if (document != null)
-                        proceed.postValue(true)
+                        sendNotification(place)
                     else
                         proceed.postValue(false)
                 } else
@@ -86,6 +88,25 @@ class AddPlaceViewModel(
         } catch (e: Exception) {
             proceed.postValue(false)
             Log.e(TAG, e.message.toString())
+        }
+    }
+
+    private suspend fun sendNotification(place: PlaceEntity){
+        val response = placesRepository.sendPlaceAddedNotification(
+            PushNotification(
+                data = NotificationData(
+                    title = "${name.value} just added",
+                    message = "Be the first to visit",
+                    senderID = place.placeID ?: UUID.randomUUID().toString()
+                ),
+                to = place.serviceName.toString()
+            )
+        )
+        if(response.isSuccessful){
+            Log.d(TAG, "sendNotification: ${place.serviceName}")
+            proceed.postValue(true)
+        } else {
+            Log.e(TAG, "sendNotification: ${response.raw()}", )
         }
     }
 
@@ -99,7 +120,7 @@ class AddPlaceViewModel(
         )
     }
 
-    private fun getService(location: String): PlaceEntity {
+    private fun getPlace(location: String): PlaceEntity {
         return when (selectedItemPosition.value) {
             1 -> {
                 PlaceEntity(
@@ -157,6 +178,24 @@ class AddPlaceViewModel(
         calendar.set(Calendar.MINUTE, minute.value!!)
 
         return SimpleDateFormat("HH:mm").format(calendar.time)
+    }
+
+    fun deleteValues() {
+        viewModelScope.launch(Dispatchers.Default) {
+            name.postValue(null)
+            additionalInfo.postValue(null)
+            selectedItemPosition.postValue(null)
+            hour.postValue(null)
+            minute.postValue(null)
+            year.postValue(null)
+            month.postValue(null)
+            day.postValue(null)
+            location.postValue(null)
+            searchText.postValue(null)
+            latlng = null
+            proceed.postValue(null)
+            imageBitmap = null
+        }
     }
 
 }

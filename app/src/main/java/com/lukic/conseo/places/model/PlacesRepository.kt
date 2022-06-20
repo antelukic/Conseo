@@ -9,11 +9,16 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.UploadTask
+import com.lukic.restapi.firebase.RetrofitInstance
+import com.lukic.restapi.firebase.models.PushNotification
 import kotlinx.coroutines.tasks.await
+import okhttp3.ResponseBody
+import retrofit2.Response
 
 class PlacesRepository(
     private val placesDao: PlacesDao,
-    private val commentsDao: CommentsDao
+    private val commentsDao: CommentsDao,
+    private val retrofitInstance: RetrofitInstance
 ) {
 
 
@@ -25,7 +30,7 @@ class PlacesRepository(
         return placesDao.storeImageServiceToStorage(place = place, imageByteArray = imageByteArray).await().storage.downloadUrl.await()
     }
 
-    fun storeService(place: PlaceEntity): Task<DocumentReference> {
+    fun storePlace(place: PlaceEntity): Task<DocumentReference> {
         return placesDao.storeService(place = place)
     }
 
@@ -43,6 +48,10 @@ class PlacesRepository(
             throw IllegalArgumentException("PlaceID cannot be null")
         else
             return commentsDao.postComment(comment)
+    }
+
+    suspend fun sendPlaceAddedNotification(notification: PushNotification): Response<ResponseBody> {
+        return retrofitInstance.api.postNotification(notification)
     }
 
 }

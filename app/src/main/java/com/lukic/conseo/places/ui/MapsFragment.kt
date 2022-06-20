@@ -38,7 +38,7 @@ private const val TAG = "MapsFragment"
 
 class MapsFragment : Fragment() {
 
-    private lateinit var binding: com.lukic.conseo.databinding.FragmentMapsBinding
+    private lateinit var binding: FragmentMapsBinding
     private val viewModel by sharedViewModel<AddPlaceViewModel>()
     private var _client: FusedLocationProviderClient? = null
     private var _locationPermissionGranted = false
@@ -139,18 +139,6 @@ class MapsFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun moveCamera(latLng: LatLng, title: String) {
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            getLocationPermission()
-            return
-        }
         hideSoftKeyboard()
         Log.d(TAG, "moveCamera: $mMap")
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10F))

@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.lukic.conseo.R
 import com.lukic.conseo.databinding.FragmentAddPlaceBinding
 import com.lukic.conseo.places.viewmodels.AddPlaceViewModel
+import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 private const val TAG = "AddServiceFragment"
@@ -42,7 +42,7 @@ class AddPlaceFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //This work when user returns from map fragment
+        //This works when user returns from map fragment
         val args by navArgs<AddPlaceFragmentArgs>()
         if(args.location.isNotEmpty())
             viewModel.location.value = args.location
@@ -68,14 +68,13 @@ class AddPlaceFragment : Fragment() {
 
         binding.FragmentAddPlaceAddButton.setOnClickListener {
             if(args.location.isNotEmpty() && viewModel.latlng != null) {
-                viewModel.addService(location = args.location)
+                viewModel.addPlace(location = args.location)
             } else{
                 Toast.makeText(requireContext(), "Add the location first", Toast.LENGTH_LONG).show()
             }
         }
 
         binding.FragmentAddPlaceCameraButton.setOnClickListener {
-            Log.d(TAG, "onCreateView: ${checkPermission(Manifest.permission.CAMERA)}")
             if(checkPermission(Manifest.permission.CAMERA))
                 takePicture()
             else
@@ -83,7 +82,6 @@ class AddPlaceFragment : Fragment() {
         }
 
         binding.FragmentAddPlaceGalleryButton.setOnClickListener{
-            Log.d(TAG, "onCreateView: ${checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)}")
             if(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
                 chooseImage()
             else
@@ -91,9 +89,11 @@ class AddPlaceFragment : Fragment() {
         }
 
         viewModel.proceed.observe(viewLifecycleOwner){ proceed ->
-            if(proceed)
+            if(proceed == true) {
+                viewModel.deleteValues()
                 findNavController().navigate(AddPlaceFragmentDirections.actionAddServiceFragmentToServicesFragment())
-            else
+            }
+            if(proceed == false)
                 Toast.makeText(requireContext(), "Something went wrong, please try again later!", Toast.LENGTH_LONG).show()
         }
 

@@ -157,11 +157,11 @@ class SetProfilePicture : Fragment() {
 
         binding.DialogChooseNotificationsSaveButton.setOnClickListener {
             if(binding.DialogChooseNotificationsEventCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("event")
+                FirebaseMessaging.getInstance().subscribeToTopic("events")
             if(binding.DialogChooseNotificationsRestaurantCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("restaurant")
+                FirebaseMessaging.getInstance().subscribeToTopic("restaurants")
             if(binding.DialogChooseNotificationsBarCheckbox.isChecked)
-                FirebaseMessaging.getInstance().subscribeToTopic("bar")
+                FirebaseMessaging.getInstance().subscribeToTopic("bars")
             settingsViewModel.saveNotificationsChoice()
             viewModel.registerAccount(imageBitmap)
             dialog.dismiss()
