@@ -29,7 +29,6 @@ class FirebaseService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        Log.d(TAG, "onMessageReceived: message ${message.data}")
         remoteMessage.postValue(message)
         //SendNotificationUpdateChat
         sendNotification(message)

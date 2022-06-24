@@ -169,7 +169,8 @@ class AddPlaceViewModel(
     private fun getDateFromPicker(): String {
         val calendar = Calendar.getInstance()
         calendar.set(year.value!!, month.value!!, day.value!!)
-        return calendar.toString()
+
+        return SimpleDateFormat("dd/MM/yyyy").format(calendar.time)
     }
 
     private fun getTimeFromTimePicker(): String {

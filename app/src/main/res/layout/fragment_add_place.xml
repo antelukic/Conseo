@@ -7,6 +7,10 @@
         <variable
             name="viewModel"
             type="com.lukic.conseo.places.viewmodels.AddPlaceViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.lukic.conseo.places.ui.AddPlaceFragment" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -47,30 +51,16 @@
                             android:id="@+id/Fragment_AddPlace_GalleryButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/add_from_gallery"
+                            android:text="@string/add_image"
                             android:backgroundTint="@color/white"
                             android:fontFamily="@font/lato"
                             android:textColor="@color/dark_pink"
+                            android:onClick="@{() -> fragment.openPicker()}"
                             android:gravity="center"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:layout_margin="10dp"
                             android:textSize="12sp"/>
-
-                        <Button
-                            android:id="@+id/Fragment_AddPlace_CameraButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/take_a_photo"
-                            android:backgroundTint="@color/white"
-                            android:fontFamily="@font/lato"
-                            android:textColor="@color/dark_pink"
-                            android:gravity="center"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:layout_margin="10dp"
-                            android:textSize="12sp"/>
-
                     </LinearLayout>
 
 
@@ -125,7 +115,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:fontFamily="@font/lato"
-                            android:text="Choose type"
+                            android:text="@string/choose_type"
                             android:gravity="center"
                             android:layout_weight="1"
                             android:textColor="@color/black"
@@ -150,7 +140,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/lato"
-                        android:text="Please choose date and time"
+                        android:text="@string/please_choose_date_and_time"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:visibility="@{viewModel.selectedItemPosition ==2? View.VISIBLE: View.GONE}" />
