@@ -39,46 +39,24 @@ class PlaceDetailsFragment : Fragment() {
         viewModel.getPlaceByID(args.serviceID, args.serviceType)
         viewModel.getCommentsBy(args.serviceID)
 
-
-        binding.FragmentPlaceDetailsCheckOnMap.setOnClickListener {
-            findNavController().navigate(PlaceDetailsFragmentDirections.actionPlaceDetailsFragmentToMapsFragment(location = viewModel.place.value?.location ?: "", getString(
-                            R.string.place_details_fragment)))
-        }
-
-        binding.FragmentPlaceDetailsSendMessage.setOnClickListener {
-            if(Firebase.auth.currentUser?.uid.toString() != viewModel.place.value?.creatorID.toString())
-                findNavController().navigate(PlaceDetailsFragmentDirections.actionPlaceDetailsFragmentToMessageFragment(receiverID = viewModel.place.value?.creatorID ?: ""))
-        }
-        viewModel.place.observe(viewLifecycleOwner){ placeDetails ->
-            setupUI(placeDetails)
-        }
-
         viewModel.errorOccurred.observe(viewLifecycleOwner){
             if(it)
                 Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_LONG).show()
         }
 
         viewModel.comments.observe(viewLifecycleOwner){ comments ->
-            Log.d("PlaceDetailsFragment", "onCreateView: comments $comments")
-            if(comments.isNullOrEmpty()) {
-                binding.FragmentPlaceDetailsComments.visibility = View.GONE
-            } else {
-                binding.FragmentPlaceDetailsComments.visibility = View.VISIBLE
                 binding.FragmentPlaceDetailsComments.adapter = PlaceCommentRecyclerAdapter(comments)
-            }
         }
         return binding.root
     }
 
-    private fun setupUI(placeDetails: PlaceEntity?) {
-        Glide.with(requireContext()).load(placeDetails?.image).error(R.mipmap.ic_launcher).into(binding.FragmentPlaceDetailsImage)
-        placeDetails?.serviceName?.first()?.uppercase()
-        binding.FragmentPlaceDetailsName.text = placeDetails?.serviceName.toString() + " " + placeDetails?.name
-        if(placeDetails?.date == null)
-            binding.FragmentPlaceDetailsDateTime.visibility = View.GONE
-        else
-            binding.FragmentPlaceDetailsDateTime.text = "Date and Time: " + placeDetails.date + " " + placeDetails.time
+    fun checkOnMapClicked(){
+        findNavController().navigate(PlaceDetailsFragmentDirections.actionPlaceDetailsFragmentToMapsFragment(location = viewModel.place.value?.location ?: "", getString(
+            R.string.place_details_fragment)))
     }
 
-
+    fun sendMessageClicked(){
+        if(Firebase.auth.currentUser?.uid.toString() != viewModel.place.value?.creatorID.toString())
+            findNavController().navigate(PlaceDetailsFragmentDirections.actionPlaceDetailsFragmentToMessageFragment(receiverID = viewModel.place.value?.creatorID ?: ""))
+    }
 }

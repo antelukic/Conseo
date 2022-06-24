@@ -37,6 +37,8 @@ class PlaceDetailsViewModel(
 
     val errorOccurred = MutableLiveData(false)
 
+    val isSendMessageVisible = MutableLiveData(Firebase.auth.currentUser?.uid.toString() != place.value?.creatorID.toString())
+
     init {
         getCurrentUserDetails()
     }
@@ -70,6 +72,7 @@ class PlaceDetailsViewModel(
                         .awaitTask(viewModelScope)
                 if (querySnapshot != null) {
                     val placeObject = querySnapshot.toObjects(PlaceEntity::class.java)
+                    Log.d(TAG, "getPlaceByID: $placeObject")
                     if (placeObject.isNotEmpty())
                         _place.postValue(placeObject.first())
                 } else {

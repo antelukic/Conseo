@@ -89,4 +89,10 @@
     <string name="save">save</string>
     <string name="notifications">Notifications</string>
     <string name="distance_km">%d km</string>
+    <string name="add_image">Add image</string>
+    <string name="please_choose_date_and_time">Please choose date and time</string>
+    <string name="choose_type">Choose type</string>
+    <string name="place_name">Name: %s</string>
+    <string name="date_and_time_s_s">Date and time %s %s</string>
+    <string name="info_s">Info: %s</string>
 </resources>

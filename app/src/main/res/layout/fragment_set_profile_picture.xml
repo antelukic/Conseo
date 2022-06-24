@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="fragment"
+            type="com.lukic.conseo.loginregister.ui.SetProfilePicture" />
+
+        <variable
             name="viewModel"
             type="com.lukic.conseo.loginregister.viewmodels.RegisterViewModel" />
     </data>
@@ -38,7 +42,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/lato"
             android:text="@string/select_your_profile_picture"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textColor="@color/dark_pink"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,32 +64,20 @@
             app:layout_constraintTop_toBottomOf="@+id/Fragment_SetProfilePicture_Title" />
 
         <Button
-            android:id="@+id/Fragment_SetProfilePicture_Gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:backgroundTint="@color/light_yellow"
-            android:text="@string/choose_from_gallery"
-            android:textAllCaps="false"
-            android:textColor="@color/dark_pink"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@id/Fragment_SetProfilePicture_Subtitle"
-            app:layout_constraintStart_toStartOf="@id/Fragment_SetProfilePicture_Subtitle"
-            app:layout_constraintTop_toBottomOf="@id/Fragment_SetProfilePicture_Subtitle" />
-
-        <Button
             android:id="@+id/Fragment_SetProfilePicture_Camera"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:backgroundTint="@color/light_yellow"
-            android:text="@string/take_a_photo"
+            android:text="@string/add_image"
             android:textAllCaps="false"
+            android:fontFamily="@font/lato"
             android:textColor="@color/dark_pink"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/Fragment_SetProfilePicture_Gallery"
-            app:layout_constraintStart_toStartOf="@+id/Fragment_SetProfilePicture_Gallery"
-            app:layout_constraintTop_toBottomOf="@+id/Fragment_SetProfilePicture_Gallery" />
+            android:onClick="@{() -> fragment.openPicker()}"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="@id/Fragment_SetProfilePicture_Subtitle"
+            app:layout_constraintEnd_toEndOf="@id/Fragment_SetProfilePicture_Subtitle"
+            app:layout_constraintTop_toBottomOf="@id/Fragment_SetProfilePicture_Subtitle"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/Fragment_SetProfilePicture_Picture"
@@ -105,9 +97,10 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/lato"
+            android:textAllCaps="false"
             android:text="@string/proceed"
             android:textColor="@color/dark_pink"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/light_yellow"
             android:elevation="20dp"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/Fragment_SetProfilePicture_Skip"

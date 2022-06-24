@@ -33,6 +33,7 @@ class PlacesFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         baseViewModel.bottomNavVisibility.postValue(true)
+        viewModel.getAllItemsByService("bars")
 
         val tabLayout = binding.FragmentPlaceTabLayout
         tabLayout.addOnTabSelectedListener(tabSelectedListener)
